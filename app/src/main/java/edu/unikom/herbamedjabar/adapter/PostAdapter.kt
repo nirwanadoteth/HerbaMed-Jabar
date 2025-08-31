@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.databinding.ItemPostBinding
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -48,33 +49,10 @@ class PostAdapter(
                     placeholder(R.drawable.bg_place_holder)
                 }
 
-                fun formatMarkdownLists(input: String): String {
-                    return input.replace(
-                        Regex("""(\d+\.\s*)""")
-                    ) { match ->
-                        if (match.range.first == 0) match.value else "\n${match.value}"
-                    }
-                }
-
-                val formattedContent = post.content ?: ""
-                val formattedBenefit = formatMarkdownLists(post.benefit ?: "")
-                val formattedWarning = formatMarkdownLists(post.warning ?: "")
-
-                val flavour = CommonMarkFlavourDescriptor()
-
-                val parsedTreeContent = MarkdownParser(flavour).buildMarkdownTreeFromString(formattedContent)
-                val htmlContent = HtmlGenerator(formattedContent, parsedTreeContent, flavour).generateHtml()
-
-                val parsedTreeBenefit = MarkdownParser(flavour).buildMarkdownTreeFromString(formattedBenefit)
-                val htmlBenefit = HtmlGenerator(formattedBenefit, parsedTreeBenefit, flavour).generateHtml()
-
-                val parsedTreeWarning = MarkdownParser(flavour).buildMarkdownTreeFromString(formattedWarning)
-                val htmlWarning = HtmlGenerator(formattedWarning, parsedTreeWarning, flavour).generateHtml()
-
                 tvPlantName.text = post.plantName
-                tvContent.text = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvManfaat.text = HtmlCompat.fromHtml(htmlBenefit, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvEfek.text = HtmlCompat.fromHtml(htmlWarning, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                tvContent.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(post.content), HtmlCompat.FROM_HTML_MODE_LEGACY)
+                tvManfaat.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(post.benefit, true), HtmlCompat.FROM_HTML_MODE_LEGACY)
+                tvEfek.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(post.warning, true), HtmlCompat.FROM_HTML_MODE_LEGACY)
                 tvLikeCount.text = "${post.likes.size}"
 
                 ivLike.setImageResource(

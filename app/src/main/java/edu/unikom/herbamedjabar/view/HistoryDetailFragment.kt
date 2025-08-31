@@ -14,9 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.FragmentHistoryDetailBinding
 import edu.unikom.herbamedjabar.viewModel.HistoryDetailViewModel
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 import java.io.File
 
 @AndroidEntryPoint
@@ -38,7 +36,8 @@ class HistoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val history = if (Build.VERSION.SDK_INT < 33) {
+        val history = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            @Suppress("DEPRECATION")
             arguments?.getParcelable(EXTRA_HISTORY)
         } else {
             arguments?.getParcelable(EXTRA_HISTORY, ScanHistory::class.java)
@@ -53,16 +52,23 @@ class HistoryDetailFragment : Fragment() {
     }
 
     private fun setupView(history: ScanHistory) {
-        val flavour = CommonMarkFlavourDescriptor()
-        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(history.resultText)
-        val html = HtmlGenerator(history.resultText, parsedTree, flavour).generateHtml()
-        binding.resultTextView.text =
-            HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
-
         val imageFile = File(history.imagePath)
-        if (imageFile.exists()) {
-            binding.resultImageView.load(Uri.fromFile(imageFile)) {
-                crossfade(true)
+
+        binding.apply {
+            plantNameTextView.text = history.plantName
+            contentTextView.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(history.content), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            benefitTextView.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(history.benefit), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            warningTextView.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(history.warning), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            if (history.benefit.isBlank()) {
+                benefitBanner.visibility = View.GONE
+                benefitTextView.visibility = View.GONE
+            }
+            if (history.warning.isBlank()) {
+                warningBanner.visibility = View.GONE
+                warningTextView.visibility = View.GONE
+            }
+            if (imageFile.exists()) {
+                resultImageView.load(Uri.fromFile(imageFile)) { crossfade(true) }
             }
         }
     }

@@ -11,9 +11,7 @@ import coil.load
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.ItemHistoryBinding
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -32,20 +30,16 @@ class HistoryAdapter(
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val historyItem = getItem(position)
-        holder.bind(historyItem, position)
+        holder.bind(historyItem)
     }
 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(history: ScanHistory, position: Int) { // Terima posisi di sini
+        fun bind(history: ScanHistory) { // Terima posisi di sini
             binding.apply {
-                // Menggunakan ID dari layout baru Anda dan data class yang sudah diperbarui
-                val flavour = CommonMarkFlavourDescriptor()
-                val parsedTree =
-                    MarkdownParser(flavour).buildMarkdownTreeFromString(history.resultText)
-                val html = HtmlGenerator(history.resultText, parsedTree, flavour).generateHtml()
-                historyTextView.text =
-                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                plantNameTextView.text = history.plantName
+                val html = MarkdownUtils.parseMarkdownToHtml(history.content)
+                descriptionTextView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
                 val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
                 val date = Date(history.timestamp)
