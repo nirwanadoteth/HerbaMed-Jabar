@@ -5,6 +5,10 @@ import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 
 object MarkdownUtils {
+    private val flavour by lazy { CommonMarkFlavourDescriptor() }
+    private val parser by lazy { MarkdownParser(flavour) }
+
+
     /**
      * Converts a Markdown string to HTML.
      *
@@ -16,8 +20,7 @@ object MarkdownUtils {
     fun parseMarkdownToHtml(input: String?, formatList: Boolean = false): String {
         val raw = input ?: ""
         val formatted = if (formatList) addLineBreaksToNumberedList(raw) else raw
-        val flavour = CommonMarkFlavourDescriptor()
-        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(formatted)
+        val parsedTree = parser.buildMarkdownTreeFromString(formatted)
         return HtmlGenerator(formatted, parsedTree, flavour).generateHtml()
     }
 

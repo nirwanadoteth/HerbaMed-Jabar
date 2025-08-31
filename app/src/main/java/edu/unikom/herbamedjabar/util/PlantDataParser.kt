@@ -55,10 +55,14 @@ object PlantDataParser {
     }
 
     private fun isUnidentifiedPlant(text: String): Boolean =
-        text.contains("tanaman tidak dapat diidentifikasi", ignoreCase = true)
+        Regex("""tanaman\s+tidak\s+dapat\s+di-?identifikasi""", RegexOption.IGNORE_CASE)
+            .containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
-        val namePattern = Regex("🌿(.*?)\\*Nama Ilmiah", setOf(RegexOption.DOT_MATCHES_ALL))
+        val namePattern = Regex(
+            pattern = "🌿\\s*(.*?)\\s*\\*?Nama\\s+Ilmiah\\b",
+            options = setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE)
+        )
         return namePattern.find(text)?.destructured?.let { (name) -> name.trim() }
             ?: text.lines().firstOrNull()?.replace(Regex("[#*🌿]"), "")?.trim()
             ?: "Nama tidak ditemukan"
@@ -71,11 +75,13 @@ object PlantDataParser {
                     "### 📝 Deskripsi(.*?)(?=### 🩺 Potensi Manfaat & Kegunaan|### ⚠️ Peringatan & Efek Samping|$)",
                     setOf(RegexOption.DOT_MATCHES_ALL)
                 ) to ""
+
             Section.BENEFIT ->
                 Regex(
                     "### 🩺 Potensi Manfaat & Kegunaan(.*?)(?=### 📝 Deskripsi|### ⚠️ Peringatan & Efek Samping|$)",
                     setOf(RegexOption.DOT_MATCHES_ALL)
                 ) to ""
+
             Section.WARNING ->
                 Regex(
                     "### ⚠️ Peringatan & Efek Samping(.*?)(?=### 📝 Deskripsi|### 🩺 Potensi Manfaat & Kegunaan|$)",
