@@ -60,13 +60,13 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@android:color/black"
+            android:textColor="@color/text_muted_foreground"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/containerImage"
             app:layout_constraintTop_toBottomOf="@id/plantNameTextView"
-            tools:text="Deskipsi singkat tanaman" />
+            tools:text="Deskripsi singkat tanaman" />
 
         <TextView
             android:id="@+id/time"
@@ -78,6 +78,7 @@
             android:gravity="center_vertical"
             tools:text="17 Aug 2025, 09:45"
             android:textSize="11sp"
+            android:textColor="@color/text_muted_foreground"
             app:drawableStartCompat="@drawable/ic_clock"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

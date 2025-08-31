@@ -44,7 +44,7 @@
                             android:id="@+id/appTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="HerbaMed"
+                            android:text="@string/herbamed"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -199,7 +199,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@color/white"
-                                android:contentDescription="Gambar tanaman yang akan di-scan"
+                                android:contentDescription="@string/gambar_tanaman_yang_diambil"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/picture_placeholder" />
                         </androidx.cardview.widget.CardView>
@@ -224,8 +224,7 @@
                     android:id="@+id/btn_gallery"
                     style="@style/Widget.Material3.Button.IconButton"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:text="Upload dari Galeri"
                     android:textColor="@color/primary"
                     app:cornerRadius="10dp"

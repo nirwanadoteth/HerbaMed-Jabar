@@ -29,13 +29,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_arrow_left"
-                    android:contentDescription="Tombol Kembali" />
+                    android:contentDescription="@string/back_button_desc" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="22dp"
-                    android:text="Detail Riwayat"
+                    android:text="@string/history_detail_title"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -58,7 +58,7 @@
                         android:layout_height="300dp"
                         android:layout_marginBottom="19dp"
                         android:scaleType="centerCrop"
-                        android:contentDescription="Gambar Tanaman"
+                        android:contentDescription="@string/history_detail_image_desc"
                         tools:src="@tools:sample/backgrounds/scenic" />
                 </androidx.cardview.widget.CardView>
 
@@ -72,7 +72,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nama Tanaman : "
+                        android:text="@string/label_plant_name_colon"
                         android:textSize="14sp" />
 
                     <TextView
@@ -82,7 +82,8 @@
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:text="Nama Tanaman" />
+                        android:text=""
+                        tools:text="Nama Tanaman" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -96,7 +97,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="📝 Deskripsi"
+                        android:text="@string/section_description_title"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -105,7 +106,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="content"
+                        android:text=""
+                        tools:text="Deskripsi singkat"
                         android:textColor="@color/text_muted_foreground"
                         android:textSize="12sp" />
 
@@ -113,7 +115,7 @@
                         android:id="@+id/benefit_banner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="🩺 Potensi Manfaat &amp; Kegunaan"
+                        android:text="@string/section_benefit_title"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -131,7 +133,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginTop="20dp"
-                            android:text="Manfaat"
+                            android:text=""
+                            tools:text="Manfaat"
                             android:textColor="#609B5A"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -141,7 +144,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="⚠️ Peringatan &amp; Efek Samping"
+                        android:text="@string/section_warning_title"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -159,7 +162,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginTop="20dp"
-                            android:text="Peringatan dan Efek Samping"
+                            android:text=""
+                            tools:text="Peringatan dan Efek Samping"
                             android:textColor="#92400D"
                             android:textSize="12sp" />
                     </LinearLayout>

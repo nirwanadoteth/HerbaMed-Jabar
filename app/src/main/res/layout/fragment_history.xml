@@ -46,17 +46,19 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/historyRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginBottom="40dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/headerWrapper"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_history" />
 
         <ImageView
             android:id="@+id/emptyHistoryTextView"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:contentDescription="test"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no"
             android:src="@drawable/group_118"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
