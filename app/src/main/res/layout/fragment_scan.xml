@@ -52,7 +52,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Scan tanaman untuk identifikasi herbal."
+                            android:text="@string/scan_subtitle"
                             android:textColor="@color/text_muted_foreground"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -88,13 +88,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Scan"
-                                android:textSize="10sp" />
+                                android:text="@string/scan_total"
+                                android:textSize="11sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
+                                android:text="@string/scan_total_count"
                                 android:textColor="@color/text_blue"
                                 android:textStyle="bold" />
 
@@ -124,14 +124,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tanaman Herbal"
+                                android:text="@string/scan_herbal"
                                 android:textAlignment="center"
-                                android:textSize="10sp" />
+                                android:textSize="11sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
+                                android:text="@string/scan_herbal_count"
                                 android:textColor="@color/text_primary"
                                 android:textStyle="bold" />
 
@@ -160,14 +160,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tanaman Biasa"
+                                android:text="@string/scan_nonherbal"
                                 android:textAlignment="center"
-                                android:textSize="10sp" />
+                                android:textSize="11sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
+                                android:text="@string/scan_nonherbal_count"
                                 android:textColor="@color/text_desctructive"
                                 android:textStyle="bold" />
 
@@ -214,7 +214,7 @@
                     android:layout_height="48dp"
                     android:layout_marginTop="10dp"
                     android:backgroundTint="@color/primary"
-                    android:text="Ambil Gambar &amp; Scan"
+                    android:text="@string/scan_take_picture"
                     android:textSize="12sp"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_camera"
@@ -226,7 +226,7 @@
                     style="@style/Widget.Material3.Button.IconButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Upload dari Galeri"
+                    android:text="@string/scan_upload_gallery"
                     android:textColor="@color/primary"
                     app:cornerRadius="10dp"
                     app:icon="@drawable/ic_upload"
@@ -257,7 +257,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="💡 Tips Scan Terbaik"
+                            android:text="@string/scan_tips_title"
                             android:textColor="@color/text_blue"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -265,25 +265,25 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="1. Gunakan pencahayaan alami"
+                            android:text="@string/scan_tips_1"
                             android:textColor="@color/text_blue"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="italic" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="2. Fokus pada satu daun utuh"
+                            android:text="@string/scan_tips_2"
                             android:textColor="@color/text_blue"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="italic" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3. Hindari bayangan dan blur"
+                            android:text="@string/scan_tips_3"
                             android:textColor="@color/text_blue"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="italic" />
                     </LinearLayout>
                 </LinearLayout>

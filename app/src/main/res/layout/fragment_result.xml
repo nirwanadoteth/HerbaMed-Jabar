@@ -34,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="22dp"
-                    android:text="Hasil Scan"
+                    android:text="@string/result_title"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -177,7 +177,7 @@
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/primary"
-                        android:text="Scan Lagi"
+                        android:text="@string/scan_again"
                         app:cornerRadius="10dp"
                         app:icon="@drawable/ic_camera"
                         app:iconGravity="textStart" />
@@ -189,7 +189,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="Posting"
+                        android:text="@string/post_to_forum"
                         android:textColor="@color/primary"
                         app:cornerRadius="10dp"
                         app:icon="@drawable/ic_plus"

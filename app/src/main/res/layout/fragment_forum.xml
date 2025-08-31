@@ -42,7 +42,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Herba"
+                        android:text="@string/forum_title_herba"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -50,7 +50,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Med"
+                        android:text="@string/forum_title_med"
                         android:textColor="@color/primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scan tanaman untuk identifikasi herbal."
+                    android:text="@string/forum_subtitle"
                     android:textColor="@color/text_muted_foreground"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -87,7 +87,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mulai Berbagi!"
+                    android:text="@string/forum_share_title"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bagikan penemuan herbal anda"
+                    android:text="@string/forum_share_subtitle"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
                     android:textStyle="normal" />
@@ -104,11 +104,11 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/scanButton"
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/primary"
                 android:padding="0dp"
-                android:text="Posting"
+                android:text="@string/post_to_forum"
                 android:textSize="12sp"
                 app:cornerRadius="12dp"
                 app:icon="@drawable/ic_plus"
@@ -122,6 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

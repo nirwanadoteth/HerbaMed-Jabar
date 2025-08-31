@@ -49,7 +49,7 @@ class PlantRepositoryImpl @Inject constructor(
                     image(bitmap)
                     text(prompt)
                 }
-                val response = withTimeout(20_000) { generativeModel.generateContent(inputContent) }
+                val response = withTimeout(60_000) { generativeModel.generateContent(inputContent) }
 
                 val resultText = response.text ?: throw Exception("Hasil teks dari AI kosong.")
                 val parsedData = PlantDataParser.parsePlantData(resultText)
@@ -96,10 +96,13 @@ class PlantRepositoryImpl @Inject constructor(
                 )
 
             } catch (e: Exception) {
+                // Don’t swallow coroutine cancellations – rethrow immediately
+                if (e is kotlinx.coroutines.CancellationException) throw e
+
                 // Cleanup orphaned image file before retry
                 if (savedImagePath != null) {
                     try {
-                        File(savedImagePath!!).delete()
+                        File(savedImagePath).delete()
                     } catch (cleanupEx: Exception) {
                         android.util.Log.e(
                             "PlantRepository",

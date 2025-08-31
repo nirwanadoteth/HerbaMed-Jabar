@@ -16,11 +16,15 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.text.Spanned
+import androidx.collection.LruCache
 
 class HistoryAdapter(
     private val onClick: (ScanHistory) -> Unit
 ) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
+
+    private val htmlCache = LruCache<Long, Spanned>(64)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val binding =
@@ -38,9 +42,14 @@ class HistoryAdapter(
         fun bind(history: ScanHistory) { // Terima posisi di sini
             binding.apply {
                 plantNameTextView.text = history.plantName
-                val html = MarkdownUtils.parseMarkdownToHtml(history.content)
-                descriptionTextView.text =
-                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                val cached = history.id.let { htmlCache[it.toLong()] }
+                val spanned = cached ?: run {
+                    val html = MarkdownUtils.parseMarkdownToHtml(history.content)
+                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).also {
+                        history.id.let { id -> htmlCache.put(id.toLong(), it) }
+                    }
+                }
+                descriptionTextView.text = spanned
 
                 time.text = DATE_FORMATTER.format(Date(history.timestamp))
 
@@ -55,6 +64,7 @@ class HistoryAdapter(
                         crossfade(true)
                     }
                 }
+                historyImageView.contentDescription = history.plantName
 
                 itemView.setOnClickListener {
                     onClick(history)

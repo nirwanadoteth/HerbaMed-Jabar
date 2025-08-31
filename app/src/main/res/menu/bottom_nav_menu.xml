@@ -3,17 +3,17 @@
     <item
         android:id="@+id/navigation_forum"
         android:icon="@android:drawable/ic_menu_agenda"
-        android:title="Beranda" />
+        android:title="@string/nav_home" />
     <item
         android:id="@+id/navigation_scan"
         android:icon="@android:drawable/ic_menu_camera"
-        android:title="Scan" />
+        android:title="@string/nav_scan" />
     <item
         android:id="@+id/navigation_history"
         android:icon="@android:drawable/ic_menu_recent_history"
-        android:title="Riwayat" />
+        android:title="@string/nav_history" />
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_user"
-        android:title="Profile" />
+        android:title="@string/nav_profile" />
 </menu>

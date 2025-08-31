@@ -23,4 +23,7 @@ interface ScanHistoryDao {
 
     @Update(entity = ScanHistory::class)
     suspend fun updateHistory(scanHistory: ScanHistory)
+
+    @Query("SELECT * FROM scan_history ORDER BY id LIMIT :limit OFFSET :offset")
+    suspend fun getHistoryPage(limit: Int, offset: Int): List<ScanHistory>
 }

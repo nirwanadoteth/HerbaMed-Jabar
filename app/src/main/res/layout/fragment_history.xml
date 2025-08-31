@@ -27,7 +27,7 @@
                 android:id="@+id/historyTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Riwayat Scan"
+                android:text="@string/history_title"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Tanaman herbal yang pernah Anda scan"
+                android:text="@string/history_subtitle"
                 android:textColor="@color/text_muted_foreground"
                 android:textSize="12sp" />
         </LinearLayout>
