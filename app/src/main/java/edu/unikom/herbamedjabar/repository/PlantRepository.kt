@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
@@ -48,7 +49,7 @@ class PlantRepositoryImpl @Inject constructor(
                     image(bitmap)
                     text(prompt)
                 }
-                val response = generativeModel.generateContent(inputContent)
+                val response = withTimeout(20_000) { generativeModel.generateContent(inputContent) }
 
                 val resultText = response.text ?: throw Exception("Hasil teks dari AI kosong.")
                 val parsedData = PlantDataParser.parsePlantData(resultText)
@@ -75,7 +76,11 @@ class PlantRepositoryImpl @Inject constructor(
                     try {
                         File(imagePath).delete()
                     } catch (cleanupEx: Exception) {
-                        android.util.Log.e("PlantRepository", "Failed to delete orphaned image file: $imagePath", cleanupEx)
+                        android.util.Log.e(
+                            "PlantRepository",
+                            "Failed to delete orphaned image file: $imagePath",
+                            cleanupEx
+                        )
                     }
                     throw dbEx
                 }
@@ -96,7 +101,11 @@ class PlantRepositoryImpl @Inject constructor(
                     try {
                         File(imagePath).delete()
                     } catch (cleanupEx: Exception) {
-                        android.util.Log.e("PlantRepository", "Failed to delete orphaned image file: $imagePath", cleanupEx)
+                        android.util.Log.e(
+                            "PlantRepository",
+                            "Failed to delete orphaned image file: $imagePath",
+                            cleanupEx
+                        )
                     }
                 }
                 if (attempt == maxRetries - 1) {
@@ -123,7 +132,7 @@ class PlantRepositoryImpl @Inject constructor(
             val directory = wrapper.getDir("images", android.content.Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
             FileOutputStream(file).use { outputStream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             }
             file.absolutePath
         }
