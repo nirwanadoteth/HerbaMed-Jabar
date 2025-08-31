@@ -33,7 +33,7 @@ class ScanHistoryMigrationManager @Inject constructor(
                 }
                 prefs.edit { putBoolean("scan_history_migrated_v2", true) }
             } catch (e: Exception) {
-                // TODO: Add logging if needed
+                android.util.Log.e("ScanHistoryMigration", "v2 migration failed", e)
             }
         }
     }
