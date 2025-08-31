@@ -112,9 +112,15 @@ class ScanFragment : Fragment() {
         // Observer untuk navigasi
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
-                // Panggil fungsi di MainActivity untuk menampilkan halaman hasil
-                (activity as? MainActivity)?.showResultFragment(it.imagePath, it.resultText)
-                viewModel.onNavigationComplete() // Reset state
+                (activity as? MainActivity)?.showResultFragment(
+                    it.imagePath,
+                    it.resultText,
+                    it.plantName,
+                    it.benefit,
+                    it.warning,
+                    it.content
+                )
+                viewModel.onNavigationComplete()
             }
         }
 

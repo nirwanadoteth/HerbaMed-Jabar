@@ -117,14 +117,28 @@ class ResultFragment : Fragment() {
     companion object {
         private const val ARG_IMAGE_PATH = "image_path"
         private const val ARG_RESULT_TEXT = "result_text"
+        private const val ARG_PLANT_NAME = "plant_name"
+        private const val ARG_BENEFIT = "benefit"
+        private const val ARG_WARNING = "warning"
+        private const val ARG_CONTENT = "content"
 
-        fun newInstance(imagePath: String, resultText: String): ResultFragment {
+        fun newInstance(
+            imagePath: String,
+            resultText: String,
+            plantName: String,
+            benefit: String,
+            warning: String,
+            content: String
+        ): ResultFragment {
             val fragment = ResultFragment()
-            val args =
-                Bundle().apply {
-                    putString(ARG_IMAGE_PATH, imagePath)
-                    putString(ARG_RESULT_TEXT, resultText)
-                }
+            val args = Bundle().apply {
+                putString(ARG_IMAGE_PATH, imagePath)
+                putString(ARG_RESULT_TEXT, resultText)
+                putString(ARG_PLANT_NAME, plantName)
+                putString(ARG_BENEFIT, benefit)
+                putString(ARG_WARNING, warning)
+                putString(ARG_CONTENT, content)
+            }
             fragment.arguments = args
             return fragment
         }

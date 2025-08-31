@@ -89,8 +89,27 @@ class MainActivity : AppCompatActivity() {
 
     // Fungsi publik untuk dipanggil dari ScanFragment
     fun showResultFragment(imagePath: String, resultText: String) {
-        val resultFragment = ResultFragment.newInstance(imagePath, resultText)
-        // Ganti fragment dan tambahkan ke back stack agar bisa kembali
+        // Accept new fields: plantName, benefit, warning, content
+        // This method should be updated to accept all fields
+        throw NotImplementedError("showResultFragment(imagePath, resultText) is deprecated. Use the new method with all fields.")
+    }
+
+    fun showResultFragment(
+        imagePath: String,
+        resultText: String,
+        plantName: String,
+        benefit: String,
+        warning: String,
+        content: String
+    ) {
+        val resultFragment = ResultFragment.newInstance(
+            imagePath,
+            resultText,
+            plantName,
+            benefit,
+            warning,
+            content
+        )
         setCurrentFragment(resultFragment, true)
     }
 
