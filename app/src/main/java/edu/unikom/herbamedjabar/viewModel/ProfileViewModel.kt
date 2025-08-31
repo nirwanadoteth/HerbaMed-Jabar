@@ -43,8 +43,8 @@ class ProfileViewModel @Inject constructor(
             try {
                 val userId = auth.currentUser?.uid ?: return@launch
                 postRepository.toggleLike(postId, userId)
-            } catch (_: Exception) {
-                // Handle error jika diperlukan
+            } catch (e: Exception) {
+                android.util.Log.w("ProfileViewModel", "toggleLikeOnPost failed", e)
             }
         }
     }
@@ -53,7 +53,8 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 postRepository.deletePost(post)
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                android.util.Log.e("ProfileViewModel", "deletePost failed", e)
             }
         }
     }
