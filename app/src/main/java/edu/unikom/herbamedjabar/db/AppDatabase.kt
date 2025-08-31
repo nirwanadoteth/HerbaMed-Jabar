@@ -9,6 +9,7 @@ import edu.unikom.herbamedjabar.data.ScanHistory
 @Database(entities = [ScanHistory::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun scanHistoryDao(): ScanHistoryDao
+
     companion object {
         val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
             override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {

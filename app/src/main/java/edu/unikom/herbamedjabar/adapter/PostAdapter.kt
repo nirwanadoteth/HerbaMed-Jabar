@@ -48,9 +48,18 @@ class PostAdapter(
                 }
 
                 tvPlantName.text = post.plantName
-                tvContent.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(post.content), HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvManfaat.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(post.benefit, true), HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvEfek.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(post.warning, true), HtmlCompat.FROM_HTML_MODE_LEGACY)
+                tvContent.text = HtmlCompat.fromHtml(
+                    MarkdownUtils.parseMarkdownToHtml(post.content),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                tvManfaat.text = HtmlCompat.fromHtml(
+                    MarkdownUtils.parseMarkdownToHtml(post.benefit, true),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                tvEfek.text = HtmlCompat.fromHtml(
+                    MarkdownUtils.parseMarkdownToHtml(post.warning, true),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
                 tvLikeCount.text = "${post.likes.size}"
 
                 ivLike.setImageResource(
@@ -60,7 +69,8 @@ class PostAdapter(
 
                 ivLike.setOnClickListener { onLikeClicked(post.id) }
 
-                ivMenuOptions.visibility = if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
+                ivMenuOptions.visibility =
+                    if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
                 ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
 
                 val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())

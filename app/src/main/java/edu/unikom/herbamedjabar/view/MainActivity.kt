@@ -51,18 +51,22 @@ class MainActivity : AppCompatActivity() {
                     setCurrentFragment(ScanFragment(), false)
                     true
                 }
+
                 R.id.navigation_forum -> {
                     setCurrentFragment(ForumFragment(), false)
                     true
                 }
+
                 R.id.navigation_history -> {
                     setCurrentFragment(HistoryFragment(), false)
                     true
                 }
+
                 R.id.navigation_profile -> {
                     setCurrentFragment(ProfileFragment(), false)
                     true
                 }
+
                 else -> false
             }
         }
@@ -85,13 +89,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         transaction.commit()
-    }
-
-    // Fungsi publik untuk dipanggil dari ScanFragment
-    fun showResultFragment(imagePath: String, resultText: String) {
-        // Accept new fields: plantName, benefit, warning, content
-        // This method should be updated to accept all fields
-        throw NotImplementedError("showResultFragment(imagePath, resultText) is deprecated. Use the new method with all fields.")
     }
 
     fun showResultFragment(

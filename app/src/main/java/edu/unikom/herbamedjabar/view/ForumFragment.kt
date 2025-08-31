@@ -14,6 +14,7 @@ import edu.unikom.herbamedjabar.adapter.PostAdapter
 import edu.unikom.herbamedjabar.databinding.FragmentForumBinding
 import edu.unikom.herbamedjabar.viewModel.ForumViewModel
 import edu.unikom.herbamedjabar.R
+
 @AndroidEntryPoint
 class ForumFragment : Fragment() {
 
@@ -63,10 +64,10 @@ class ForumFragment : Fragment() {
             }
         )
 
-    binding.rvPosts.apply {
-        adapter = postAdapter
-        layoutManager = LinearLayoutManager(context)
-    }
+        binding.rvPosts.apply {
+            adapter = postAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun observeViewModel() {

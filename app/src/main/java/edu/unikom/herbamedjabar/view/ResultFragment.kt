@@ -54,7 +54,8 @@ class ResultFragment : Fragment() {
 
         if (resultText != null) {
             val html = MarkdownUtils.parseMarkdownToHtml(resultText)
-            binding.resultTextView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.resultTextView.text =
+                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     }
 
@@ -74,7 +75,11 @@ class ResultFragment : Fragment() {
             val resultText = arguments?.getString(ARG_RESULT_TEXT)
 
             if (imagePath == null || resultText == null) {
-                Toast.makeText(requireContext(), "Data tidak lengkap untuk diposting", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Data tidak lengkap untuk diposting",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -100,11 +105,16 @@ class ResultFragment : Fragment() {
 
         viewModel.postResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
-                Toast.makeText(requireContext(), "Berhasil diposting ke forum!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Berhasil diposting ke forum!", Toast.LENGTH_SHORT)
+                    .show()
                 // Kembali ke halaman scan setelah berhasil
                 activity?.supportFragmentManager?.popBackStack()
             }.onFailure {
-                Toast.makeText(requireContext(), "Gagal memposting: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Gagal memposting: ${it.message}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }

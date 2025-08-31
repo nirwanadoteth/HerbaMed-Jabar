@@ -37,7 +37,11 @@ class ScanViewModel @Inject constructor(
                 _uiState.postValue(UiState.Success)
                 _navigateToResult.postValue(analysisResult)
             }.onFailure { error ->
-                _uiState.postValue(UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui"))
+                _uiState.postValue(
+                    UiState.Error(
+                        error.message ?: "Terjadi kesalahan tidak diketahui"
+                    )
+                )
             }
         }
     }

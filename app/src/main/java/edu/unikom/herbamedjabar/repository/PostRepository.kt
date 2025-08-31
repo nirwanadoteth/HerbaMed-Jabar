@@ -8,14 +8,11 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import edu.unikom.herbamedjabar.data.Post
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -102,32 +99,34 @@ class PostRepository @Inject constructor(
         }.await()
     }
 
-    private suspend fun uploadImageToCloudinary(imageUri: Uri): String = suspendCancellableCoroutine { continuation ->
-        val requestId = MediaManager.get().upload(imageUri)
-            .callback(object : UploadCallback {
-                override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                    val url = resultData["secure_url"] as? String
-                    if (url != null && continuation.isActive) {
-                        continuation.resume(url)
-                    } else if (continuation.isActive) {
-                        continuation.resumeWithException(Exception("Cloudinary upload failed: URL is null"))
+    private suspend fun uploadImageToCloudinary(imageUri: Uri): String =
+        suspendCancellableCoroutine { continuation ->
+            val requestId = MediaManager.get().upload(imageUri)
+                .callback(object : UploadCallback {
+                    override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                        val url = resultData["secure_url"] as? String
+                        if (url != null && continuation.isActive) {
+                            continuation.resume(url)
+                        } else if (continuation.isActive) {
+                            continuation.resumeWithException(Exception("Cloudinary upload failed: URL is null"))
+                        }
                     }
-                }
 
-                override fun onError(requestId: String, error: ErrorInfo) {
-                    if (continuation.isActive) {
-                        continuation.resumeWithException(Exception("Cloudinary Error: ${error.description}"))
+                    override fun onError(requestId: String, error: ErrorInfo) {
+                        if (continuation.isActive) {
+                            continuation.resumeWithException(Exception("Cloudinary Error: ${error.description}"))
+                        }
                     }
-                }
-                override fun onStart(requestId: String) {}
-                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
-                override fun onReschedule(requestId: String, error: ErrorInfo) {}
-            }).dispatch()
 
-        continuation.invokeOnCancellation {
-            MediaManager.get().cancelRequest(requestId)
+                    override fun onStart(requestId: String) {}
+                    override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
+                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                }).dispatch()
+
+            continuation.invokeOnCancellation {
+                MediaManager.get().cancelRequest(requestId)
+            }
         }
-    }
 
     suspend fun deletePost(post: Post) {
         // Hanya hapus dokumen dari Firestore

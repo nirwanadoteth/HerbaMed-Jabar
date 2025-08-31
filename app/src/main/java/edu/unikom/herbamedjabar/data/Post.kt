@@ -1,7 +1,5 @@
 package edu.unikom.herbamedjabar.data
 
-import com.google.firebase.firestore.FieldValue
-
 data class Post(
     val id: String = "",
     val userId: String = "",

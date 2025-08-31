@@ -58,15 +58,18 @@ class RegisterFragment : Fragment() {
 
             when (state) {
                 is AuthState.Authenticated -> {
-                    Toast.makeText(requireContext(), "Registrasi Berhasil!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Registrasi Berhasil!", Toast.LENGTH_SHORT)
+                        .show()
                     // Pindah ke MainActivity dan bersihkan back stack
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }
+
                 is AuthState.Error -> {
                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                 }
+
                 else -> {
                     // Idle state
                 }

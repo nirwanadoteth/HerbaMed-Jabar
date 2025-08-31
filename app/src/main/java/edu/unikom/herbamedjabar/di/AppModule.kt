@@ -55,7 +55,7 @@ object AppModule {
             AppDatabase::class.java,
             "herb_app_db"
         ).addMigrations(AppDatabase.MIGRATION_1_2)
-         .build()
+            .build()
     }
 
     @Provides
