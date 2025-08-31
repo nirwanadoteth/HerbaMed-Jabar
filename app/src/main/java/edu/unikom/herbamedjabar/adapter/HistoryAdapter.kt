@@ -39,17 +39,20 @@ class HistoryAdapter(
             binding.apply {
                 plantNameTextView.text = history.plantName
                 val html = MarkdownUtils.parseMarkdownToHtml(history.content)
-                descriptionTextView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                descriptionTextView.text =
+                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-                val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-                val date = Date(history.timestamp)
-                time.text = sdf.format(date)
+                time.text = DATE_FORMATTER.format(Date(history.timestamp))
 
                 val imageFile = File(history.imagePath)
                 if (imageFile.exists()) {
                     historyImageView.load(Uri.fromFile(imageFile)) {
                         crossfade(true)
                         placeholder(R.drawable.bg_place_holder)
+                    }
+                } else {
+                    historyImageView.load(R.drawable.bg_place_holder) {
+                        crossfade(true)
                     }
                 }
 
@@ -58,6 +61,10 @@ class HistoryAdapter(
                 }
             }
         }
+    }
+
+    companion object {
+        private val DATE_FORMATTER = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
     }
 }
 

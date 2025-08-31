@@ -56,9 +56,18 @@ class HistoryDetailFragment : Fragment() {
 
         binding.apply {
             plantNameTextView.text = history.plantName
-            contentTextView.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(history.content), HtmlCompat.FROM_HTML_MODE_LEGACY)
-            benefitTextView.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(history.benefit), HtmlCompat.FROM_HTML_MODE_LEGACY)
-            warningTextView.text = HtmlCompat.fromHtml(MarkdownUtils.parseMarkdownToHtml(history.warning), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            contentTextView.text = HtmlCompat.fromHtml(
+                MarkdownUtils.parseMarkdownToHtml(history.content),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            benefitTextView.text = HtmlCompat.fromHtml(
+                MarkdownUtils.parseMarkdownToHtml(history.benefit),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            warningTextView.text = HtmlCompat.fromHtml(
+                MarkdownUtils.parseMarkdownToHtml(history.warning),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
             if (history.benefit.isBlank()) {
                 benefitBanner.visibility = View.GONE
                 benefitTextView.visibility = View.GONE
@@ -69,7 +78,14 @@ class HistoryDetailFragment : Fragment() {
             }
             if (imageFile.exists()) {
                 resultImageView.load(Uri.fromFile(imageFile)) { crossfade(true) }
+            } else {
+                resultImageView.load(edu.unikom.herbamedjabar.R.drawable.bg_place_holder) {
+                    crossfade(
+                        true
+                    )
+                }
             }
+            resultImageView.contentDescription = history.plantName
         }
     }
 
