@@ -60,7 +60,8 @@ class ScanFragment : Fragment() {
                         @Suppress("DEPRECATION")
                         MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
                     } else {
-                        val source = ImageDecoder.createSource(requireActivity().contentResolver, uri)
+                        val source =
+                            ImageDecoder.createSource(requireActivity().contentResolver, uri)
                         ImageDecoder.decodeBitmap(source)
                     }
                     binding.plantImageView.setImageBitmap(bitmap)
@@ -84,17 +85,19 @@ class ScanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
 
-        // Set 'HerbaMed' with 'Med' in primary color
-        val fullText = "HerbaMed"
-        val spannable = android.text.SpannableString(fullText)
+        val fullText = getString(edu.unikom.herbamedjabar.R.string.herbamed)
         val medStart = fullText.indexOf("Med")
-        val medEnd = medStart + 3
-        val primaryColor = ContextCompat.getColor(requireContext(), edu.unikom.herbamedjabar.R.color.primary)
-        spannable.setSpan(
-            android.text.style.ForegroundColorSpan(primaryColor),
-            medStart, medEnd,
-            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        val medEnd = if (medStart >= 0) medStart + 3 else medStart
+        val spannable = android.text.SpannableString(fullText)
+        if (medStart >= 0) {
+            val primaryColor =
+                ContextCompat.getColor(requireContext(), edu.unikom.herbamedjabar.R.color.primary)
+            spannable.setSpan(
+                android.text.style.ForegroundColorSpan(primaryColor),
+                medStart, medEnd,
+                android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
         binding.appTitleTextView.text = spannable
 
         parentFragmentManager.setFragmentResultListener("scan_again_request", this) { _, bundle ->
@@ -133,6 +136,7 @@ class ScanFragment : Fragment() {
                         processingDialog?.show(childFragmentManager, ProcessingDialogFragment.TAG)
                     }
                 }
+
                 is UiState.Success,
                 is UiState.Error -> {
                     processingDialog?.dismiss()
@@ -142,6 +146,7 @@ class ScanFragment : Fragment() {
                         }
                     }
                 }
+
                 else -> {
                     /* Idle */
                 }
@@ -161,6 +166,7 @@ class ScanFragment : Fragment() {
                     PackageManager.PERMISSION_GRANTED -> {
                 takePictureLauncher.launch(null)
             }
+
             else -> {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
