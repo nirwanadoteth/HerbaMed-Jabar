@@ -33,7 +33,7 @@ class ProcessingDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             var progress = 0
             while (progress <= 100) {
                 binding.progressBar.progress = progress
