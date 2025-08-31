@@ -15,7 +15,7 @@ object MarkdownUtils {
     @JvmStatic
     fun parseMarkdownToHtml(input: String?, formatList: Boolean = false): String {
         val raw = input ?: ""
-        val formatted = addLineBreaksToNumberedList(raw).takeIf { formatList } ?: raw
+        val formatted = if (formatList) addLineBreaksToNumberedList(raw) else raw
         val flavour = CommonMarkFlavourDescriptor()
         val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(formatted)
         return HtmlGenerator(formatted, parsedTree, flavour).generateHtml()
@@ -28,7 +28,6 @@ object MarkdownUtils {
      * @param text The input string to format.
      * @return The formatted string with line breaks before numbered list items.
      */
-    @JvmStatic
     private fun addLineBreaksToNumberedList(text: String): String {
         return text.replace(Regex("""(\d+\.\s*)""")) { match ->
             if (match.range.first == 0) match.value else "\n${match.value}"
