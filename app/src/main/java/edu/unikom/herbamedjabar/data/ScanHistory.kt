@@ -12,5 +12,9 @@ data class ScanHistory(
     val id: Int = 0,
     val resultText: String,
     val imagePath: String,
+    val plantName: String = "",
+    val content: String = "",
+    val benefit: String = "",
+    val warning: String = "",
     val timestamp: Long = System.currentTimeMillis()
 ) : Parcelable
