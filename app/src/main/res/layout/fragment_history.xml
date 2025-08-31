@@ -13,15 +13,15 @@
         tools:context=".HistoryFragment">
 
         <LinearLayout
+            android:id="@+id/headerWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
-            android:id="@+id/headerWrapper"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:padding="18dp"
-            android:gravity="center">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/historyTitleTextView"
@@ -29,16 +29,16 @@
                 android:layout_height="wrap_content"
                 android:text="Riwayat Scan"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/historySubTitleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textColor="@color/text_muted_foreground"
                 android:text="Tanaman herbal yang pernah Anda scan"
+                android:textColor="@color/text_muted_foreground"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -47,16 +47,16 @@
             android:id="@+id/historyRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/headerWrapper"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_marginBottom="40dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/headerWrapper"
             tools:listitem="@layout/item_history" />
 
         <ImageView
             android:id="@+id/emptyHistoryTextView"
             android:layout_width="300dp"
-            android:contentDescription="test"
             android:layout_height="wrap_content"
+            android:contentDescription="test"
             android:src="@drawable/group_118"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
