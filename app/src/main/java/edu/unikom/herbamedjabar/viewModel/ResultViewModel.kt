@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.repository.PostRepository
+import edu.unikom.herbamedjabar.util.PlantDataParser
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,36 +24,6 @@ class ResultViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private fun parsePlantData(text: String): Map<String, String> {
-        val dataMap = mutableMapOf<String, String>()
-        val originalText = text
-
-        val namePattern = Regex("🌿(.*?)\\*Nama Ilmiah", setOf(RegexOption.DOT_MATCHES_ALL))
-        dataMap["plantName"] = namePattern.find(originalText)?.destructured?.let { (name) ->
-            name.trim()
-        } ?: originalText.lines().firstOrNull()?.replace(Regex("[#*🌿]"), "")?.trim() ?: "Nama tidak ditemukan" // Fallback jika pola gagal
-
-        val descriptionPattern = Regex("### 📝 Deskripsi(.*?)(?=### 🩺 Potensi Manfaat & Kegunaan|### ⚠️ Peringatan & Efek Samping|$)", setOf(RegexOption.DOT_MATCHES_ALL))
-        val benefitPattern = Regex("### 🩺 Potensi Manfaat & Kegunaan(.*?)(?=### 📝 Deskripsi|### ⚠️ Peringatan & Efek Samping|$)", setOf(RegexOption.DOT_MATCHES_ALL))
-        val warningPattern = Regex("### ⚠️ Peringatan & Efek Samping(.*?)(?=### 📝 Deskripsi|### 🩺 Potensi Manfaat & Kegunaan|$)", setOf(RegexOption.DOT_MATCHES_ALL))
-
-        descriptionPattern.find(originalText)?.destructured?.let { (desc) ->
-            dataMap["description"] = desc.replace("---", "").trim()
-        }
-        benefitPattern.find(originalText)?.destructured?.let { (benefit) ->
-            dataMap["benefit"] = benefit.replace("---", "").trim()
-        }
-        warningPattern.find(originalText)?.destructured?.let { (warning) ->
-            dataMap["warning"] = warning.replace("---", "").trim()
-        }
-
-        dataMap.putIfAbsent("description", "")
-        dataMap.putIfAbsent("benefit", "")
-        dataMap.putIfAbsent("warning", "")
-
-        return dataMap
-    }
-
     fun createPostFromScan(imageUri: Uri, plantName: String, description: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -64,7 +35,7 @@ class ResultViewModel @Inject constructor(
                     return@launch
                 }
 
-                val parsedData = parsePlantData(description)
+                val parsedData = PlantDataParser.parsePlantData(description)
 
                 postRepository.createPost(
                     userId = user.uid,

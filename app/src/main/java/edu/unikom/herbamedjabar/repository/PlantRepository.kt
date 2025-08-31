@@ -6,6 +6,7 @@ import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.data.ScanHistory
+import edu.unikom.herbamedjabar.util.PlantDataParser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,14 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 
-data class AnalysisResult(val resultText: String, val imagePath: String)
+data class AnalysisResult(
+    val resultText: String,
+    val imagePath: String,
+    val plantName: String,
+    val benefit: String,
+    val warning: String,
+    val content: String,
+)
 
 interface PlantRepository {
     suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult
@@ -31,10 +39,9 @@ class PlantRepositoryImpl @Inject constructor(
 
     override suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult {
         val maxRetries = 3
-        var currentRetry = 0
         var delayTime = 2000L
 
-        while (currentRetry < maxRetries) {
+        repeat(maxRetries) { attempt ->
             try {
                 val inputContent = content {
                     image(bitmap)
@@ -42,22 +49,38 @@ class PlantRepositoryImpl @Inject constructor(
                 }
                 val response = generativeModel.generateContent(inputContent)
 
-                response.text?.let { resultText ->
-                    // Simpan gambar ke file
-                    val imagePath = saveBitmapToFile(bitmap)
+                val resultText = response.text ?: throw Exception("Hasil teks dari AI kosong.")
+                val parsedData = PlantDataParser.parsePlantData(resultText)
+                // Simpan gambar ke file
+                val imagePath = saveBitmapToFile(bitmap)
+                val plantName = parsedData["plantName"] ?: ""
+                val benefit = parsedData["benefit"] ?: ""
+                val warning = parsedData["warning"] ?: ""
+                val content = parsedData["description"] ?: ""
 
-                    // Simpan ke database (sebagai side-effect)
-                    val history = ScanHistory(resultText = resultText, imagePath = imagePath)
-                    scanHistoryDao.insertHistory(history)
+                // Simpan ke database (sebagai side-effect)
+                val history = ScanHistory(
+                    resultText = resultText,
+                    imagePath = imagePath,
+                    plantName = plantName,
+                    benefit = benefit,
+                    warning = warning,
+                    content = content
+                )
+                scanHistoryDao.insertHistory(history)
 
-                    // Kembalikan objek AnalysisResult yang dibutuhkan untuk navigasi
-                    return AnalysisResult(resultText = resultText, imagePath = imagePath)
-
-                } ?: throw Exception("Hasil teks dari AI kosong.")
+                // Kembalikan objek AnalysisResult yang dibutuhkan untuk navigasi
+                return AnalysisResult(
+                    resultText = resultText,
+                    imagePath = imagePath,
+                    plantName = plantName,
+                    benefit = benefit,
+                    warning = warning,
+                    content = content
+                )
 
             } catch (e: Exception) {
-                currentRetry++
-                if (currentRetry >= maxRetries) {
+                if (attempt == maxRetries - 1) {
                     throw e
                 }
                 delay(delayTime)
