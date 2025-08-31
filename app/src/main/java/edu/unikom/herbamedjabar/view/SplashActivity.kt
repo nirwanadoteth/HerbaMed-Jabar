@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,7 +31,10 @@ class SplashActivity : AppCompatActivity() {
                 } else {
                     AuthActivity::class.java
                 }
-                startActivity(Intent(this@SplashActivity, destination))
+                val intent = Intent(this@SplashActivity, destination).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                startActivity(intent)
                 finish()
             }
         }
