@@ -13,9 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
 import edu.unikom.herbamedjabar.viewModel.ResultViewModel
 import java.io.File
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 
 @AndroidEntryPoint
 class ResultFragment : Fragment() {
@@ -55,11 +53,8 @@ class ResultFragment : Fragment() {
         }
 
         if (resultText != null) {
-            val flavour = CommonMarkFlavourDescriptor()
-            val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(resultText)
-            val html = HtmlGenerator(resultText, parsedTree, flavour).generateHtml()
-            binding.resultTextView.text =
-                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            val html = MarkdownUtils.parseMarkdownToHtml(resultText)
+            binding.resultTextView.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     }
 

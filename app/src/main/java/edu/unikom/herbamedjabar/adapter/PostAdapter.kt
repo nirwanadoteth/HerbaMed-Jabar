@@ -13,11 +13,9 @@ import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.databinding.ItemPostBinding
 import edu.unikom.herbamedjabar.util.MarkdownUtils
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class PostAdapter(
     private val onLikeClicked: (String) -> Unit,
