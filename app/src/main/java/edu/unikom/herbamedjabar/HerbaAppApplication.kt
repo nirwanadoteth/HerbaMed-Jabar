@@ -3,9 +3,14 @@ package edu.unikom.herbamedjabar
 import android.app.Application
 import com.cloudinary.android.MediaManager
 import dagger.hilt.android.HiltAndroidApp
+import edu.unikom.herbamedjabar.migration.ScanHistoryMigrationManager
+import javax.inject.Inject
 
 @HiltAndroidApp
-class HerbaAppApplication : Application(){
+class HerbaAppApplication : Application() {
+    @Inject
+    lateinit var scanHistoryMigrationManager: ScanHistoryMigrationManager
+
     override fun onCreate() {
         super.onCreate()
         val config = mapOf(
@@ -14,5 +19,7 @@ class HerbaAppApplication : Application(){
             "api_secret" to "uUY-_zXEUO_UZActj_jPsiRYzIg"
         )
         MediaManager.init(this, config)
+
+        scanHistoryMigrationManager.runMigrationIfNeeded(this)
     }
 }
