@@ -27,11 +27,11 @@
                 android:id="@+id/historyImageView"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:contentDescription="@string/history_detail_image_desc"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="Gambar Tanaman"
                 tools:src="@tools:sample/backgrounds/scenic" />
         </androidx.cardview.widget.CardView>
 
@@ -46,10 +46,10 @@
             android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/descriptionTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/containerImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/descriptionTextView"
             tools:text="Nama Tanaman" />
 
         <TextView
@@ -76,14 +76,14 @@
             android:layout_marginTop="4dp"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
-            tools:text="17 Aug 2025, 09:45"
-            android:textSize="11sp"
             android:textColor="@color/text_muted_foreground"
+            android:textSize="11sp"
             app:drawableStartCompat="@drawable/ic_clock"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/containerImage"
-            app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+            app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+            tools:text="17 Aug 2025, 09:45" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

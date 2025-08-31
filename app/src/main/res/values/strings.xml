@@ -15,8 +15,9 @@
     <string name="back_button_desc">Tombol Kembali</string>
     <string name="history_detail_title">Detail Riwayat</string>
     <string name="history_detail_image_desc">Gambar Tanaman</string>
-    <string name="label_plant_name_colon">Nama Tanaman:</string>
+    <string name="label_plant_name_colon">Nama Tanaman: </string>
     <string name="section_description_title">📝 Deskripsi</string>
     <string name="section_benefit_title">🩺 Potensi Manfaat &amp; Kegunaan</string>
     <string name="section_warning_title">⚠️ Peringatan &amp; Efek Samping</string>
+    <string name="action_delete">Hapus</string>
 </resources>

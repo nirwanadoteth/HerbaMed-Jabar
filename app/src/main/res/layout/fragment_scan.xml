@@ -19,8 +19,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:background="@color/bg_color"
+                android:orientation="vertical"
                 android:padding="18dp">
 
                 <LinearLayout
@@ -47,8 +47,7 @@
                             android:text="@string/herbamed"
                             android:textColor="@color/black"
                             android:textSize="18sp"
-                            android:textStyle="bold"
-                        />
+                            android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -81,8 +80,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:background="#DBEAFE"
+                            android:gravity="center"
                             android:orientation="vertical"
                             android:padding="10dp">
 
@@ -117,9 +116,9 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:background="#DCFCE7"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:background="#DCFCE7"
                             android:padding="10dp">
 
                             <TextView
@@ -153,8 +152,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:background="#FEDBDB"
+                            android:gravity="center"
                             android:orientation="vertical"
                             android:padding="10dp">
 
@@ -182,18 +181,20 @@
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:contentPadding="17dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="1dp"
                         android:background="@drawable/custom_place_holder_img"
-                        >
+                        android:orientation="vertical"
+                        android:padding="1dp">
+
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="226dp"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="0dp">
+
                             <ImageView
                                 android:id="@+id/plantImageView"
                                 android:layout_width="match_parent"
@@ -228,10 +229,10 @@
                     android:text="Upload dari Galeri"
                     android:textColor="@color/primary"
                     app:cornerRadius="10dp"
-                    app:iconPadding="10dp"
                     app:icon="@drawable/ic_upload"
-                    app:iconTint="@color/primary"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconPadding="10dp"
+                    app:iconTint="@color/primary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -265,28 +266,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="1. Gunakan pencahayaan alami"
-                            android:textSize="10sp"
-                            android:textStyle="italic"
                             android:textColor="@color/text_blue"
-                            />
+                            android:textSize="10sp"
+                            android:textStyle="italic" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="2. Fokus pada satu daun utuh"
-                            android:textSize="10sp"
-                            android:textStyle="italic"
                             android:textColor="@color/text_blue"
-                            />
+                            android:textSize="10sp"
+                            android:textStyle="italic" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="3. Hindari bayangan dan blur"
-                            android:textSize="10sp"
-                            android:textStyle="italic"
                             android:textColor="@color/text_blue"
-                            />
+                            android:textSize="10sp"
+                            android:textStyle="italic" />
                     </LinearLayout>
                 </LinearLayout>
 

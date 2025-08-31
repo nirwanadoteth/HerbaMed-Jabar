@@ -5,241 +5,235 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardElevation="0dp"
     app:cardCornerRadius="8dp"
-    >
- <androidx.constraintlayout.widget.ConstraintLayout
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     android:paddingBottom="10dp"
-     >
+    app:cardElevation="0dp">
 
-     <!-- User Info -->
-     <de.hdodenhof.circleimageview.CircleImageView
-         android:id="@+id/iv_user_profile"
-         android:layout_width="40dp"
-         android:layout_height="40dp"
-         android:layout_marginStart="16dp"
-         android:layout_marginTop="16dp"
-         android:src="@drawable/ic_user_image"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
 
-     <TextView
-         android:id="@+id/tv_username"
-         android:layout_width="0dp"
-         android:layout_height="wrap_content"
-         android:layout_marginStart="12dp"
-         android:layout_marginEnd="16dp"
-         android:textColor="@android:color/black"
-         android:textSize="16sp"
-         android:textStyle="bold"
-         app:layout_constraintBottom_toTopOf="@id/time_wrapper"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-         app:layout_constraintTop_toTopOf="@id/iv_user_profile"
-         tools:text="Username" />
+        <!-- User Info -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_user_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_user_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-     <LinearLayout
-         android:id="@+id/time_wrapper"
-         app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
-         app:layout_constraintStart_toStartOf="@id/tv_username"
-         app:layout_constraintTop_toBottomOf="@id/tv_username"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal"
-         android:gravity="center_vertical"
-         >
-         <ImageView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:src="@drawable/ic_clock"
-             />
-         <TextView
-             android:id="@+id/tv_post_timestamp"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginStart="4dp"
-             android:textSize="12sp"
-             app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
-             app:layout_constraintStart_toStartOf="@id/tv_username"
-             app:layout_constraintTop_toBottomOf="@id/tv_username"
-             tools:text="2 hours ago" />
-     </LinearLayout>
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/time_wrapper"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+            app:layout_constraintTop_toTopOf="@id/iv_user_profile"
+            tools:text="Username" />
 
+        <LinearLayout
+            android:id="@+id/time_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
+            app:layout_constraintStart_toStartOf="@id/tv_username"
+            app:layout_constraintTop_toBottomOf="@id/tv_username">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_clock" />
 
-     <ImageView
-         android:id="@+id/iv_menu_options"
-         android:layout_width="18dp"
-         android:layout_height="18dp"
-         android:layout_marginEnd="16dp"
-         android:src="@drawable/ic_more_hori"
-         android:visibility="gone"
-         app:layout_constraintBottom_toBottomOf="@+id/iv_user_profile"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintTop_toTopOf="@+id/iv_user_profile"
-         tools:visibility="visible" />
+            <TextView
+                android:id="@+id/tv_post_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
+                app:layout_constraintStart_toStartOf="@id/tv_username"
+                app:layout_constraintTop_toBottomOf="@id/tv_username"
+                tools:text="2 hours ago" />
+        </LinearLayout>
 
 
-     <ImageView
-         android:id="@+id/iv_post_image"
-         android:layout_width="0dp"
-         android:layout_height="300dp"
-         android:layout_marginTop="12dp"
-         android:scaleType="centerCrop"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toBottomOf="@id/iv_user_profile"
-         tools:src="@drawable/bg_place_holder" />
+        <ImageView
+            android:id="@+id/iv_menu_options"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_more_hori"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_user_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_user_profile"
+            tools:visibility="visible" />
 
-     <!-- Plant Name -->
-     <LinearLayout
-         android:id="@+id/container_post"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal"
-         android:layout_marginHorizontal="16dp"
-         android:layout_marginTop="12dp"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toBottomOf="@id/iv_post_image"
-         >
-         <TextView
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:textSize="14sp"
-             android:text="nama tanaman : "
-             />
-         <TextView
-             android:id="@+id/tv_plant_name"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:textColor="@android:color/black"
-             android:textSize="14sp"
-             android:textStyle="bold"
-             tools:text="Nama Tanaman" />
-     </LinearLayout>
-     <TextView
-         android:id="@+id/tv_description"
-         android:layout_width="0dp"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="4dp"
-         android:ellipsize="end"
-         android:maxLines="0"
-         app:layout_constraintEnd_toEndOf="@id/container_post"
-         app:layout_constraintStart_toStartOf="@id/container_post"
-         app:layout_constraintTop_toBottomOf="@id/container_post"
-         tools:text="Ini adalah deskripsi singkat dari postingan tentang tanaman herbal yang sangat bermanfaat untuk kesehatan." />
-     <!-- Description -->
 
-     <LinearLayout
-         android:layout_marginTop="10dp"
-         android:id="@+id/content_wrapper"
-         android:layout_width="0dp"
-         android:layout_height="wrap_content"
-         app:layout_constraintEnd_toEndOf="@id/container_post"
-         app:layout_constraintStart_toStartOf="@id/container_post"
-         app:layout_constraintTop_toBottomOf="@id/container_post"
-         android:orientation="vertical"
-         >
-         <TextView
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:text="📝 Deskripsi"
-             android:textSize="14sp"
-             android:textStyle="bold"
-             />
+        <ImageView
+            android:id="@+id/iv_post_image"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="12dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_user_profile"
+            tools:src="@drawable/bg_place_holder" />
 
-         <TextView
-             android:id="@+id/tv_content"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:textSize="12sp"
-             android:layout_marginTop="4dp"
-             android:text="content"
-             android:textColor="@color/text_muted_foreground"
-             />
-         <TextView
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:text="🩺 Potensi Manfaat &amp; Kegunaan"
-             android:textSize="14sp"
-             android:textStyle="bold"
-             />
-         <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:orientation="vertical"
-             android:background="@drawable/custom_card_green_info"
-             android:layout_marginTop="8dp"
-             android:paddingHorizontal="8dp"
-             >
-             <TextView
-                 android:layout_marginStart="12dp"
-                 android:id="@+id/tv_manfaat"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="20dp"
-                 android:textSize="12sp"
-                 android:textColor="#609B5A"
-                 android:text="Manfaat"
-                 />
-         </LinearLayout>
+        <!-- Plant Name -->
+        <LinearLayout
+            android:id="@+id/container_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_post_image">
 
-         <TextView
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:text="⚠️ Peringatan &amp; Efek Samping"
-             android:textSize="14sp"
-             android:layout_marginTop="8dp"
-             android:textStyle="bold"
-             />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_plant_name_colon"
+                android:textSize="14sp" />
 
-         <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:orientation="vertical"
-             android:background="@drawable/custom_effect_wrapper"
-             android:layout_marginTop="8dp"
-             android:paddingHorizontal="8dp"
-             >
-             <TextView
-                 android:layout_marginStart="12dp"
-                 android:id="@+id/tv_efek"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="20dp"
-                 android:textSize="12sp"
-                 android:textColor="#92400D"
-                 android:text="Manfaat"
-                 />
-         </LinearLayout>
+            <TextView
+                android:id="@+id/tv_plant_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Nama Tanaman" />
+        </LinearLayout>
 
-     </LinearLayout>
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="0"
+            app:layout_constraintEnd_toEndOf="@id/container_post"
+            app:layout_constraintStart_toStartOf="@id/container_post"
+            app:layout_constraintTop_toBottomOf="@id/container_post"
+            tools:text="Ini adalah deskripsi singkat dari postingan tentang tanaman herbal yang sangat bermanfaat untuk kesehatan." />
+        <!-- Description -->
 
-     <!-- Like Button -->
-     <ImageView
-         android:id="@+id/iv_like"
-         android:layout_width="24dp"
-         android:layout_height="24dp"
-         android:layout_marginTop="16dp"
-         android:src="@drawable/ic_heart_filled"
-         app:layout_constraintStart_toStartOf="@id/content_wrapper"
-         app:layout_constraintTop_toBottomOf="@id/content_wrapper"
-         />
+        <LinearLayout
+            android:id="@+id/content_wrapper"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/container_post"
+            app:layout_constraintStart_toStartOf="@id/container_post"
+            app:layout_constraintTop_toBottomOf="@id/container_post">
 
-     <TextView
-         android:id="@+id/tv_like_count"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginStart="8dp"
-         android:textColor="@android:color/black"
-         app:layout_constraintBottom_toBottomOf="@id/iv_like"
-         app:layout_constraintStart_toEndOf="@id/iv_like"
-         app:layout_constraintTop_toTopOf="@id/iv_like"
-         tools:text="123" />
- </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/section_description_title"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/text_muted_foreground"
+                android:textSize="12sp"
+                tools:text="Deskripsi singkat" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/section_benefit_title"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/custom_card_green_info"
+                android:orientation="vertical"
+                android:paddingHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/tv_manfaat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/benefit_text"
+                    android:textSize="12sp"
+                    tools:text="Manfaat" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/section_warning_title"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/custom_effect_wrapper"
+                android:orientation="vertical"
+                android:paddingHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/tv_efek"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/warning_text"
+                    android:textSize="12sp"
+                    tools:text="Peringatan dan Efek Samping" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Like Button -->
+        <ImageView
+            android:id="@+id/iv_like"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_heart_filled"
+            app:layout_constraintStart_toStartOf="@id/content_wrapper"
+            app:layout_constraintTop_toBottomOf="@id/content_wrapper" />
+
+        <TextView
+            android:id="@+id/tv_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@id/iv_like"
+            app:layout_constraintStart_toEndOf="@id/iv_like"
+            app:layout_constraintTop_toTopOf="@id/iv_like"
+            tools:text="123" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.cardview.widget.CardView>

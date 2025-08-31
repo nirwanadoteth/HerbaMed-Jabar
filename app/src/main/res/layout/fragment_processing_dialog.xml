@@ -6,20 +6,18 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/iconCardView"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_gravity="center"
-            app:lottie_rawRes="@raw/leaf_anim"
-            app:lottie_autoPlay="true"
-            app:layout_constraintBottom_toTopOf="@id/titleTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
-
-
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/iconCardView"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/titleTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/leaf_anim" />
 
 
     <TextView

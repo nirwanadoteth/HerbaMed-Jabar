@@ -7,12 +7,13 @@
         <item name="android:statusBarColor">@color/status_bar_dark</item>
     </style>
 
-    <style name="Theme.HerbaMedJabar" parent="Base.Theme.HerbaMedJabar" >
+    <style name="Theme.HerbaMedJabar" parent="Base.Theme.HerbaMedJabar">
         <!-- Status bar color. -->
         <!-- TAMBAHKAN DUA BARIS INI -->
         <item name="android:statusBarColor">@android:color/black</item>
-        <item name="android:windowLightStatusBar" >false</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/bg_color</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_circle_welcome</item>

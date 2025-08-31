@@ -43,19 +43,39 @@ class ResultFragment : Fragment() {
 
     private fun setupUI() {
         val imagePath = arguments?.getString(ARG_IMAGE_PATH)
-        val resultText = arguments?.getString(ARG_RESULT_TEXT)
+        val plantName = arguments?.getString(ARG_PLANT_NAME).orEmpty()
+        val content = arguments?.getString(ARG_CONTENT).orEmpty()
+        val benefit = arguments?.getString(ARG_BENEFIT).orEmpty()
+        val warning = arguments?.getString(ARG_WARNING).orEmpty()
 
-        if (imagePath != null) {
-            val imageFile = File(imagePath)
-            if (imageFile.exists()) {
-                binding.resultImageView.setImageURI(Uri.fromFile(imageFile))
+        binding.apply {
+            plantNameTextView.text = plantName
+            contentTextView.text = HtmlCompat.fromHtml(
+                MarkdownUtils.parseMarkdownToHtml(content),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            benefitTextView.text = HtmlCompat.fromHtml(
+                MarkdownUtils.parseMarkdownToHtml(benefit),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            warningTextView.text = HtmlCompat.fromHtml(
+                MarkdownUtils.parseMarkdownToHtml(warning),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            if (benefit.isBlank()) {
+                benefitBanner.visibility = View.GONE
+                benefitTextView.visibility = View.GONE
             }
-        }
-
-        if (resultText != null) {
-            val html = MarkdownUtils.parseMarkdownToHtml(resultText)
-            binding.resultTextView.text =
-                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            if (warning.isBlank()) {
+                warningBanner.visibility = View.GONE
+                warningTextView.visibility = View.GONE
+            }
+            if (imagePath != null) {
+                val imageFile = File(imagePath)
+                if (imageFile.exists()) {
+                    resultImageView.setImageURI(Uri.fromFile(imageFile))
+                }
+            }
         }
     }
 

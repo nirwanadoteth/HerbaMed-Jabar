@@ -10,6 +10,12 @@
     <color name="text_blue">#FF2C3EA3</color>
     <color name="text_primary">#FF779867</color>
     <color name="text_desctructive">#FFF72C5B</color>
+    <color name="benefit_text">#609B5A</color>
+    <color name="warning_text">#92400D</color>
+    <color name="delete_text">#F53F3F</color>
+    <color name="delete_bg">#FFE8E8</color>
+    <color name="delete_icon">#FF0000</color>
+    <color name="delete_stroke">#F7BBBC</color>
 
     <color name="pastel_green">#E4FFED</color>
     <color name="pastel_yellow">#FFFEE4</color>

@@ -8,8 +8,12 @@
     tools:context=".view.HistoryDetailFragment">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,10 +30,14 @@
 
                 <ImageView
                     android:id="@+id/backButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_left"
-                    android:contentDescription="@string/back_button_desc" />
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="@string/back_button_desc"
+                    android:focusable="true"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_arrow_left" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -57,8 +65,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="300dp"
                         android:layout_marginBottom="19dp"
-                        android:scaleType="centerCrop"
                         android:contentDescription="@string/history_detail_image_desc"
+                        android:scaleType="centerCrop"
                         tools:src="@tools:sample/backgrounds/scenic" />
                 </androidx.cardview.widget.CardView>
 
@@ -82,7 +90,6 @@
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:text=""
                         tools:text="Nama Tanaman" />
                 </LinearLayout>
 
@@ -106,10 +113,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text=""
-                        tools:text="Deskripsi singkat"
                         android:textColor="@color/text_muted_foreground"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:text="Deskripsi singkat" />
 
                     <TextView
                         android:id="@+id/benefit_banner"
@@ -133,10 +139,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginTop="20dp"
-                            android:text=""
-                            tools:text="Manfaat"
-                            android:textColor="#609B5A"
-                            android:textSize="12sp" />
+                            android:textColor="@color/benefit_text"
+                            android:textSize="12sp"
+                            tools:text="Manfaat" />
                     </LinearLayout>
 
                     <TextView
@@ -162,10 +167,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_marginTop="20dp"
-                            android:text=""
-                            tools:text="Peringatan dan Efek Samping"
-                            android:textColor="#92400D"
-                            android:textSize="12sp" />
+                            android:textColor="@color/warning_text"
+                            android:textSize="12sp"
+                            tools:text="Peringatan dan Efek Samping" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -183,14 +187,14 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="Hapus"
-                        android:textColor="#F53F3F"
-                        app:backgroundTint="#FFE8E8"
+                        android:text="@string/action_delete"
+                        android:textColor="@color/delete_text"
+                        app:backgroundTint="@color/delete_bg"
                         app:cornerRadius="10dp"
                         app:icon="@android:drawable/ic_menu_delete"
                         app:iconGravity="textStart"
-                        app:iconTint="#FF0000"
-                        app:strokeColor="#F7BBBC"
+                        app:iconTint="@color/delete_icon"
+                        app:strokeColor="@color/delete_stroke"
                         app:strokeWidth="1dp" />
                 </LinearLayout>
             </LinearLayout>

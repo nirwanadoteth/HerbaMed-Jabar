@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    >
+    android:background="@color/bg_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,10 +18,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:orientation="horizontal"
             android:padding="18dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="horizontal">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:layout_width="40dp"
@@ -67,53 +66,52 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginHorizontal="18dp"
-            android:layout_marginVertical="10dp"
             android:id="@+id/info_wrapper_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginVertical="10dp"
             android:background="@drawable/custom_card_green_info"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcome_wrapper"
-            android:gravity="center_vertical"
-            >
+            app:layout_constraintTop_toBottomOf="@+id/welcome_wrapper">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginEnd="10dp"
-                >
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Mulai Berbagi!"
-                    android:textSize="12sp"
                     android:textColor="@color/primary"
-                    android:textStyle="bold"
-                    />
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
                     android:text="Bagikan penemuan herbal anda"
                     android:textColor="@color/primary"
-                    android:textStyle="normal"
-                    />
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/scanButton"
-                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/primary"
-                android:text="Posting"
-                app:icon="@drawable/ic_plus"
-                android:textSize="12sp"
                 android:padding="0dp"
+                android:text="Posting"
+                android:textSize="12sp"
                 app:cornerRadius="12dp"
+                app:icon="@drawable/ic_plus"
                 app:iconGravity="textStart"
                 app:iconTint="@color/white" />
 

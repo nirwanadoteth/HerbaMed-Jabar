@@ -17,9 +17,9 @@
             android:id="@+id/logoImageView"
             android:layout_width="60dp"
             android:layout_height="60dp"
+            android:layout_marginTop="56dp"
             android:contentDescription="Logo"
             android:src="@drawable/ic_circle_welcome"
-            android:layout_marginTop="56dp"
             app:layout_constraintBottom_toTopOf="@id/titleTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,38 +56,38 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/subtitleTextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp"
             android:backgroundTint="@color/white"
+            app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
-            app:cardCornerRadius="8dp">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitleTextView">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingVertical="24dp"
-                android:paddingHorizontal="12dp">
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="24dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="Daftar"
                     android:textColor="@color/black"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
                     android:text="Nama Lengkap"
-                    android:textColor="@color/black"
-                    android:layout_marginVertical="10dp" />
+                    android:textColor="@color/black" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/nameInputLayout"
@@ -99,26 +99,26 @@
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusTopStart="10dp"
                     app:boxStrokeColor="@color/text_muted_foreground"
-                    app:startIconDrawable="@drawable/ic_user"
+                    app:hintEnabled="false"
                     app:hintTextColor="@color/text_muted_foreground"
-                    app:hintEnabled="false">
+                    app:startIconDrawable="@drawable/ic_user">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/nameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Masukan nama lengkap anda"
-                        android:textColor="@color/black"
-                        android:inputType="textPersonName" />
+                        android:inputType="textPersonName"
+                        android:textColor="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
                     android:text="Email"
-                    android:textColor="@color/black"
-                    android:layout_marginVertical="10dp" />
+                    android:textColor="@color/black" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailInputLayout"
@@ -130,83 +130,83 @@
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusTopStart="10dp"
                     app:boxStrokeColor="@color/text_muted_foreground"
-                    app:startIconDrawable="@drawable/ic_mail"
+                    app:hintEnabled="false"
                     app:hintTextColor="@color/text_muted_foreground"
-                    app:hintEnabled="false">
+                    app:startIconDrawable="@drawable/ic_mail">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/emailEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="example@test.com"
-                        android:textColor="@color/black"
-                        android:inputType="textEmailAddress" />
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
                     android:text="Password"
-                    android:textColor="@color/black"
-                    android:layout_marginVertical="10dp" />
+                    android:textColor="@color/black" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/passwordInputLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:hint="Password"
                     app:boxCornerRadiusBottomEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusTopStart="10dp"
-                    android:hint="Password"
                     app:boxStrokeColor="@color/text_muted_foreground"
-                    app:hintTextColor="@color/text_muted_foreground"
-                    app:startIconDrawable="@drawable/ic_lock"
                     app:hintEnabled="false"
-                    app:passwordToggleEnabled="true">
+                    app:hintTextColor="@color/text_muted_foreground"
+                    app:passwordToggleEnabled="true"
+                    app:startIconDrawable="@drawable/ic_lock">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/passwordEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
                         android:hint="Masukan password anda"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:textColor="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
                     android:text="Konfirmasi Password"
-                    android:textColor="@color/black"
-                    android:layout_marginVertical="10dp" />
+                    android:textColor="@color/black" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/confirmPasswordInputLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
+                    android:hint="Konfirmasi password"
                     app:boxCornerRadiusBottomEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusTopStart="10dp"
-                    android:hint="Konfirmasi password"
                     app:boxStrokeColor="@color/text_muted_foreground"
-                    app:hintTextColor="@color/text_muted_foreground"
-                    app:startIconDrawable="@drawable/ic_lock"
                     app:hintEnabled="false"
-                    app:passwordToggleEnabled="true">
+                    app:hintTextColor="@color/text_muted_foreground"
+                    app:passwordToggleEnabled="true"
+                    app:startIconDrawable="@drawable/ic_lock">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/confirmPasswordEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
                         android:hint="Konfirmasi password"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:textColor="@color/black" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -217,8 +217,8 @@
                     android:layout_marginTop="24dp"
                     android:backgroundTint="@color/primary"
                     android:text="Daftar"
-                    android:textSize="16sp"
                     android:textColor="@color/white"
+                    android:textSize="16sp"
                     app:cornerRadius="12dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -228,9 +228,9 @@
                     android:id="@+id/loginLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="16dp"
                     android:orientation="horizontal"
-                    android:layout_gravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/loginButton">
