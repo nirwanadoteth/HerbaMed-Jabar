@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentProcessingDialogBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class ProcessingDialogFragment : DialogFragment() {
             var progress = 0
             while (progress <= 100) {
                 binding.progressBar.progress = progress
-                binding.progressTextView.text = "$progress%"
+                binding.progressTextView.text = getString(R.string.progress_percent, progress)
                 progress++
 
                 val randomDelay = (50..150).random().toLong()

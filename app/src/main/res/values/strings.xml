@@ -11,4 +11,5 @@
     <string name="selamat_datang">Selamat Datang!</string>
     <string name="selamat_datang_desc">Temukan tanaman herbal di sekitar Anda</string>
     <string name="default_web_client_id">374536660454-kicnn7hcuiu5pqehgsguom11krstg4e5.apps.googleusercontent.com</string>
+    <string name="progress_percent">%1$d%%</string>
 </resources>
