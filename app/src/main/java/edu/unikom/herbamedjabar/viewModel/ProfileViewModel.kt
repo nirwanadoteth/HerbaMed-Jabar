@@ -43,7 +43,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 val userId = auth.currentUser?.uid ?: return@launch
                 postRepository.toggleLike(postId, userId)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Handle error jika diperlukan
             }
         }
@@ -53,7 +53,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 postRepository.deletePost(post)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
     }
