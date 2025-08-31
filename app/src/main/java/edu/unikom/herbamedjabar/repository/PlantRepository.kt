@@ -42,6 +42,7 @@ class PlantRepositoryImpl @Inject constructor(
         var delayTime = 2000L
 
         repeat(maxRetries) { attempt ->
+            var imagePath: String? = null
             try {
                 val inputContent = content {
                     image(bitmap)
@@ -52,7 +53,7 @@ class PlantRepositoryImpl @Inject constructor(
                 val resultText = response.text ?: throw Exception("Hasil teks dari AI kosong.")
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 // Simpan gambar ke file
-                val imagePath = saveBitmapToFile(bitmap)
+                imagePath = saveBitmapToFile(bitmap)
                 val plantName = parsedData["plantName"] ?: ""
                 val benefit = parsedData["benefit"] ?: ""
                 val warning = parsedData["warning"] ?: ""
@@ -67,7 +68,17 @@ class PlantRepositoryImpl @Inject constructor(
                     warning = warning,
                     content = content
                 )
-                scanHistoryDao.insertHistory(history)
+                try {
+                    scanHistoryDao.insertHistory(history)
+                } catch (dbEx: Exception) {
+                    // Cleanup orphaned image file
+                    try {
+                        File(imagePath).delete()
+                    } catch (cleanupEx: Exception) {
+                        android.util.Log.e("PlantRepository", "Failed to delete orphaned image file: $imagePath", cleanupEx)
+                    }
+                    throw dbEx
+                }
 
                 // Kembalikan objek AnalysisResult yang dibutuhkan untuk navigasi
                 return AnalysisResult(
@@ -80,6 +91,14 @@ class PlantRepositoryImpl @Inject constructor(
                 )
 
             } catch (e: Exception) {
+                // Cleanup orphaned image file before retry
+                if (imagePath != null) {
+                    try {
+                        File(imagePath).delete()
+                    } catch (cleanupEx: Exception) {
+                        android.util.Log.e("PlantRepository", "Failed to delete orphaned image file: $imagePath", cleanupEx)
+                    }
+                }
                 if (attempt == maxRetries - 1) {
                     throw e
                 }
