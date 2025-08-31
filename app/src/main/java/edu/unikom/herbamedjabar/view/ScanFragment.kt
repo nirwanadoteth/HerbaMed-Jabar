@@ -56,7 +56,8 @@ class ScanFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 try {
-                    val bitmap = if (Build.VERSION.SDK_INT < 28) {
+                    val bitmap = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                        @Suppress("DEPRECATION")
                         MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
                     } else {
                         val source = ImageDecoder.createSource(requireActivity().contentResolver, uri)
@@ -64,7 +65,7 @@ class ScanFragment : Fragment() {
                     }
                     binding.plantImageView.setImageBitmap(bitmap)
                     viewModel.analyzeImage(bitmap)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     Toast.makeText(context, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -82,6 +83,19 @@ class ScanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
+
+        // Set 'HerbaMed' with 'Med' in primary color
+        val fullText = "HerbaMed"
+        val spannable = android.text.SpannableString(fullText)
+        val medStart = fullText.indexOf("Med")
+        val medEnd = medStart + 3
+        val primaryColor = ContextCompat.getColor(requireContext(), edu.unikom.herbamedjabar.R.color.primary)
+        spannable.setSpan(
+            android.text.style.ForegroundColorSpan(primaryColor),
+            medStart, medEnd,
+            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.appTitleTextView.text = spannable
 
         parentFragmentManager.setFragmentResultListener("scan_again_request", this) { _, bundle ->
             if (bundle.getBoolean("open_camera")) {
