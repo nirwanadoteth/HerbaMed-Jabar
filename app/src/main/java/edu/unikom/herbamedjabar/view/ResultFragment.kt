@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 import edu.unikom.herbamedjabar.viewModel.ResultViewModel
 import java.io.File
-import edu.unikom.herbamedjabar.util.MarkdownUtils
 
 @AndroidEntryPoint
 class ResultFragment : Fragment() {

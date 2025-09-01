@@ -1,8 +1,9 @@
 package edu.unikom.herbamedjabar.adapter
 
-import android.net.Uri
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.collection.LruCache
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,11 +14,6 @@ import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.ItemHistoryBinding
 import edu.unikom.herbamedjabar.util.MarkdownUtils
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import android.text.Spanned
-import androidx.collection.LruCache
 
 class HistoryAdapter(
     private val onClick: (ScanHistory) -> Unit
@@ -46,21 +42,32 @@ class HistoryAdapter(
                 val cached = htmlCache[key]
                 val spanned = cached ?: run {
                     val html = MarkdownUtils.parseMarkdownToHtml(history.content)
-                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).also { htmlCache.put(key, it) }
+                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                        .also { htmlCache.put(key, it) }
                 }
                 descriptionTextView.text = spanned
 
-                time.text = DATE_FORMATTER.format(Date(history.timestamp))
+                time.text = android.text.format.DateUtils.formatDateTime(
+                    binding.root.context,
+                    history.timestamp,
+                    android.text.format.DateUtils.FORMAT_SHOW_DATE or
+                            android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                            android.text.format.DateUtils.FORMAT_SHOW_TIME
+                )
 
                 val imageFile = File(history.imagePath)
                 if (imageFile.exists()) {
-                    historyImageView.load(Uri.fromFile(imageFile)) {
+                    historyImageView.load(imageFile) {
                         crossfade(true)
                         placeholder(R.drawable.bg_place_holder)
+                        error(R.drawable.bg_place_holder)
+                        fallback(R.drawable.bg_place_holder)
                     }
                 } else {
                     historyImageView.load(R.drawable.bg_place_holder) {
                         crossfade(true)
+                        error(R.drawable.bg_place_holder)
+                        fallback(R.drawable.bg_place_holder)
                     }
                 }
                 historyImageView.contentDescription = history.plantName
@@ -70,10 +77,6 @@ class HistoryAdapter(
                 }
             }
         }
-    }
-
-    companion object {
-        private val DATE_FORMATTER = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
     }
 }
 

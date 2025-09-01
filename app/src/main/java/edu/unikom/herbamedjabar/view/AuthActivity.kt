@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.ActivityAuthBinding
 import javax.inject.Inject
-import edu.unikom.herbamedjabar.R
 
 @AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {

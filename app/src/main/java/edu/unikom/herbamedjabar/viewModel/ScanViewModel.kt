@@ -29,6 +29,16 @@ class ScanViewModel @Inject constructor(
     private val _navigateToResult = MutableLiveData<AnalysisResult?>()
     val navigateToResult: LiveData<AnalysisResult?> = _navigateToResult
 
+    // LiveData for scan counts
+    private val _totalScan = MutableLiveData(0)
+    val totalScan: LiveData<Int> = _totalScan
+
+    private val _herbalScan = MutableLiveData(0)
+    val herbalScan: LiveData<Int> = _herbalScan
+
+    private val _nonHerbalScan = MutableLiveData(0)
+    val nonHerbalScan: LiveData<Int> = _nonHerbalScan
+
     fun analyzeImage(bitmap: Bitmap) {
         _uiState.value = UiState.Loading
         viewModelScope.launch {
@@ -36,6 +46,13 @@ class ScanViewModel @Inject constructor(
             result.onSuccess { analysisResult ->
                 _uiState.postValue(UiState.Success)
                 _navigateToResult.postValue(analysisResult)
+                // Increment scan counts
+                _totalScan.postValue((_totalScan.value ?: 0) + 1)
+                if (analysisResult.isHerbal) {
+                    _herbalScan.postValue((_herbalScan.value ?: 0) + 1)
+                } else {
+                    _nonHerbalScan.postValue((_nonHerbalScan.value ?: 0) + 1)
+                }
             }.onFailure { error ->
                 _uiState.postValue(
                     UiState.Error(

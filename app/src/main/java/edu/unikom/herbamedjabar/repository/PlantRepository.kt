@@ -24,6 +24,7 @@ data class AnalysisResult(
     val benefit: String,
     val warning: String,
     val content: String,
+    val isHerbal: Boolean,
 )
 
 interface PlantRepository {
@@ -55,10 +56,15 @@ class PlantRepositoryImpl @Inject constructor(
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 // Simpan gambar ke file
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
+
                 val plantName = parsedData["plantName"] ?: ""
                 val benefit = parsedData["benefit"] ?: ""
                 val warning = parsedData["warning"] ?: ""
                 val content = parsedData["description"] ?: ""
+
+                // Use parsed herbalStatus from PlantDataParser
+                val herbalStatus = parsedData["herbalStatus"]?.lowercase() ?: "unknown"
+                val isHerbal = herbalStatus == "herbal"
 
                 // Simpan ke database (sebagai side-effect)
                 val history = ScanHistory(
@@ -92,7 +98,8 @@ class PlantRepositoryImpl @Inject constructor(
                     plantName = plantName,
                     benefit = benefit,
                     warning = warning,
-                    content = content
+                    content = content,
+                    isHerbal = isHerbal
                 )
 
             } catch (e: Exception) {
@@ -100,9 +107,9 @@ class PlantRepositoryImpl @Inject constructor(
                 if (e is kotlinx.coroutines.CancellationException) throw e
 
                 // Cleanup orphaned image file before retry
-                if (savedImagePath != null) {
+                savedImagePath?.let {
                     try {
-                        File(savedImagePath).delete()
+                        File(it).delete()
                     } catch (cleanupEx: Exception) {
                         android.util.Log.e(
                             "PlantRepository",

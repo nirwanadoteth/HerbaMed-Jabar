@@ -152,6 +152,17 @@ class ScanFragment : Fragment() {
                 }
             }
         }
+
+        // Observe scan counts and update TextViews
+        viewModel.totalScan.observe(viewLifecycleOwner) { count ->
+            binding.totalScanTextView.text = count.toString()
+        }
+        viewModel.herbalScan.observe(viewLifecycleOwner) { count ->
+            binding.herbalScanTextView.text = count.toString()
+        }
+        viewModel.nonHerbalScan.observe(viewLifecycleOwner) { count ->
+            binding.nonHerbalScanTextView.text = count.toString()
+        }
     }
 
     override fun onDestroyView() {

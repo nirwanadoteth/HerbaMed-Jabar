@@ -13,9 +13,6 @@ import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.databinding.ItemPostBinding
 import edu.unikom.herbamedjabar.util.MarkdownUtils
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class PostAdapter(
     private val onLikeClicked: (String) -> Unit,
@@ -73,8 +70,13 @@ class PostAdapter(
                     if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
                 ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
 
-                val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-                tvPostTimestamp.text = sdf.format(Date(post.timestamp))
+                tvPostTimestamp.text = android.text.format.DateUtils.formatDateTime(
+                    binding.root.context,
+                    post.timestamp,
+                    android.text.format.DateUtils.FORMAT_SHOW_DATE or
+                            android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                            android.text.format.DateUtils.FORMAT_SHOW_TIME
+                )
             }
         }
     }

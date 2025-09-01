@@ -22,7 +22,7 @@
     <string name="scan_tips_3">3. Hindari bayangan dan blur</string>
     <string name="result_title">Hasil Scan</string>
     <string name="scan_again">Scan Lagi</string>
-    <string name="post_to_forum">Posting ke Forum</string>
+    <string name="post_to_forum">Post ke Forum</string>
     <string name="history_title">Riwayat Scan</string>
     <string name="history_subtitle">Tanaman herbal yang pernah Anda scan</string>
     <string name="badge_plant_hunter">🌱 Plant Hunter</string>
@@ -79,7 +79,7 @@
     <string name="section_description_title_a11y">Deskripsi</string>
     <string name="section_benefit_title_a11y">Potensi Manfaat dan Kegunaan</string>
     <string name="section_warning_title_a11y">Peringatan dan Efek Samping</string>
-    <string name="processing_dialog_title">Menganalisis Tanaman...</string>
+    <string name="processing_dialog_title">Menganalisis Tanaman…</string>
     <string name="processing_dialog_subtitle">AI sedang mengidentifikasi jenis tanaman herbal</string>
     <string name="processing_dialog_progress_sample">76%</string>
 </resources>

@@ -13,8 +13,8 @@ import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.FragmentHistoryDetailBinding
-import edu.unikom.herbamedjabar.viewModel.HistoryDetailViewModel
 import edu.unikom.herbamedjabar.util.MarkdownUtils
+import edu.unikom.herbamedjabar.viewModel.HistoryDetailViewModel
 import java.io.File
 
 @AndroidEntryPoint

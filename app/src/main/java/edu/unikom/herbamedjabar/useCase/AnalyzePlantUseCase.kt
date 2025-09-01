@@ -44,6 +44,13 @@ class AnalyzePlantUseCase @Inject constructor(
                 - [Peringatan 2]
 
                 ---
+
+                ### Jenis Tanaman
+                *Tentukan apakah tanaman ini termasuk "Herbal" atau "Non-Herbal". Jawab dengan satu kata saja:
+
+                [Jenis Tanaman]
+
+                ---
             """.trimIndent()
 
             val response = plantRepository.analyzePlant(bitmap, prompt)

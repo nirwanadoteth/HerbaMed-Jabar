@@ -14,7 +14,8 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -92,11 +93,12 @@
                                 android:textSize="11sp" />
 
                             <TextView
+                                android:id="@+id/totalScanTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/scan_total_count"
                                 android:textColor="@color/text_blue"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="0" />
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -129,11 +131,12 @@
                                 android:textSize="11sp" />
 
                             <TextView
+                                android:id="@+id/herbalScanTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/scan_herbal_count"
                                 android:textColor="@color/text_primary"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="0" />
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
@@ -165,11 +168,12 @@
                                 android:textSize="11sp" />
 
                             <TextView
+                                android:id="@+id/nonHerbalScanTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/scan_nonherbal_count"
                                 android:textColor="@color/text_destructive"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="0" />
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>

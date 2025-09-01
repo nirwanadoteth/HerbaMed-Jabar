@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
 import edu.unikom.herbamedjabar.databinding.FragmentForumBinding
 import edu.unikom.herbamedjabar.viewModel.ForumViewModel
-import edu.unikom.herbamedjabar.R
 
 @AndroidEntryPoint
 class ForumFragment : Fragment() {
