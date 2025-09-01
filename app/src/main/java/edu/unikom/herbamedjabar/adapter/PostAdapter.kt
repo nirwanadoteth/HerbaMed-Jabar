@@ -36,10 +36,12 @@ class PostAdapter(
             val currentUser = FirebaseAuth.getInstance().currentUser
             binding.tvUsername.text = post.username
             binding.ivUserProfile.load(post.userProfilePictureUrl) {
+                crossfade(true)
                 placeholder(R.drawable.ic_user_image)
                 error(R.drawable.ic_user_image)
             }
             binding.ivPostImage.load(post.imageUrl) {
+                crossfade(true)
                 placeholder(R.drawable.bg_place_holder)
                 error(R.drawable.bg_place_holder)
             }
@@ -48,14 +50,16 @@ class PostAdapter(
                 MarkdownUtils.parseMarkdownToHtml(post.content), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             binding.tvManfaat.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(post.benefit, true), HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(post.benefit, true),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             binding.tvEfek.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(post.warning, true), HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(post.warning, true),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             binding.tvLikeCount.text = "${post.likes.size}"
             binding.ivLike.setImageResource(
-                if (post.likes.contains(currentUser?.uid)) R.drawable.ic_heart_filled else R.drawable.ic_hearth_outline
+                if (post.likes.contains(currentUser?.uid)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
             )
             binding.ivLike.setOnClickListener { onLikeClicked(post.id) }
             binding.ivMenuOptions.visibility =
@@ -65,12 +69,14 @@ class PostAdapter(
                 binding.root.context,
                 post.timestamp,
                 android.text.format.DateUtils.FORMAT_SHOW_DATE or
-                    android.text.format.DateUtils.FORMAT_SHOW_YEAR or
-                    android.text.format.DateUtils.FORMAT_SHOW_TIME
+                        android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                        android.text.format.DateUtils.FORMAT_SHOW_TIME
             )
             binding.ivUserProfile.contentDescription =
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)
-            binding.ivPostImage.contentDescription = post.plantName
+            binding.ivPostImage.contentDescription = binding.root.context.getString(
+                R.string.cd_plant_image_of, post.plantName
+            )
             binding.ivLike.contentDescription = if (post.likes.contains(currentUser?.uid)) {
                 binding.root.context.getString(R.string.cd_liked)
             } else {

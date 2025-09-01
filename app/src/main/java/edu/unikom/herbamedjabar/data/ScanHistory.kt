@@ -2,11 +2,12 @@ package edu.unikom.herbamedjabar.data
 
 import android.os.Parcelable
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "scan_history")
+@Entity(tableName = "scan_history", indices = [Index("timestamp"), Index("plantName")])
 data class ScanHistory(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

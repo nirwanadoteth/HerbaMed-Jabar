@@ -17,6 +17,11 @@ class ScanHistoryMigrationManager @Inject constructor(
     private val scanHistoryDao: ScanHistoryDao,
     private val db: AppDatabase
 ) {
+    companion object {
+        private const val PAGE_SIZE = 200
+        private const val TAG = "ScanHistoryMigration"
+    }
+
     private val scope = CoroutineScope(kotlinx.coroutines.SupervisorJob() + Dispatchers.IO)
     private val started = java.util.concurrent.atomic.AtomicBoolean(false)
 
@@ -28,29 +33,31 @@ class ScanHistoryMigrationManager @Inject constructor(
 
         scope.launch {
             try {
-                db.withTransaction {
-                    var offset = 0
-                    val pageSize = 200
-                    while (true) {
-                        val page = scanHistoryDao.getHistoryPage(limit = pageSize, offset = offset)
-                        if (page.isEmpty()) break
+                var offset = 0
+                while (true) {
+                    val page = scanHistoryDao.getHistoryPage(limit = PAGE_SIZE, offset = offset)
+                    if (page.isEmpty()) break
+                    db.withTransaction {
                         for (history in page) {
                             val parsed = PlantDataParser.parsePlantData(history.resultText)
-                            val updatedHistory = history.copy(
-                                plantName = parsed.plantName,
-                                content = parsed.description,
-                                benefit = parsed.benefit,
-                                warning = parsed.warning
+                            scanHistoryDao.updateHistory(
+                                history.copy(
+                                    plantName = parsed.plantName,
+                                    content = parsed.description,
+                                    benefit = parsed.benefit,
+                                    warning = parsed.warning
+                                )
                             )
-                            // updateHistory is suspend, so mark lambda as suspend
-                            scanHistoryDao.updateHistory(updatedHistory)
                         }
-                        offset += page.size
                     }
+                    offset += page.size
                 }
                 prefs.edit { putBoolean("scan_history_migrated_v2", true) }
-            } catch (e: Exception) {
-                android.util.Log.e("ScanHistoryMigration", "v2 migration failed", e)
+                android.util.Log.i(TAG, "v2 migration completed")
+            } catch (e: android.database.sqlite.SQLiteException) {
+                android.util.Log.e(TAG, "v2 migration failed (sqlite)", e)
+            } catch (e: IllegalArgumentException) {
+                android.util.Log.e(TAG, "v2 migration failed (illegal argument)", e)
             } finally {
                 started.set(false)
             }

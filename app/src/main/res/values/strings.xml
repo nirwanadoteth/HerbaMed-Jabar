@@ -88,4 +88,5 @@
     <string name="logout">Keluar</string>
     <string name="cd_user_profile_of">Foto profil %s</string>
     <string name="cd_plant_image_of">Gambar tanaman %s</string>
+    <string name="loading">Memuat…</string>
 </resources>

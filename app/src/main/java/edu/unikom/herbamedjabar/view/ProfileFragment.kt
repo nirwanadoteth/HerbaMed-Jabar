@@ -119,7 +119,7 @@ class ProfileFragment : Fragment() {
 
     private fun updateBadgesVisibility(postCount: Int) {
         val badges = listOf(binding.badge1, binding.badge2, binding.badge3, binding.badge4)
-        val thresholds = listOf(1, 5, 10, 20)
+        val thresholds = listOf(BADGE_THRESHOLD_1, BADGE_THRESHOLD_2, BADGE_THRESHOLD_3, BADGE_THRESHOLD_4)
         badges.forEachIndexed { i, badge ->
             badge.visibility = if (postCount >= thresholds[i]) View.VISIBLE else View.GONE
         }
@@ -128,5 +128,11 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    companion object {
+        private const val BADGE_THRESHOLD_1 = 1
+        private const val BADGE_THRESHOLD_2 = 5
+        private const val BADGE_THRESHOLD_3 = 10
+        private const val BADGE_THRESHOLD_4 = 20
     }
 }

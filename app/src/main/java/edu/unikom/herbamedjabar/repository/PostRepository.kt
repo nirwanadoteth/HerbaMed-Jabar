@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -98,32 +99,52 @@ class PostRepository @Inject constructor(
         }.await()
     }
 
+    companion object {
+        private const val CLOUDINARY_UPLOAD_TIMEOUT_MS = 60_000L
+    }
+
     private suspend fun uploadImageToCloudinary(imageUri: Uri): String =
-        suspendCancellableCoroutine { continuation ->
-            val requestId = MediaManager.get().upload(imageUri)
-                .callback(object : UploadCallback {
-                    override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                        val url = resultData["secure_url"] as? String
-                        if (url != null && continuation.isActive) {
-                            continuation.resume(url)
-                        } else if (continuation.isActive) {
-                            continuation.resumeWithException(Exception("Cloudinary upload failed: URL is null"))
+        withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) { // 60s timeout
+            suspendCancellableCoroutine { continuation ->
+                val requestId = MediaManager.get().upload(imageUri)
+                    .callback(object : UploadCallback {
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                            val url = resultData["secure_url"] as? String
+                            if (url != null && continuation.isActive) {
+                                continuation.resume(url)
+                            } else if (continuation.isActive) {
+                                continuation.resumeWithException(Exception("Cloudinary upload failed: URL is null"))
+                            }
                         }
-                    }
 
-                    override fun onError(requestId: String, error: ErrorInfo) {
-                        if (continuation.isActive) {
-                            continuation.resumeWithException(Exception("Cloudinary Error: ${error.description}"))
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onError(requestId: String, error: ErrorInfo) {
+                            if (continuation.isActive) {
+                                continuation.resumeWithException(Exception("Cloudinary Error: ${error.description}"))
+                            }
                         }
-                    }
 
-                    override fun onStart(requestId: String) {}
-                    override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
-                    override fun onReschedule(requestId: String, error: ErrorInfo) {}
-                }).dispatch()
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onStart(requestId: String) {}
 
-            continuation.invokeOnCancellation {
-                MediaManager.get().cancelRequest(requestId)
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onProgress(
+                            requestId: String,
+                            bytes: Long,
+                            totalBytes: Long
+                        ) {}
+
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onReschedule(
+                            requestId: String,
+                            error: ErrorInfo
+                        ) {}
+                    }).dispatch()
+
+                continuation.invokeOnCancellation {
+                    MediaManager.get().cancelRequest(requestId)
+                }
             }
         }
 

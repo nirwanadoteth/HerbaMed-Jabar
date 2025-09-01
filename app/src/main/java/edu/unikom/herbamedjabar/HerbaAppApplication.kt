@@ -2,6 +2,10 @@ package edu.unikom.herbamedjabar
 
 import android.app.Application
 import com.cloudinary.android.MediaManager
+import com.google.firebase.Firebase
+import com.google.firebase.appcheck.appCheck
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
+import com.google.firebase.initialize
 import dagger.hilt.android.HiltAndroidApp
 import edu.unikom.herbamedjabar.migration.ScanHistoryMigrationManager
 import javax.inject.Inject
@@ -13,6 +17,12 @@ class HerbaAppApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Firebase.initialize(context = this)
+        Firebase.appCheck.installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance(),
+        )
+
         val config = mapOf(
             "cloud_name" to "difspgu31",
             "api_key" to "152559576226315",

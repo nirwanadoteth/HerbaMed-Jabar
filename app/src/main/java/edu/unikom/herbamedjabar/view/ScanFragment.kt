@@ -100,7 +100,7 @@ class ScanFragment : Fragment() {
 
         val fullText = getString(edu.unikom.herbamedjabar.R.string.herbamed)
         val medStart = fullText.indexOf("Med")
-        val medEnd = if (medStart >= 0) medStart + 3 else medStart
+        val medEnd = if (medStart >= 0) medStart + MED_SUBSTRING_LENGTH else medStart
         val spannable = android.text.SpannableString(fullText)
         if (medStart >= 0) {
             val primaryColor =
@@ -128,14 +128,7 @@ class ScanFragment : Fragment() {
         // Observe navigation
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
-                (activity as? MainActivity)?.showResultFragment(
-                    it.imagePath,
-                    it.resultText,
-                    it.plantName,
-                    it.benefit,
-                    it.warning,
-                    it.content
-                )
+                (activity as? MainActivity)?.showResultFragment(it)
                 viewModel.onNavigationComplete()
             }
         }
@@ -191,5 +184,8 @@ class ScanFragment : Fragment() {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
+    }
+    companion object {
+        private const val MED_SUBSTRING_LENGTH = 3
     }
 }

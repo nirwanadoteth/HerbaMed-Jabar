@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "edu.unikom.herbamedjabar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "edu.unikom.herbamedjabar"
@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.appcheck.debug)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,6 +90,7 @@ dependencies {
 
     // Coroutines untuk menangani proses background (seperti panggilan API)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Coil untuk memuat gambar dengan mudah
     implementation(libs.coil)

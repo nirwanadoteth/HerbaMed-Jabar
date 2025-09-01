@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "c680cd4978856873832d69062e9fb138",
+    "identityHash": "371b57e98361fe5cfee778640fe36bfb",
     "entities": [
       {
         "tableName": "scan_history",
@@ -62,12 +62,32 @@
           "columnNames": [
             "id"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_scan_history_timestamp",
+            "unique": false,
+            "columnNames": [
+              "timestamp"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scan_history_timestamp` ON `${TABLE_NAME}` (`timestamp`)"
+          },
+          {
+            "name": "index_scan_history_plantName",
+            "unique": false,
+            "columnNames": [
+              "plantName"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_scan_history_plantName` ON `${TABLE_NAME}` (`plantName`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c680cd4978856873832d69062e9fb138')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '371b57e98361fe5cfee778640fe36bfb')"
     ]
   }
 }

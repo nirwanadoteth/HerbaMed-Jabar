@@ -30,6 +30,7 @@ class ScanViewModel @Inject constructor(
     val navigateToResult: LiveData<AnalysisResult?> = _navigateToResult
 
     data class ScanStats(val total: Int = 0, val herbal: Int = 0, val nonHerbal: Int = 0)
+
     private val _scanStats = MutableLiveData(ScanStats())
     val scanStats: LiveData<ScanStats> = _scanStats
 

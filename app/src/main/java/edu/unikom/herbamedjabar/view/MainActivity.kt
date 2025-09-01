@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.ActivityMainBinding
+import edu.unikom.herbamedjabar.repository.AnalysisResult
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (savedInstanceState == null) {
             setCurrentFragment(ForumFragment(), false)
+            binding.navView.selectedItemId = R.id.navigation_forum
         }
         binding.navView.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
@@ -77,21 +79,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showResultFragment(
-        imagePath: String,
-        resultText: String,
-        plantName: String,
-        benefit: String,
-        warning: String,
-        content: String
+        args: AnalysisResult
     ) {
-        val resultFragment = ResultFragment.newInstance(
-            imagePath,
-            resultText,
-            plantName,
-            benefit,
-            warning,
-            content
-        )
+        val resultFragment = ResultFragment.newInstance(args)
         setCurrentFragment(resultFragment, true)
     }
 

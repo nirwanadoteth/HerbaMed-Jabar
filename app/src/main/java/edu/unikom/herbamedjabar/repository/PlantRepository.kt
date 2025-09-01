@@ -39,24 +39,30 @@ class PlantRepositoryImpl @Inject constructor(
     private val application: Application
 ) : PlantRepository {
 
+    companion object {
+        private const val MAX_RETRIES = 3
+        private var DELAY_TIME_MS = 2000L
+        private const val AI_TIMEOUT_MS = 60_000L
+        private const val COMPRESS_QUALITY = 90
+    }
+
     override suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult {
-        val maxRetries = 3
-        var delayTime = 2000L
-        var lastError: Exception? = null
-        repeat(maxRetries) {
+        var lastError: Throwable? = null
+        repeat(MAX_RETRIES) { attempt ->
+            var savedImagePath: String? = null
             val result = runCatching {
                 val inputContent = content {
                     image(bitmap)
                     text(prompt)
                 }
-                val response = withTimeout(60_000) { generativeModel.generateContent(inputContent) }
-                val resultText = response.text ?: throw Exception("Hasil teks dari AI kosong.")
+                val response = withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
+                val resultText = response.text ?: error("Hasil teks dari AI kosong.")
                 val parsedData = PlantDataParser.parsePlantData(resultText)
-                val imagePath = saveBitmapToFile(bitmap)
-                val isHerbal = parsedData.herbalStatus.lowercase().replace(
-                    "-",
-                    " "
-                ).trim().equals("herbal", ignoreCase = true)
+                val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
+                val isHerbal = parsedData.herbalStatus
+                    .replace("-", " ")
+                    .trim()
+                    .equals("herbal", ignoreCase = true)
                 val history = ScanHistory(
                     resultText = resultText,
                     imagePath = imagePath,
@@ -65,7 +71,15 @@ class PlantRepositoryImpl @Inject constructor(
                     warning = parsedData.warning,
                     content = parsedData.description
                 )
-                scanHistoryDao.insertHistory(history)
+                try {
+                    scanHistoryDao.insertHistory(history)
+                } catch (dbEx: android.database.sqlite.SQLiteException) {
+                    savedImagePath?.let { runCatching { File(it).delete() } }
+                    throw dbEx
+                } catch (dbEx: IllegalArgumentException) {
+                    savedImagePath?.let { runCatching { File(it).delete() } }
+                    throw dbEx
+                }
                 AnalysisResult(
                     resultText = resultText,
                     imagePath = imagePath,
@@ -79,12 +93,16 @@ class PlantRepositoryImpl @Inject constructor(
             result.onSuccess { return it }
             result.onFailure { e ->
                 if (e is kotlinx.coroutines.CancellationException) throw e
-                lastError = e as? Exception
+                savedImagePath?.let { runCatching { File(it).delete() } }
+                lastError = e
             }
-            delay(delayTime)
-            delayTime *= 2
+            if (attempt < MAX_RETRIES - 1) {
+                delay(DELAY_TIME_MS)
+                DELAY_TIME_MS *= 2
+            }
         }
-        throw lastError ?: IllegalStateException("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
+        throw lastError
+            ?: error("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
     }
 
     override fun getAllHistory(): Flow<List<ScanHistory>> {
@@ -101,8 +119,8 @@ class PlantRepositoryImpl @Inject constructor(
             val directory = wrapper.getDir("images", android.content.Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
             FileOutputStream(file).use { outputStream ->
-                if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)) {
-                    throw IllegalStateException("Gagal menyimpan gambar: kompresi gagal.")
+                check(bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)) {
+                    "Gagal menyimpan gambar: kompresi gagal."
                 }
                 outputStream.flush()
             }

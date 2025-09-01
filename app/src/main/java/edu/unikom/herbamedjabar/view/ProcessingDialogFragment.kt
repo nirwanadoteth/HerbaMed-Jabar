@@ -36,15 +36,15 @@ class ProcessingDialogFragment : DialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             var progress = 0
-            while (progress <= 100) {
+            while (progress <= MAX_PROGRESS) {
                 binding.progressBar.progress = progress
                 binding.progressTextView.text = getString(R.string.progress_percent, progress)
                 progress++
 
-                val randomDelay = (50..150).random().toLong()
+                val randomDelay = (MIN_DELAY_MS..MAX_DELAY_MS).random()
                 delay(randomDelay)
-                if (progress > 95) {
-                    delay(1000)
+                if (progress > FINAL_PROGRESS_THRESHOLD) {
+                    delay(FINAL_DELAY_MS)
                 }
             }
         }
@@ -57,5 +57,10 @@ class ProcessingDialogFragment : DialogFragment() {
 
     companion object {
         const val TAG: String = "ProcessingDialog"
+        private const val MAX_PROGRESS = 100
+        private const val MIN_DELAY_MS = 50L
+        private const val MAX_DELAY_MS = 150L
+        private const val FINAL_DELAY_MS = 1000L
+        private const val FINAL_PROGRESS_THRESHOLD = 95
     }
 }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
+import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.util.MarkdownUtils
 import edu.unikom.herbamedjabar.viewModel.ResultViewModel
 import java.io.File
@@ -149,21 +150,16 @@ class ResultFragment : Fragment() {
         private const val ARG_CONTENT = "content"
 
         fun newInstance(
-            imagePath: String,
-            resultText: String,
-            plantName: String,
-            benefit: String,
-            warning: String,
-            content: String
+            args: AnalysisResult
         ): ResultFragment {
             val fragment = ResultFragment()
             val args = Bundle().apply {
-                putString(ARG_IMAGE_PATH, imagePath)
-                putString(ARG_RESULT_TEXT, resultText)
-                putString(ARG_PLANT_NAME, plantName)
-                putString(ARG_BENEFIT, benefit)
-                putString(ARG_WARNING, warning)
-                putString(ARG_CONTENT, content)
+                putString(ARG_IMAGE_PATH, args.imagePath)
+                putString(ARG_RESULT_TEXT, args.resultText)
+                putString(ARG_PLANT_NAME, args.plantName)
+                putString(ARG_BENEFIT, args.benefit)
+                putString(ARG_WARNING, args.warning)
+                putString(ARG_CONTENT, args.content)
             }
             fragment.arguments = args
             return fragment

@@ -90,14 +90,16 @@ class LoginFragment : Fragment() {
 
     private fun launchCredentialManager(request: GetCredentialRequest) {
         viewLifecycleOwner.lifecycleScope.launch {
-            runCatching {
-                credentialManager.getCredential(
+            try {
+                val credential = credentialManager.getCredential(
                     context = requireContext(),
                     request = request
                 ).credential
-            }.onSuccess { credential ->
                 createGoogleIdToken(credential)
-            }.onFailure { e ->
+            } catch (e: androidx.credentials.exceptions.NoCredentialException) {
+                Toast.makeText(requireContext(), "Tidak ada kredensial yang tersedia.", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "NoCredentialException: ${e.localizedMessage}")
+            } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")
             }
         }

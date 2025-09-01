@@ -5,15 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.appcheck.internal.util.Logger.TAG
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -21,6 +19,8 @@ sealed class AuthState {
     object Authenticated : AuthState()
     data class Error(val message: String) : AuthState()
 }
+
+private const val TAG = "AuthViewModel"
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -40,30 +40,32 @@ class AuthViewModel @Inject constructor(
             val result = runCatching {
                 firebaseAuth.signInWithEmailAndPassword(email, password).await()
             }
-            _authState.postValue(
-                if (result.isSuccess) {
-                    AuthState.Authenticated
-                } else {
-                    AuthState.Error(result.exceptionOrNull()?.message ?: "Login gagal")
-                }
-            )
+            _authState.value = if (result.isSuccess) {
+                Log.d(TAG, "loginUser: Authenticated")
+                AuthState.Authenticated
+            } else {
+                Log.d(TAG, "loginUser: Error")
+                AuthState.Error(result.exceptionOrNull()?.message ?: "Login gagal")
+            }
         }
     }
 
     fun signInWithGoogleToken(idToken: String) {
         _authState.value = AuthState.Loading
         viewModelScope.launch {
+            if (idToken.isBlank()) {
+                _authState.value = AuthState.Error("Token Google tidak valid.")
+                return@launch
+            }
             val result = runCatching {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 firebaseAuth.signInWithCredential(credential).await()
             }
-            _authState.postValue(
-                if (result.isSuccess) {
-                    AuthState.Authenticated
-                } else {
-                    AuthState.Error(result.exceptionOrNull()?.message ?: "Login dengan Google gagal")
-                }
-            )
+            _authState.value = if (result.isSuccess) {
+                AuthState.Authenticated
+            } else {
+                AuthState.Error(result.exceptionOrNull()?.message ?: "Login dengan Google gagal")
+            }
         }
     }
 
@@ -76,40 +78,28 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState.Error("Password dan konfirmasi password tidak cocok.")
             return
         }
-        if (password.length < 6) {
-            _authState.value = AuthState.Error("Password minimal harus 6 karakter.")
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            _authState.value = AuthState.Error("Password minimal harus $MIN_PASSWORD_LENGTH karakter.")
             return
         }
         _authState.value = AuthState.Loading
         viewModelScope.launch {
             val result = runCatching {
-                firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-                val user = firebaseAuth.currentUser
+                val authResult =
+                    firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+                val user = authResult.user ?: error("User tidak tersedia setelah registrasi")
                 val profileUpdates = userProfileChangeRequest { displayName = name }
-                user?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) Log.d(TAG, "User profile updated.")
-                }
+                user.updateProfile(profileUpdates).await()
+                Log.d(TAG, "User profile updated.")
             }
-            _authState.postValue(
-                if (result.isSuccess) {
-                    AuthState.Authenticated
-                } else {
-                    AuthState.Error(result.exceptionOrNull()?.message ?: "Registrasi gagal")
-                }
-            )
+            _authState.value = if (result.isSuccess) {
+                AuthState.Authenticated
+            } else {
+                AuthState.Error(result.exceptionOrNull()?.message ?: "Registrasi gagal")
+            }
         }
     }
-}
-
-// Extension function untuk menggunakan coroutines dengan Firebase Auth
-suspend fun <T> com.google.android.gms.tasks.Task<T>.await(): T {
-    return kotlinx.coroutines.suspendCancellableCoroutine { cont ->
-        addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                cont.resume(task.result)
-            } else {
-                cont.resumeWithException(task.exception!!)
-            }
-        }
+    companion object {
+        private const val MIN_PASSWORD_LENGTH = 6
     }
 }

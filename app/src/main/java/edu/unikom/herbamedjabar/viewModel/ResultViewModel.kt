@@ -28,7 +28,7 @@ class ResultViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             val result = runCatching {
-                val user = auth.currentUser ?: throw Exception("User not logged in")
+                val user = checkNotNull(auth.currentUser) { "User not logged in" }
                 val parsedData = PlantDataParser.parsePlantData(description)
                 postRepository.createPost(
                     userId = user.uid,

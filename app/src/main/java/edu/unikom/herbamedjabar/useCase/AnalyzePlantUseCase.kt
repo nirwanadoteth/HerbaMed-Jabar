@@ -55,7 +55,9 @@ class AnalyzePlantUseCase @Inject constructor(
 
             val response = plantRepository.analyzePlant(bitmap, prompt)
             Result.success(response)
-        } catch (e: Exception) {
+        } catch (e: android.database.sqlite.SQLiteException) {
+            Result.failure(e)
+        } catch (e: IllegalArgumentException) {
             Result.failure(e)
         }
     }

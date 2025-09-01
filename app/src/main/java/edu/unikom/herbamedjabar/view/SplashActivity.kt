@@ -19,7 +19,8 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        val destination = if (auth.currentUser != null) MainActivity::class.java else AuthActivity::class.java
+        val destination =
+            if (auth.currentUser != null) MainActivity::class.java else AuthActivity::class.java
         val intent = Intent(this, destination).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }

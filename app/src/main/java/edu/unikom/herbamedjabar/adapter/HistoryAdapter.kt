@@ -21,7 +21,8 @@ class HistoryAdapter(
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
 
     companion object {
-        private val htmlCache = object : LruCache<String, Spanned>(64_000) {
+        private const val HTML_CACHE_SIZE = 64_000
+        private val htmlCache = object : LruCache<String, Spanned>(HTML_CACHE_SIZE) {
             override fun sizeOf(key: String, value: Spanned): Int = value.length
         }
     }
@@ -67,7 +68,8 @@ class HistoryAdapter(
                     error(R.drawable.bg_place_holder)
                     fallback(R.drawable.bg_place_holder)
                 }
-                historyImageView.contentDescription = binding.root.context.getString(R.string.cd_plant_image_of, history.plantName)
+                historyImageView.contentDescription =
+                    binding.root.context.getString(R.string.cd_plant_image_of, history.plantName)
 
                 itemView.setOnClickListener {
                     onClick(history)
