@@ -72,14 +72,14 @@ class PostRepository @Inject constructor(
         description: String,
         parsedData: PlantData,
     ) {
-        val imageUrl = uploadImageToCloudinary(imageUri)
+        val upload = uploadImageToCloudinary(imageUri)
         val postId = firestore.collection("posts").document().id
         val newPost = Post(
             id = postId,
             userId = userId,
             username = username,
             userProfilePictureUrl = userProfilePictureUrl,
-            imageUrl = imageUrl.url,
+            imageUrl = upload.url,
             plantName = plantName,
             description = description,
             timestamp = System.currentTimeMillis(),
@@ -111,11 +111,12 @@ class PostRepository @Inject constructor(
     private suspend fun uploadImageToCloudinary(imageUri: Uri): UploadResult =
         withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) {
             suspendCancellableCoroutine { continuation ->
-                var requestId: String? = null
+                var reqId: String? = null
                 val uploader = MediaManager.get().upload(imageUri)
                     .callback(object : UploadCallback {
-                        override fun onStart(rId: String) {
-                            requestId = rId
+                        @Suppress("EmptyFunctionBlock")
+                        override fun onStart(requestId: String) {
+                            reqId = requestId
                         }
 
                         override fun onSuccess(requestId: String, resultData: Map<*, *>) {
@@ -158,7 +159,7 @@ class PostRepository @Inject constructor(
                         ) {}
                     })
                 continuation.invokeOnCancellation {
-                    requestId?.let { MediaManager.get().cancelRequest(it) }
+                    reqId?.let { MediaManager.get().cancelRequest(it) }
                 }
                 uploader.dispatch()
             }
