@@ -33,38 +33,24 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/time_wrapper"
+            app:layout_constraintBottom_toTopOf="@id/tv_post_timestamp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_user_profile"
             app:layout_constraintTop_toTopOf="@id/iv_user_profile"
             tools:text="Username" />
 
-        <LinearLayout
-            android:id="@+id/time_wrapper"
+        <TextView
+            android:id="@+id/tv_post_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:drawableStartCompat="@drawable/ic_clock"
+            android:drawablePadding="4dp"
+            android:textSize="12sp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
             app:layout_constraintStart_toStartOf="@id/tv_username"
-            app:layout_constraintTop_toBottomOf="@id/tv_username">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_clock" />
-
-            <TextView
-                android:id="@+id/tv_post_timestamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
-                app:layout_constraintStart_toStartOf="@id/tv_username"
-                app:layout_constraintTop_toBottomOf="@id/tv_username"
-                tools:text="2 hours ago" />
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/tv_username"
+            tools:text="2 hours ago" />
 
 
         <ImageView

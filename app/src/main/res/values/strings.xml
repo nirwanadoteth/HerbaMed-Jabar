@@ -79,4 +79,7 @@
     <string name="section_description_title_a11y">Deskripsi</string>
     <string name="section_benefit_title_a11y">Potensi Manfaat dan Kegunaan</string>
     <string name="section_warning_title_a11y">Peringatan dan Efek Samping</string>
+    <string name="processing_dialog_title">Menganalisis Tanaman...</string>
+    <string name="processing_dialog_subtitle">AI sedang mengidentifikasi jenis tanaman herbal</string>
+    <string name="processing_dialog_progress_sample">76%</string>
 </resources>
