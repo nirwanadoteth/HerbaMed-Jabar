@@ -21,6 +21,13 @@ sealed class AuthState {
 }
 
 private const val TAG = "AuthViewModel"
+private fun Throwable.toUserMessage(fallback: String): String = when (this) {
+    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> "Email atau password salah."
+    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Akun tidak ditemukan atau dinonaktifkan."
+    is com.google.firebase.FirebaseTooManyRequestsException -> "Terlalu banyak percobaan. Coba lagi nanti."
+    is com.google.firebase.FirebaseNetworkException -> "Masalah koneksi internet."
+    else -> fallback
+}
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -44,8 +51,8 @@ class AuthViewModel @Inject constructor(
                 Log.d(TAG, "loginUser: Authenticated")
                 AuthState.Authenticated
             } else {
-                Log.d(TAG, "loginUser: Error")
-                AuthState.Error(result.exceptionOrNull()?.message ?: "Login gagal")
+                Log.w(TAG, "loginUser: Error", result.exceptionOrNull())
+                AuthState.Error(result.exceptionOrNull()?.toUserMessage("Login gagal") ?: "Login gagal")
             }
         }
     }
@@ -54,6 +61,7 @@ class AuthViewModel @Inject constructor(
         _authState.value = AuthState.Loading
         viewModelScope.launch {
             if (idToken.isBlank()) {
+                Log.w(TAG, "signInWithGoogleToken: idToken is blank")
                 _authState.value = AuthState.Error("Token Google tidak valid.")
                 return@launch
             }
@@ -64,7 +72,8 @@ class AuthViewModel @Inject constructor(
             _authState.value = if (result.isSuccess) {
                 AuthState.Authenticated
             } else {
-                AuthState.Error(result.exceptionOrNull()?.message ?: "Login dengan Google gagal")
+                Log.w(TAG, "signInWithGoogleToken: error", result.exceptionOrNull())
+                AuthState.Error(result.exceptionOrNull()?.toUserMessage("Login dengan Google gagal") ?: "Login dengan Google gagal")
             }
         }
     }

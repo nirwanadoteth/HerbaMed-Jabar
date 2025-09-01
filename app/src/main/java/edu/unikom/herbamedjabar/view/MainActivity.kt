@@ -40,10 +40,6 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-        if (savedInstanceState == null) {
-            setCurrentFragment(ForumFragment(), false)
-            binding.navView.selectedItemId = R.id.navigation_forum
-        }
         binding.navView.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.navigation_scan -> ScanFragment()
@@ -56,6 +52,9 @@ class MainActivity : AppCompatActivity() {
                 setCurrentFragment(it, false)
                 true
             } ?: false
+        }
+        if (savedInstanceState == null) {
+            binding.navView.selectedItemId = R.id.navigation_forum
         }
 
         supportFragmentManager.addOnBackStackChangedListener {

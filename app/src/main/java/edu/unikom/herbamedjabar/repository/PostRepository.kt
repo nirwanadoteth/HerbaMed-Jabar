@@ -106,22 +106,29 @@ class PostRepository @Inject constructor(
     private suspend fun uploadImageToCloudinary(imageUri: Uri): String =
         withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) { // 60s timeout
             suspendCancellableCoroutine { continuation ->
-                val requestId = MediaManager.get().upload(imageUri)
+                var requestId: String?
+                val uploader = MediaManager.get().upload(imageUri)
                     .callback(object : UploadCallback {
                         @Suppress("EmptyFunctionBlock")
                         override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                            val url = resultData["secure_url"] as? String
+                            val url = (resultData["secure_url"] ?: resultData["url"]) as? String
                             if (url != null && continuation.isActive) {
                                 continuation.resume(url)
                             } else if (continuation.isActive) {
-                                continuation.resumeWithException(Exception("Cloudinary upload failed: URL is null"))
+                                continuation.resumeWithException(
+                                    Exception("Cloudinary upload failed: URL is null (requestId=$requestId)")
+                                )
                             }
                         }
 
                         @Suppress("EmptyFunctionBlock")
                         override fun onError(requestId: String, error: ErrorInfo) {
                             if (continuation.isActive) {
-                                continuation.resumeWithException(Exception("Cloudinary Error: ${error.description}"))
+                                continuation.resumeWithException(
+                                    Exception(
+                                        "Cloudinary error code=${error.code} desc=${error.description} (requestId=$requestId)"
+                                    )
+                                )
                             }
                         }
 
@@ -140,10 +147,10 @@ class PostRepository @Inject constructor(
                             requestId: String,
                             error: ErrorInfo
                         ) {}
-                    }).dispatch()
-
+                    })
+                requestId = uploader.dispatch()
                 continuation.invokeOnCancellation {
-                    MediaManager.get().cancelRequest(requestId)
+                    requestId?.let { MediaManager.get().cancelRequest(it) }
                 }
             }
         }

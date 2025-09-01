@@ -1,6 +1,7 @@
 package edu.unikom.herbamedjabar.data
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -13,7 +14,8 @@ data class ScanHistory(
     val id: Int = 0,
     val resultText: String,
     val imagePath: String,
-    val plantName: String = "",
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
+    val plantName: String,
     val content: String = "",
     val benefit: String = "",
     val warning: String = "",

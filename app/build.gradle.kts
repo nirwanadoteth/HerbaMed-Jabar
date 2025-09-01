@@ -51,6 +51,10 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    sourceSets.getByName("androidTest") {
+        assets.srcDir("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -74,7 +78,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.firebase.appcheck.debug)
+    debugImplementation(libs.firebase.appcheck.debug)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -115,16 +119,13 @@ dependencies {
 }
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
 
 ksp {
     arg("room.incremental", "true")
     arg("room.generateKotlin", "true")
     arg("room.schemaLocation", "$projectDir/schemas")
-}
-
-android {
-    sourceSets.getByName("androidTest") {
-        assets.srcDir("$projectDir/schemas")
-    }
 }

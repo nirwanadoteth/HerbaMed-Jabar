@@ -19,6 +19,8 @@ class PostAdapter(
     private val onDeleteClicked: (Post) -> Unit
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback()) {
 
+    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PostViewHolder(binding)
@@ -33,7 +35,7 @@ class PostAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post) {
-            val currentUser = FirebaseAuth.getInstance().currentUser
+            val currentUser = auth.currentUser
             binding.tvUsername.text = post.username
             binding.ivUserProfile.load(post.userProfilePictureUrl) {
                 crossfade(true)
@@ -57,6 +59,8 @@ class PostAdapter(
                 MarkdownUtils.parseMarkdownToHtml(post.warning, true),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
+            post.benefit?.let { binding.tvManfaat.visibility = if (it.isBlank()) View.GONE else View.VISIBLE }
+            post.warning?.let { binding.tvEfek.visibility = if (it.isBlank()) View.GONE else View.VISIBLE }
             binding.tvLikeCount.text = "${post.likes.size}"
             binding.ivLike.setImageResource(
                 if (post.likes.contains(currentUser?.uid)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
@@ -65,12 +69,13 @@ class PostAdapter(
             binding.ivMenuOptions.visibility =
                 if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
             binding.ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
+            val tsMillis = if (post.timestamp < 1_000_000_000_000L) post.timestamp * 1000 else post.timestamp
             binding.tvPostTimestamp.text = android.text.format.DateUtils.formatDateTime(
                 binding.root.context,
-                post.timestamp,
+                tsMillis,
                 android.text.format.DateUtils.FORMAT_SHOW_DATE or
-                        android.text.format.DateUtils.FORMAT_SHOW_YEAR or
-                        android.text.format.DateUtils.FORMAT_SHOW_TIME
+                    android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                    android.text.format.DateUtils.FORMAT_SHOW_TIME
             )
             binding.ivUserProfile.contentDescription =
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)

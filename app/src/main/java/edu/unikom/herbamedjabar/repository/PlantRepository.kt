@@ -2,6 +2,7 @@ package edu.unikom.herbamedjabar.repository
 
 import android.app.Application
 import android.graphics.Bitmap
+import androidx.sqlite.SQLiteException
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
@@ -41,13 +42,14 @@ class PlantRepositoryImpl @Inject constructor(
 
     companion object {
         private const val MAX_RETRIES = 3
-        private var DELAY_TIME_MS = 2000L
+        private const val INITIAL_DELAY_MS = 2000L
         private const val AI_TIMEOUT_MS = 60_000L
         private const val COMPRESS_QUALITY = 90
     }
 
     override suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult {
         var lastError: Throwable? = null
+        var delayTime = INITIAL_DELAY_MS
         repeat(MAX_RETRIES) { attempt ->
             var savedImagePath: String? = null
             val result = runCatching {
@@ -73,12 +75,12 @@ class PlantRepositoryImpl @Inject constructor(
                 )
                 try {
                     scanHistoryDao.insertHistory(history)
-                } catch (dbEx: android.database.sqlite.SQLiteException) {
+                } catch (se: SQLiteException) {
                     savedImagePath?.let { runCatching { File(it).delete() } }
-                    throw dbEx
-                } catch (dbEx: IllegalArgumentException) {
+                    throw se
+                } catch (iae: IllegalArgumentException) {
                     savedImagePath?.let { runCatching { File(it).delete() } }
-                    throw dbEx
+                    throw iae
                 }
                 AnalysisResult(
                     resultText = resultText,
@@ -97,8 +99,8 @@ class PlantRepositoryImpl @Inject constructor(
                 lastError = e
             }
             if (attempt < MAX_RETRIES - 1) {
-                delay(DELAY_TIME_MS)
-                DELAY_TIME_MS *= 2
+                delay(delayTime)
+                delayTime = (delayTime * 2).coerceAtMost(AI_TIMEOUT_MS)
             }
         }
         throw lastError
