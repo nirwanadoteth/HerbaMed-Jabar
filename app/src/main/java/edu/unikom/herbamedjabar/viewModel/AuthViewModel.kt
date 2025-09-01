@@ -40,13 +40,14 @@ class AuthViewModel @Inject constructor(
     val authState: LiveData<AuthState> = _authState
 
     fun loginUser(email: String, password: String) {
-        val validation = validateLoginInput(email, password)
+        val emailT = email.trim()
+        val validation = validateLoginInput(emailT, password)
         if (validation != null) {
             _authState.value = AuthState.Error(validation)
             return
         }
         runAuthOp("Login") {
-            firebaseAuth.signInWithEmailAndPassword(email.trim(), password).await()
+            firebaseAuth.signInWithEmailAndPassword(emailT, password).await()
         }
     }
 
@@ -66,15 +67,17 @@ class AuthViewModel @Inject constructor(
     }
 
     fun registerUser(name: String, email: String, password: String, confirmPassword: String) {
-        val validation = validateRegistrationInput(name, email, password, confirmPassword)
+        val nameT = name.trim()
+        val emailT = email.trim()
+        val validation = validateRegistrationInput(nameT, emailT, password, confirmPassword)
         if (validation != null) {
             _authState.value = AuthState.Error(validation)
             return
         }
         runAuthOp("Registrasi") {
-            val authResult = firebaseAuth.createUserWithEmailAndPassword(email.trim(), password).await()
+            val authResult = firebaseAuth.createUserWithEmailAndPassword(emailT, password).await()
             val user = authResult.user ?: error("User tidak tersedia setelah registrasi")
-            val profileUpdates = userProfileChangeRequest { displayName = name.trim() }
+            val profileUpdates = userProfileChangeRequest { displayName = nameT }
             user.updateProfile(profileUpdates).await()
             Log.d(TAG, "User profile updated.")
         }
@@ -103,6 +106,8 @@ class AuthViewModel @Inject constructor(
         when {
             listOf(name, email, password, confirmPassword).any { it.isBlank() } ->
                 error = "Semua kolom harus diisi."
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() ->
+                error = "Email tidak valid."
             password != confirmPassword ->
                 error = "Password dan konfirmasi password tidak cocok."
             password.length < MIN_PASSWORD_LENGTH ->
@@ -116,15 +121,18 @@ class AuthViewModel @Inject constructor(
         crossinline block: suspend () -> Unit
     ) = viewModelScope.launch {
         _authState.value = AuthState.Loading
-        val result = runCatching { block() }
-        _authState.value = if (result.isSuccess) {
+        try {
+            block()
             Log.d(TAG, "$opName: Authenticated")
-            AuthState.Authenticated
-        } else {
-            Log.w(TAG, "$opName: Error", result.exceptionOrNull())
-            AuthState.Error(
-                result.exceptionOrNull()?.toUserMessage("$opName gagal") ?: "$opName gagal"
-            )
+            _authState.value = AuthState.Authenticated
+        } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+            Log.w(TAG, "$opName: Timeout", e)
+            _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (t: Throwable) {
+            Log.w(TAG, "$opName: Error", t)
+            _authState.value = AuthState.Error(t.toUserMessage("$opName gagal"))
         }
     }
 
