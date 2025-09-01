@@ -58,6 +58,9 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:contentDescription="@string/cd_post_options"
+            android:focusable="true"
             android:src="@drawable/ic_more_hori"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/iv_user_profile"
@@ -71,6 +74,7 @@
             android:layout_width="0dp"
             android:layout_height="300dp"
             android:layout_marginTop="12dp"
+            android:contentDescription="@string/cd_plant_image"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,19 +108,6 @@
                 android:textStyle="bold"
                 tools:text="Nama Tanaman" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="0"
-            app:layout_constraintEnd_toEndOf="@id/container_post"
-            app:layout_constraintStart_toStartOf="@id/container_post"
-            app:layout_constraintTop_toBottomOf="@id/container_post"
-            tools:text="Ini adalah deskripsi singkat dari postingan tentang tanaman herbal yang sangat bermanfaat untuk kesehatan." />
-        <!-- Description -->
 
         <LinearLayout
             android:id="@+id/content_wrapper"
@@ -205,6 +196,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="16dp"
+            android:contentDescription="@string/cd_like"
             android:src="@drawable/ic_heart_filled"
             app:layout_constraintStart_toStartOf="@id/content_wrapper"
             app:layout_constraintTop_toBottomOf="@id/content_wrapper" />

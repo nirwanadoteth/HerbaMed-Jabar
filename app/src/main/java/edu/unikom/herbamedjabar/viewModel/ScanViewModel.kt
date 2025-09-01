@@ -40,25 +40,22 @@ class ScanViewModel @Inject constructor(
     val nonHerbalScan: LiveData<Int> = _nonHerbalScan
 
     fun analyzeImage(bitmap: Bitmap) {
+        if (_uiState.value is UiState.Loading) return
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             val result = analyzePlantUseCase(bitmap)
             result.onSuccess { analysisResult ->
-                _uiState.postValue(UiState.Success)
-                _navigateToResult.postValue(analysisResult)
+                _uiState.value = UiState.Success
+                _navigateToResult.value = analysisResult
                 // Increment scan counts
-                _totalScan.postValue((_totalScan.value ?: 0) + 1)
+                _totalScan.value = (_totalScan.value ?: 0) + 1
                 if (analysisResult.isHerbal) {
-                    _herbalScan.postValue((_herbalScan.value ?: 0) + 1)
+                    _herbalScan.value = (_herbalScan.value ?: 0) + 1
                 } else {
-                    _nonHerbalScan.postValue((_nonHerbalScan.value ?: 0) + 1)
+                    _nonHerbalScan.value = (_nonHerbalScan.value ?: 0) + 1
                 }
             }.onFailure { error ->
-                _uiState.postValue(
-                    UiState.Error(
-                        error.message ?: "Terjadi kesalahan tidak diketahui"
-                    )
-                )
+                _uiState.value = UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
             }
         }
     }

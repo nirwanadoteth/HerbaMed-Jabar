@@ -64,7 +64,8 @@ class PlantRepositoryImpl @Inject constructor(
 
                 // Use parsed herbalStatus from PlantDataParser
                 val herbalStatus = parsedData["herbalStatus"]?.lowercase() ?: "unknown"
-                val isHerbal = herbalStatus == "herbal"
+                val normalized = herbalStatus.replace("-", " ").trim()
+                val isHerbal = normalized.equals("herbal", ignoreCase = true)
 
                 // Simpan ke database (sebagai side-effect)
                 val history = ScanHistory(
@@ -142,7 +143,10 @@ class PlantRepositoryImpl @Inject constructor(
             val directory = wrapper.getDir("images", android.content.Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
             FileOutputStream(file).use { outputStream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)) {
+                    throw IllegalStateException("Gagal menyimpan gambar: kompresi gagal.")
+                }
+                outputStream.flush()
             }
             file.absolutePath
         }

@@ -14,10 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.databinding.FragmentScanBinding
 import edu.unikom.herbamedjabar.viewModel.ScanViewModel
 import edu.unikom.herbamedjabar.viewModel.UiState
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ScanFragment : Fragment() {
@@ -56,16 +59,26 @@ class ScanFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 try {
-                    val bitmap = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                        @Suppress("DEPRECATION")
-                        MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, uri)
-                    } else {
-                        val source =
-                            ImageDecoder.createSource(requireActivity().contentResolver, uri)
-                        ImageDecoder.decodeBitmap(source)
+                    lifecycleScope.launch {
+                        val bitmap = withContext(kotlinx.coroutines.Dispatchers.IO) {
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                                @Suppress("DEPRECATION")
+                                MediaStore.Images.Media.getBitmap(
+                                    requireActivity().contentResolver,
+                                    uri
+                                )
+                            } else {
+                                val source =
+                                    ImageDecoder.createSource(
+                                        requireActivity().contentResolver,
+                                        uri
+                                    )
+                                ImageDecoder.decodeBitmap(source)
+                            }
+                        }
+                        binding.plantImageView.setImageBitmap(bitmap)
+                        viewModel.analyzeImage(bitmap)
                     }
-                    binding.plantImageView.setImageBitmap(bitmap)
-                    viewModel.analyzeImage(bitmap)
                 } catch (_: Exception) {
                     Toast.makeText(context, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
                 }

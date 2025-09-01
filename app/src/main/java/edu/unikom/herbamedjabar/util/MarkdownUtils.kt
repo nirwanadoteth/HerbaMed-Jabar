@@ -16,7 +16,6 @@ object MarkdownUtils {
      * @param formatList If true, adds line breaks before numbered list items for better parsing.
      * @return The HTML representation of the Markdown input.
      */
-    @JvmStatic
     fun parseMarkdownToHtml(input: String?, formatList: Boolean = false): String {
         val raw = input ?: ""
         val formatted = if (formatList) addLineBreaksToNumberedList(raw) else raw
@@ -32,8 +31,9 @@ object MarkdownUtils {
      * @return The formatted string with line breaks before numbered list items.
      */
     private fun addLineBreaksToNumberedList(text: String): String {
-        return text.replace(Regex("""(\d+\.\s*)""")) { match ->
-            if (match.range.first == 0) match.value else "\n${match.value}"
-        }
+        // Insert a newline before inline "n. " that aren't already at line start.
+        // - Not at start-of-input, not already preceded by \n, and consume optional spaces before the number.
+        val pattern = Regex("""(?<!\A)(?<![\n\r])\s*(\d+\.\s)""")
+        return text.replace(pattern, "\n$1")
     }
 }

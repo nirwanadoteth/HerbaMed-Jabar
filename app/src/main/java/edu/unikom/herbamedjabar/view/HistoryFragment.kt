@@ -46,10 +46,10 @@ class HistoryFragment : Fragment() {
         viewModel.allHistory.observe(viewLifecycleOwner) { historyList ->
             if (historyList.isEmpty()) {
                 binding.historyRecyclerView.visibility = View.GONE
-                binding.emptyHistoryTextView.visibility = View.VISIBLE
+                binding.emptyHistoryImageView.visibility = View.VISIBLE
             } else {
                 binding.historyRecyclerView.visibility = View.VISIBLE
-                binding.emptyHistoryTextView.visibility = View.GONE
+                binding.emptyHistoryImageView.visibility = View.GONE
                 historyAdapter.submitList(historyList)
             }
         }

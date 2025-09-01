@@ -26,7 +26,6 @@ object PlantDataParser {
      * @param text The Markdown text to parse.
      * @return Map with keys: plantName, description, benefit, warning.
      */
-    @JvmStatic
     fun parsePlantData(text: String): Map<String, String> {
         val dataMap = mutableMapOf<String, String>()
         val originalText = text

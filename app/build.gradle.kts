@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 plugins {
@@ -49,7 +48,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlin.compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
 
     buildFeatures {
         viewBinding = true
@@ -60,7 +58,7 @@ android {
 
 dependencies {
 
-//    cloudinary
+    // Cloudinary
     implementation(libs.cloudinary.android)
     implementation(libs.androidx.core.splashscreen)
 
@@ -115,6 +113,9 @@ dependencies {
     // Markdown rendering
     implementation(libs.markdown)
     implementation(libs.circleimageview)
+}
+kotlin {
+    jvmToolchain(11)
 }
 // Tambahkan ini di bagian paling bawah file
 kapt {

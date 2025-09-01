@@ -54,7 +54,7 @@
             tools:listitem="@layout/item_history" />
 
         <ImageView
-            android:id="@+id/emptyHistoryTextView"
+            android:id="@+id/emptyHistoryImageView"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:contentDescription="@null"

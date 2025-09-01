@@ -77,6 +77,11 @@ class PostAdapter(
                             android.text.format.DateUtils.FORMAT_SHOW_YEAR or
                             android.text.format.DateUtils.FORMAT_SHOW_TIME
                 )
+
+                ivUserProfile.contentDescription = post.username
+                ivPostImage.contentDescription = post.plantName
+                ivLike.contentDescription = if (post.likes.contains(currentUser?.uid))
+                    root.context.getString(R.string.cd_liked) else root.context.getString(R.string.cd_like)
             }
         }
     }

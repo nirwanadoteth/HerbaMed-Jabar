@@ -20,7 +20,9 @@ class HistoryAdapter(
 ) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
 
-    private val htmlCache = LruCache<Long, Spanned>(64)
+    private val htmlCache = object : LruCache<String, Spanned>(64_000) {
+        override fun sizeOf(key: String, value: Spanned): Int = value.length
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val binding =
@@ -38,7 +40,7 @@ class HistoryAdapter(
         fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
-                val key = history.id.toLong()
+                val key = "${history.id}:${history.content.hashCode()}"
                 val cached = htmlCache[key]
                 val spanned = cached ?: run {
                     val html = MarkdownUtils.parseMarkdownToHtml(history.content)
