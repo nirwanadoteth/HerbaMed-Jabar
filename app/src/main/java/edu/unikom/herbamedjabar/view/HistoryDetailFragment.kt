@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.FragmentHistoryDetailBinding
 import edu.unikom.herbamedjabar.util.MarkdownUtils
@@ -69,16 +70,16 @@ class HistoryDetailFragment : Fragment() {
             warningBanner.visibility = if (history.warning.isBlank()) View.GONE else View.VISIBLE
             warningTextView.visibility = if (history.warning.isBlank()) View.GONE else View.VISIBLE
             resultImageView.load(
-                if (imageFile.exists()) Uri.fromFile(imageFile) else edu.unikom.herbamedjabar.R.drawable.bg_place_holder
+                if (imageFile.exists()) Uri.fromFile(imageFile) else R.drawable.bg_place_holder
             ) {
                 crossfade(true)
             }
-            resultImageView.contentDescription = history.plantName
+            resultImageView.contentDescription = root.context.getString(R.string.cd_plant_image_of, history.plantName)
         }
     }
 
     private fun setupAction(history: ScanHistory) {
-        binding.backButton.setOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             parentFragmentManager.popBackStack()
         }
         binding.deleteButton.setOnClickListener {

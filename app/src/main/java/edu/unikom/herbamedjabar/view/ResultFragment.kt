@@ -10,6 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.util.MarkdownUtils
@@ -69,15 +70,15 @@ class ResultFragment : Fragment() {
                 if (imageFile.exists()) {
                     resultImageView.setImageURI(Uri.fromFile(imageFile))
                 } else {
-                    resultImageView.setImageResource(edu.unikom.herbamedjabar.R.drawable.bg_place_holder)
+                    resultImageView.setImageResource(R.drawable.bg_place_holder)
                 }
-                resultImageView.contentDescription = plantName
             }
+            resultImageView.contentDescription = root.context.getString(R.string.cd_plant_image_of, plantName)
         }
     }
 
     private fun setupListeners() {
-        binding.backButton.setOnClickListener { activity?.supportFragmentManager?.popBackStack() }
+        binding.topAppBar.setNavigationOnClickListener { activity?.supportFragmentManager?.popBackStack() }
 
         binding.scanAgainButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
@@ -153,7 +154,7 @@ class ResultFragment : Fragment() {
             args: AnalysisResult
         ): ResultFragment {
             val fragment = ResultFragment()
-            val args = Bundle().apply {
+            val bundle = Bundle().apply {
                 putString(ARG_IMAGE_PATH, args.imagePath)
                 putString(ARG_RESULT_TEXT, args.resultText)
                 putString(ARG_PLANT_NAME, args.plantName)
@@ -161,7 +162,7 @@ class ResultFragment : Fragment() {
                 putString(ARG_WARNING, args.warning)
                 putString(ARG_CONTENT, args.content)
             }
-            fragment.arguments = args
+            fragment.arguments = bundle
             return fragment
         }
     }

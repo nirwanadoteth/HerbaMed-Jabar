@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".view.HistoryDetailFragment">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -20,34 +20,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="18dp">
-
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:contentDescription="@string/back_button_desc"
-                    android:focusable="true"
-                    android:padding="12dp"
-                    android:src="@drawable/ic_arrow_left" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="22dp"
-                    android:accessibilityHeading="true"
-                    android:text="@string/history_detail_title"
-                    android:textStyle="bold"
-                    tools:targetApi="28" />
-            </LinearLayout>
+                android:background="?attr/colorSurface"
+                android:padding="18dp"
+                app:navigationContentDescription="@string/back_button_desc"
+                app:navigationIcon="@drawable/ic_arrow_left"
+                app:title="@string/history_detail_title"
+                app:titleCentered="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,7 +37,7 @@
                 android:orientation="vertical"
                 android:padding="19dp">
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_marginBottom="10dp"
@@ -70,7 +52,7 @@
                         android:contentDescription="@string/cd_plant_image"
                         android:scaleType="centerCrop"
                         tools:src="@tools:sample/backgrounds/scenic" />
-                </androidx.cardview.widget.CardView>
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:id="@+id/container_detail"
@@ -210,7 +192,7 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
         android:id="@+id/progress_bar"
