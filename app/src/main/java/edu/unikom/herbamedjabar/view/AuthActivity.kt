@@ -24,15 +24,10 @@ class AuthActivity : AppCompatActivity() {
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        Mentrigger halaman utama
         if (firebaseAuth.currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-            return
-        }
-
-//        Mentrigger halaman login
-        if (savedInstanceState == null) {
+        } else if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, LoginFragment())
                 .commit()

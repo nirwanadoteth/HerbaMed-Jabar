@@ -3,7 +3,6 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.gms)
@@ -51,9 +50,7 @@ android {
 
     buildFeatures {
         viewBinding = true
-        // buildConfig tidak lagi diperlukan untuk ini
     }
-
 }
 
 dependencies {
@@ -103,7 +100,7 @@ dependencies {
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
@@ -117,7 +114,15 @@ dependencies {
 kotlin {
     jvmToolchain(17)
 }
-// Tambahkan ini di bagian paling bawah file
-kapt {
-    correctErrorTypes = true
+
+ksp {
+    arg("room.incremental", "true")
+    arg("room.generateKotlin", "true")
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+android {
+    sourceSets.getByName("androidTest") {
+        assets.srcDir("$projectDir/schemas")
+    }
 }

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".view.HistoryDetailFragment">
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +43,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="22dp"
+                    android:accessibilityHeading="true"
                     android:text="@string/history_detail_title"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:targetApi="28" />
             </LinearLayout>
 
             <LinearLayout
@@ -107,9 +109,11 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
                         android:text="@string/section_description_title"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <TextView
                         android:id="@+id/contentTextView"
@@ -124,9 +128,11 @@
                         android:id="@+id/benefit_banner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
                         android:text="@string/section_benefit_title"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -152,9 +158,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:accessibilityHeading="true"
                         android:text="@string/section_warning_title"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -27,16 +27,9 @@ class ResultViewModel @Inject constructor(
     fun createPostFromScan(imageUri: Uri, plantName: String, description: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            try {
-                val user = auth.currentUser
-                if (user == null) {
-                    _postResult.value = Result.failure(Exception("User not logged in"))
-                    _isLoading.value = false
-                    return@launch
-                }
-
+            val result = runCatching {
+                val user = auth.currentUser ?: throw Exception("User not logged in")
                 val parsedData = PlantDataParser.parsePlantData(description)
-
                 postRepository.createPost(
                     userId = user.uid,
                     username = user.displayName ?: "Anonymous",
@@ -46,12 +39,9 @@ class ResultViewModel @Inject constructor(
                     description = description,
                     parsedData = parsedData
                 )
-                _postResult.value = Result.success(Unit)
-            } catch (e: Exception) {
-                _postResult.value = Result.failure(e)
-            } finally {
-                _isLoading.value = false
             }
+            _postResult.value = result.map { }
+            _isLoading.value = false
         }
     }
 }

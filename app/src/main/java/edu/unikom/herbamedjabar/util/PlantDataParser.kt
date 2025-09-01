@@ -19,8 +19,8 @@ data class PlantData(
  *   ### ⚠️ Peringatan & Efek Samping
  *   ### Jenis Tanaman
  *
- * Returns a map with keys: plantName, description, benefit, warning.
- * If the plant cannot be identified, returns a standard message.
+ * Returns a PlantData with fields: plantName, description, benefit, warning, herbalStatus.
+ * If the plant cannot be identified, returns a standard placeholder response.
  */
 object PlantDataParser {
 
@@ -76,38 +76,42 @@ object PlantDataParser {
             )
         )
         return namePattern.find(text)?.destructured?.let { (name) -> name.trim() }
-            ?: text.lines().firstOrNull()?.replace(Regex("[#*🌿]"), "")?.trim()
+            ?: text.lineSequence().firstOrNull()
+                ?.replace(Regex("""^[#*\s🌿]+"""), "")
+                ?.trim()
             ?: "Nama tidak ditemukan"
     }
 
     private fun parseSection(text: String, section: Section): String {
+        val opts =
+            setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
         val (pattern, fallback) = when (section) {
             Section.DESCRIPTION ->
                 Regex(
-                    "### 📝 Deskripsi(.*?)(?=### 🩺 Potensi Manfaat & Kegunaan|### ⚠️ Peringatan & Efek Samping|### Jenis Tanaman|$)",
-                    setOf(RegexOption.DOT_MATCHES_ALL)
+                    pattern = """^#{2,6}\s*(?:📝\s*)?Deskripsi\b(.*?)(?=^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                    options = opts
                 ) to ""
 
             Section.BENEFIT ->
                 Regex(
-                    "### 🩺 Potensi Manfaat & Kegunaan(.*?)(?=### 📝 Deskripsi|### ⚠️ Peringatan & Efek Samping|### Jenis Tanaman|$)",
-                    setOf(RegexOption.DOT_MATCHES_ALL)
+                    pattern = """^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                    options = opts
                 ) to ""
 
             Section.WARNING ->
                 Regex(
-                    "### ⚠️ Peringatan & Efek Samping(.*?)(?=### 📝 Deskripsi|### 🩺 Potensi Manfaat & Kegunaan|### Jenis Tanaman|$)",
-                    setOf(RegexOption.DOT_MATCHES_ALL)
+                    pattern = """^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                    options = opts
                 ) to ""
 
             Section.HERBAL_STATUS ->
                 Regex(
-                    "### Jenis Tanaman(.*?)(?=### 📝 Deskripsi|### 🩺 Potensi Manfaat & Kegunaan|### ⚠️ Peringatan & Efek Samping|$)",
-                    setOf(RegexOption.DOT_MATCHES_ALL)
+                    pattern = """^#{2,6}\s*Jenis\s+Tanaman\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
+                    options = opts
                 ) to ""
         }
         return pattern.find(text)?.destructured?.let { (content) ->
-            content.replace("---", "").trim()
+            content.replace(Regex("""(?m)^\s*---\s*$"""), "").trim()
         } ?: fallback
     }
 }

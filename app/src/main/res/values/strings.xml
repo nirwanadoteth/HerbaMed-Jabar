@@ -87,4 +87,5 @@
     <string name="processing_dialog_progress_sample">76%</string>
     <string name="logout">Keluar</string>
     <string name="cd_user_profile_of">Foto profil %s</string>
+    <string name="cd_plant_image_of">Gambar tanaman %s</string>
 </resources>

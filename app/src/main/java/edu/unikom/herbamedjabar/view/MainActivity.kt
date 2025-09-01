@@ -39,36 +39,21 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-
         if (savedInstanceState == null) {
-            // Tampilkan fragment awal (ScanFragment)
             setCurrentFragment(ForumFragment(), false)
         }
-
         binding.navView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_scan -> {
-                    setCurrentFragment(ScanFragment(), false)
-                    true
-                }
-
-                R.id.navigation_forum -> {
-                    setCurrentFragment(ForumFragment(), false)
-                    true
-                }
-
-                R.id.navigation_history -> {
-                    setCurrentFragment(HistoryFragment(), false)
-                    true
-                }
-
-                R.id.navigation_profile -> {
-                    setCurrentFragment(ProfileFragment(), false)
-                    true
-                }
-
-                else -> false
+            val fragment = when (item.itemId) {
+                R.id.navigation_scan -> ScanFragment()
+                R.id.navigation_forum -> ForumFragment()
+                R.id.navigation_history -> HistoryFragment()
+                R.id.navigation_profile -> ProfileFragment()
+                else -> null
             }
+            fragment?.let {
+                setCurrentFragment(it, false)
+                true
+            } ?: false
         }
 
         supportFragmentManager.addOnBackStackChangedListener {

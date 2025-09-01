@@ -29,15 +29,9 @@ class ScanViewModel @Inject constructor(
     private val _navigateToResult = MutableLiveData<AnalysisResult?>()
     val navigateToResult: LiveData<AnalysisResult?> = _navigateToResult
 
-    // LiveData for scan counts
-    private val _totalScan = MutableLiveData(0)
-    val totalScan: LiveData<Int> = _totalScan
-
-    private val _herbalScan = MutableLiveData(0)
-    val herbalScan: LiveData<Int> = _herbalScan
-
-    private val _nonHerbalScan = MutableLiveData(0)
-    val nonHerbalScan: LiveData<Int> = _nonHerbalScan
+    data class ScanStats(val total: Int = 0, val herbal: Int = 0, val nonHerbal: Int = 0)
+    private val _scanStats = MutableLiveData(ScanStats())
+    val scanStats: LiveData<ScanStats> = _scanStats
 
     fun analyzeImage(bitmap: Bitmap) {
         if (_uiState.value is UiState.Loading) return
@@ -47,13 +41,13 @@ class ScanViewModel @Inject constructor(
             result.onSuccess { analysisResult ->
                 _uiState.value = UiState.Success
                 _navigateToResult.value = analysisResult
-                // Increment scan counts
-                _totalScan.value = (_totalScan.value ?: 0) + 1
-                if (analysisResult.isHerbal) {
-                    _herbalScan.value = (_herbalScan.value ?: 0) + 1
+                val stats = _scanStats.value ?: ScanStats()
+                val newStats = if (analysisResult.isHerbal) {
+                    stats.copy(total = stats.total + 1, herbal = stats.herbal + 1)
                 } else {
-                    _nonHerbalScan.value = (_nonHerbalScan.value ?: 0) + 1
+                    stats.copy(total = stats.total + 1, nonHerbal = stats.nonHerbal + 1)
                 }
+                _scanStats.value = newStats
             }.onFailure { error ->
                 _uiState.value = UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
             }

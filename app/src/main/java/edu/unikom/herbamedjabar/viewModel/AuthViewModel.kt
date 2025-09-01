@@ -35,28 +35,35 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState.Error("Email dan password tidak boleh kosong.")
             return
         }
-
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            try {
+            val result = runCatching {
                 firebaseAuth.signInWithEmailAndPassword(email, password).await()
-                _authState.postValue(AuthState.Authenticated)
-            } catch (e: Exception) {
-                _authState.postValue(AuthState.Error(e.message ?: "Login gagal"))
             }
+            _authState.postValue(
+                if (result.isSuccess) {
+                    AuthState.Authenticated
+                } else {
+                    AuthState.Error(result.exceptionOrNull()?.message ?: "Login gagal")
+                }
+            )
         }
     }
 
     fun signInWithGoogleToken(idToken: String) {
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            try {
+            val result = runCatching {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 firebaseAuth.signInWithCredential(credential).await()
-                _authState.postValue(AuthState.Authenticated)
-            } catch (e: Exception) {
-                _authState.postValue(AuthState.Error(e.message ?: "Login dengan Google gagal"))
             }
+            _authState.postValue(
+                if (result.isSuccess) {
+                    AuthState.Authenticated
+                } else {
+                    AuthState.Error(result.exceptionOrNull()?.message ?: "Login dengan Google gagal")
+                }
+            )
         }
     }
 
@@ -73,29 +80,23 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState.Error("Password minimal harus 6 karakter.")
             return
         }
-
-
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            try {
+            val result = runCatching {
                 firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-                _authState.postValue(AuthState.Authenticated)
-
                 val user = firebaseAuth.currentUser
-
-                val profileUpdates = userProfileChangeRequest {
-                    displayName = name
+                val profileUpdates = userProfileChangeRequest { displayName = name }
+                user?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) Log.d(TAG, "User profile updated.")
                 }
-
-                user!!.updateProfile(profileUpdates)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "User profile updated.")
-                        }
-                    }
-            } catch (e: Exception) {
-                _authState.postValue(AuthState.Error(e.message ?: "Registrasi gagal"))
             }
+            _authState.postValue(
+                if (result.isSuccess) {
+                    AuthState.Authenticated
+                } else {
+                    AuthState.Error(result.exceptionOrNull()?.message ?: "Registrasi gagal")
+                }
+            )
         }
     }
 }

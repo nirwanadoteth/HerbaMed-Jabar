@@ -25,11 +25,11 @@ class ForumFragment : Fragment() {
     private lateinit var postAdapter: PostAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentForumBinding.inflate(inflater, container, false)
-
 
         return binding.root
     }
@@ -44,7 +44,6 @@ class ForumFragment : Fragment() {
             val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.nav_view)
             bottomNav?.selectedItemId = R.id.navigation_scan
         }
-
     }
 
     private fun setupRecyclerView() {

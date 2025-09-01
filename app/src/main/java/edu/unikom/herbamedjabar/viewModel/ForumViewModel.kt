@@ -49,23 +49,14 @@ class ForumViewModel @Inject constructor(
 
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
-            try {
-                val userId = auth.currentUser?.uid ?: return@launch
-                postRepository.toggleLike(postId, userId)
-            } catch (e: Exception) {
-                _error.value = "Gagal memperbarui like: ${e.message}"
-            }
+            val userId = auth.currentUser?.uid ?: return@launch
+            postRepository.toggleLike(postId, userId)
         }
     }
 
     fun deletePost(post: Post) {
         viewModelScope.launch {
-            try {
-                postRepository.deletePost(post)
-            } catch (e: Exception) {
-                _error.value = "Gagal menghapus postingan: ${e.message}"
-            }
+            postRepository.deletePost(post)
         }
     }
-
 }

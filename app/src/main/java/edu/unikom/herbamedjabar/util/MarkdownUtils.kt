@@ -8,7 +8,6 @@ object MarkdownUtils {
     private val flavour by lazy { CommonMarkFlavourDescriptor() }
     private val parser by lazy { MarkdownParser(flavour) }
 
-
     /**
      * Converts a Markdown string to HTML.
      *

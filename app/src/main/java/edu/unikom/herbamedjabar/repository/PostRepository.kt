@@ -44,6 +44,7 @@ class PostRepository @Inject constructor(
     fun getPostsByUserId(userId: String): Flow<List<Post>> = callbackFlow {
         val collection = firestore.collection("posts")
             .whereEqualTo("userId", userId)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
 
         val listener = collection.addSnapshotListener { snapshot, error ->
             if (error != null) {
@@ -51,14 +52,11 @@ class PostRepository @Inject constructor(
                 return@addSnapshotListener
             }
             if (snapshot != null) {
-                val posts = snapshot.toObjects(Post::class.java)
-                val sortedPosts = posts.sortedByDescending { it.timestamp }
-                trySend(sortedPosts).isSuccess
+                trySend(snapshot.toObjects(Post::class.java)).isSuccess
             }
         }
         awaitClose { listener.remove() }
     }
-
 
     suspend fun createPost(
         userId: String,
@@ -130,8 +128,6 @@ class PostRepository @Inject constructor(
         }
 
     suspend fun deletePost(post: Post) {
-        // Hanya hapus dokumen dari Firestore
         firestore.collection("posts").document(post.id).delete().await()
     }
-
 }

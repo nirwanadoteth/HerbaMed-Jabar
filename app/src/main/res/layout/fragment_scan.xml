@@ -219,15 +219,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="10dp"
-                    android:accessibilityHeading="true"
                     android:backgroundTint="@color/primary"
                     android:text="@string/scan_take_picture"
                     android:textSize="12sp"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_camera"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/white"
-                    tools:targetApi="28" />
+                    app:iconTint="@color/white" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_gallery"

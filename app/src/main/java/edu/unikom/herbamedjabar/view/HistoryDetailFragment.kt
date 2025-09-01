@@ -53,37 +53,25 @@ class HistoryDetailFragment : Fragment() {
 
     private fun setupView(history: ScanHistory) {
         val imageFile = File(history.imagePath)
-
         binding.apply {
             plantNameTextView.text = history.plantName
             contentTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(history.content),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(history.content), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             benefitTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(history.benefit),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(history.benefit), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             warningTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(history.warning),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(history.warning), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            if (history.benefit.isBlank()) {
-                benefitBanner.visibility = View.GONE
-                benefitTextView.visibility = View.GONE
-            }
-            if (history.warning.isBlank()) {
-                warningBanner.visibility = View.GONE
-                warningTextView.visibility = View.GONE
-            }
-            if (imageFile.exists()) {
-                resultImageView.load(Uri.fromFile(imageFile)) { crossfade(true) }
-            } else {
-                resultImageView.load(edu.unikom.herbamedjabar.R.drawable.bg_place_holder) {
-                    crossfade(
-                        true
-                    )
-                }
+            benefitBanner.visibility = if (history.benefit.isBlank()) View.GONE else View.VISIBLE
+            benefitTextView.visibility = if (history.benefit.isBlank()) View.GONE else View.VISIBLE
+            warningBanner.visibility = if (history.warning.isBlank()) View.GONE else View.VISIBLE
+            warningTextView.visibility = if (history.warning.isBlank()) View.GONE else View.VISIBLE
+            resultImageView.load(
+                if (imageFile.exists()) Uri.fromFile(imageFile) else edu.unikom.herbamedjabar.R.drawable.bg_place_holder
+            ) {
+                crossfade(true)
             }
             resultImageView.contentDescription = history.plantName
         }

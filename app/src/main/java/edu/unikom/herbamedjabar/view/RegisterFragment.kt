@@ -23,7 +23,8 @@ class RegisterFragment : Fragment() {
     private val viewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
@@ -39,15 +40,14 @@ class RegisterFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.registerButton.setOnClickListener {
-            val name = binding.nameEditText.text.toString().trim()
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
-            val confirmPassword = binding.confirmPasswordEditText.text.toString().trim()
-            viewModel.registerUser(name, email, password, confirmPassword)
+            viewModel.registerUser(
+                binding.nameEditText.text.toString().trim(),
+                binding.emailEditText.text.toString().trim(),
+                binding.passwordEditText.text.toString().trim(),
+                binding.confirmPasswordEditText.text.toString().trim()
+            )
         }
-
         binding.loginTextView.setOnClickListener {
-            // Kembali ke LoginFragment
             parentFragmentManager.popBackStack()
         }
     }

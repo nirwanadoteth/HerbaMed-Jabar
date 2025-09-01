@@ -12,7 +12,6 @@ import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -37,7 +36,8 @@ class LoginFragment : Fragment() {
     private lateinit var credentialManager: CredentialManager
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -90,28 +90,22 @@ class LoginFragment : Fragment() {
 
     private fun launchCredentialManager(request: GetCredentialRequest) {
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                // Launch Credential Manager UI
-                val result = credentialManager.getCredential(
+            runCatching {
+                credentialManager.getCredential(
                     context = requireContext(),
                     request = request
-                )
-
-                // Extract credential from the result returned by Credential Manager
-                createGoogleIdToken(result.credential)
-            } catch (e: GetCredentialException) {
+                ).credential
+            }.onSuccess { credential ->
+                createGoogleIdToken(credential)
+            }.onFailure { e ->
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")
             }
         }
     }
 
     private fun createGoogleIdToken(credential: Credential) {
-        // Check if credential is of type Google ID
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            // Create Google ID Token
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-
-            // Sign in to Firebase with using the token
             viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
         } else {
             Log.w(TAG, "Kredensial tidak sesuai dengan Google ID Token")

@@ -32,7 +32,7 @@ class ScanFragment : Fragment() {
 
     private var processingDialog: ProcessingDialogFragment? = null
 
-    // Launcher untuk izin kamera
+    // Camera permission launcher
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isAdded) {
@@ -45,7 +45,7 @@ class ScanFragment : Fragment() {
             }
         }
 
-    // Launcher untuk mengambil gambar dari kamera
+    // Camera image capture launcher
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             if (bitmap != null) {
@@ -54,7 +54,7 @@ class ScanFragment : Fragment() {
             }
         }
 
-    // Launcher BARU untuk mengambil gambar dari galeri
+    // Gallery image picker launcher
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
@@ -107,7 +107,8 @@ class ScanFragment : Fragment() {
                 ContextCompat.getColor(requireContext(), edu.unikom.herbamedjabar.R.color.primary)
             spannable.setSpan(
                 android.text.style.ForegroundColorSpan(primaryColor),
-                medStart, medEnd,
+                medStart,
+                medEnd,
                 android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
@@ -119,13 +120,12 @@ class ScanFragment : Fragment() {
             }
         }
 
-        // Hubungkan tombol dengan fungsinya masing-masing
         binding.scanButton.setOnClickListener { checkCameraPermissionAndOpenCamera() }
         binding.btnGallery.setOnClickListener { galleryLauncher.launch("image/*") }
     }
 
     private fun observeViewModel() {
-        // Observer untuk navigasi
+        // Observe navigation
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
                 (activity as? MainActivity)?.showResultFragment(
@@ -140,7 +140,7 @@ class ScanFragment : Fragment() {
             }
         }
 
-        // Observer untuk UI State (loading, error, etc)
+        // Observe UI state (loading, error, etc)
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
@@ -166,15 +166,11 @@ class ScanFragment : Fragment() {
             }
         }
 
-        // Observe scan counts and update TextViews
-        viewModel.totalScan.observe(viewLifecycleOwner) { count ->
-            binding.totalScanTextView.text = count.toString()
-        }
-        viewModel.herbalScan.observe(viewLifecycleOwner) { count ->
-            binding.herbalScanTextView.text = count.toString()
-        }
-        viewModel.nonHerbalScan.observe(viewLifecycleOwner) { count ->
-            binding.nonHerbalScanTextView.text = count.toString()
+        // Observe scanStats and update TextViews
+        viewModel.scanStats.observe(viewLifecycleOwner) { stats ->
+            binding.totalScanTextView.text = stats.total.toString()
+            binding.herbalScanTextView.text = stats.herbal.toString()
+            binding.nonHerbalScanTextView.text = stats.nonHerbal.toString()
         }
     }
 
@@ -187,7 +183,7 @@ class ScanFragment : Fragment() {
     private fun checkCameraPermissionAndOpenCamera() {
         when {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) ==
-                    PackageManager.PERMISSION_GRANTED -> {
+                PackageManager.PERMISSION_GRANTED -> {
                 takePictureLauncher.launch(null)
             }
 

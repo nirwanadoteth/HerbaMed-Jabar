@@ -12,5 +12,4 @@ class HistoryViewModel @Inject constructor(
 ) : ViewModel() {
 
     val allHistory = plantRepository.getAllHistory().asLiveData()
-
 }

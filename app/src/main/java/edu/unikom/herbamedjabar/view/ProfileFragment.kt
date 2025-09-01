@@ -32,7 +32,8 @@ class ProfileFragment : Fragment() {
     private lateinit var postAdapter: PostAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -117,24 +118,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateBadgesVisibility(postCount: Int) {
-        binding.apply {
-            badge1.visibility = View.GONE
-            badge2.visibility = View.GONE
-            badge3.visibility = View.GONE
-            badge4.visibility = View.GONE
-
-            if (postCount >= 1) {
-                badge1.visibility = View.VISIBLE
-            }
-            if (postCount >= 5) {
-                badge2.visibility = View.VISIBLE
-            }
-            if (postCount >= 10) {
-                badge3.visibility = View.VISIBLE
-            }
-            if (postCount >= 20) {
-                badge4.visibility = View.VISIBLE
-            }
+        val badges = listOf(binding.badge1, binding.badge2, binding.badge3, binding.badge4)
+        val thresholds = listOf(1, 5, 10, 20)
+        badges.forEachIndexed { i, badge ->
+            badge.visibility = if (postCount >= thresholds[i]) View.VISIBLE else View.GONE
         }
     }
 

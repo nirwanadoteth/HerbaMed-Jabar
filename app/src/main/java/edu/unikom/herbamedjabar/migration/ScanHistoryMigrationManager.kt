@@ -12,17 +12,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Singleton
 class ScanHistoryMigrationManager @Inject constructor(
     private val scanHistoryDao: ScanHistoryDao,
     private val db: AppDatabase
 ) {
-    @Singleton
     private val scope = CoroutineScope(kotlinx.coroutines.SupervisorJob() + Dispatchers.IO)
+    private val started = java.util.concurrent.atomic.AtomicBoolean(false)
 
     fun runMigrationIfNeeded(context: Context) {
         val prefs = context.getSharedPreferences("migration_prefs", Context.MODE_PRIVATE)
         val migrated = prefs.getBoolean("scan_history_migrated_v2", false)
         if (migrated) return
+        if (!started.compareAndSet(false, true)) return
 
         scope.launch {
             try {
@@ -49,6 +51,8 @@ class ScanHistoryMigrationManager @Inject constructor(
                 prefs.edit { putBoolean("scan_history_migrated_v2", true) }
             } catch (e: Exception) {
                 android.util.Log.e("ScanHistoryMigration", "v2 migration failed", e)
+            } finally {
+                started.set(false)
             }
         }
     }

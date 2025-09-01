@@ -55,26 +55,19 @@ class HistoryAdapter(
                     binding.root.context,
                     history.timestamp,
                     android.text.format.DateUtils.FORMAT_SHOW_DATE or
-                            android.text.format.DateUtils.FORMAT_SHOW_YEAR or
-                            android.text.format.DateUtils.FORMAT_SHOW_TIME
+                        android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                        android.text.format.DateUtils.FORMAT_SHOW_TIME
                 )
 
                 val imageFile = File(history.imagePath)
-                if (imageFile.exists()) {
-                    historyImageView.load(imageFile) {
-                        crossfade(true)
-                        placeholder(R.drawable.bg_place_holder)
-                        error(R.drawable.bg_place_holder)
-                        fallback(R.drawable.bg_place_holder)
-                    }
-                } else {
-                    historyImageView.load(R.drawable.bg_place_holder) {
-                        crossfade(true)
-                        error(R.drawable.bg_place_holder)
-                        fallback(R.drawable.bg_place_holder)
-                    }
+                val data = if (imageFile.exists()) imageFile else R.drawable.bg_place_holder
+                historyImageView.load(data) {
+                    crossfade(true)
+                    placeholder(R.drawable.bg_place_holder)
+                    error(R.drawable.bg_place_holder)
+                    fallback(R.drawable.bg_place_holder)
                 }
-                historyImageView.contentDescription = history.plantName
+                historyImageView.contentDescription = binding.root.context.getString(R.string.cd_plant_image_of, history.plantName)
 
                 itemView.setOnClickListener {
                     onClick(history)

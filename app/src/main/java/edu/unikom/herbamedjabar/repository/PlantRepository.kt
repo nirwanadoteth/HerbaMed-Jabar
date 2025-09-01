@@ -42,91 +42,49 @@ class PlantRepositoryImpl @Inject constructor(
     override suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult {
         val maxRetries = 3
         var delayTime = 2000L
-
-        repeat(maxRetries) { attempt ->
-            var savedImagePath: String? = null
-            try {
+        var lastError: Exception? = null
+        repeat(maxRetries) {
+            val result = runCatching {
                 val inputContent = content {
                     image(bitmap)
                     text(prompt)
                 }
                 val response = withTimeout(60_000) { generativeModel.generateContent(inputContent) }
-
                 val resultText = response.text ?: throw Exception("Hasil teks dari AI kosong.")
                 val parsedData = PlantDataParser.parsePlantData(resultText)
-                // Simpan gambar ke file
-                val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
-
-                val plantName = parsedData.plantName
-                val benefit = parsedData.benefit
-                val warning = parsedData.warning
-                val content = parsedData.description
-
-                // Use parsed herbalStatus from PlantDataParser
-                val herbalStatus = parsedData.herbalStatus.lowercase()
-                val normalized = herbalStatus.replace("-", " ").trim()
-                val isHerbal = normalized.equals("herbal", ignoreCase = true)
-
-                // Simpan ke database (sebagai side-effect)
+                val imagePath = saveBitmapToFile(bitmap)
+                val isHerbal = parsedData.herbalStatus.lowercase().replace(
+                    "-",
+                    " "
+                ).trim().equals("herbal", ignoreCase = true)
                 val history = ScanHistory(
                     resultText = resultText,
                     imagePath = imagePath,
-                    plantName = plantName,
-                    benefit = benefit,
-                    warning = warning,
-                    content = content
+                    plantName = parsedData.plantName,
+                    benefit = parsedData.benefit,
+                    warning = parsedData.warning,
+                    content = parsedData.description
                 )
-                try {
-                    scanHistoryDao.insertHistory(history)
-                } catch (dbEx: Exception) {
-                    // Cleanup orphaned image file
-                    try {
-                        savedImagePath?.let { File(it).delete() }
-                    } catch (cleanupEx: Exception) {
-                        android.util.Log.e(
-                            "PlantRepository",
-                            "Failed to delete orphaned image file: $savedImagePath",
-                            cleanupEx
-                        )
-                    }
-                    throw dbEx
-                }
-
-                // Kembalikan objek AnalysisResult yang dibutuhkan untuk navigasi
-                return AnalysisResult(
+                scanHistoryDao.insertHistory(history)
+                AnalysisResult(
                     resultText = resultText,
                     imagePath = imagePath,
-                    plantName = plantName,
-                    benefit = benefit,
-                    warning = warning,
-                    content = content,
+                    plantName = parsedData.plantName,
+                    benefit = parsedData.benefit,
+                    warning = parsedData.warning,
+                    content = parsedData.description,
                     isHerbal = isHerbal
                 )
-
-            } catch (e: Exception) {
-                // Don’t swallow coroutine cancellations – rethrow immediately
-                if (e is kotlinx.coroutines.CancellationException) throw e
-
-                // Cleanup orphaned image file before retry
-                savedImagePath?.let {
-                    try {
-                        File(it).delete()
-                    } catch (cleanupEx: Exception) {
-                        android.util.Log.e(
-                            "PlantRepository",
-                            "Failed to delete orphaned image file: $savedImagePath",
-                            cleanupEx
-                        )
-                    }
-                }
-                if (attempt == maxRetries - 1) {
-                    throw e
-                }
-                delay(delayTime)
-                delayTime *= 2
             }
+            result.onSuccess { return it }
+            result.onFailure { e ->
+                if (e is kotlinx.coroutines.CancellationException) throw e
+                lastError = e as? Exception
+            }
+            delay(delayTime)
+            delayTime *= 2
         }
-        throw IllegalStateException("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
+        throw lastError ?: IllegalStateException("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
     }
 
     override fun getAllHistory(): Flow<List<ScanHistory>> {

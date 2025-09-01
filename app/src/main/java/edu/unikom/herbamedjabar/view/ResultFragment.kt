@@ -51,29 +51,24 @@ class ResultFragment : Fragment() {
         binding.apply {
             plantNameTextView.text = plantName
             contentTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(content),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(content), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             benefitTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(benefit),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(benefit), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             warningTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(warning),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
+                MarkdownUtils.parseMarkdownToHtml(warning), HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            if (benefit.isBlank()) {
-                benefitBanner.visibility = View.GONE
-                benefitTextView.visibility = View.GONE
-            }
-            if (warning.isBlank()) {
-                warningBanner.visibility = View.GONE
-                warningTextView.visibility = View.GONE
-            }
+            benefitBanner.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
+            benefitTextView.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
+            warningBanner.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
+            warningTextView.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
             if (imagePath != null) {
                 val imageFile = File(imagePath)
                 if (imageFile.exists()) {
                     resultImageView.setImageURI(Uri.fromFile(imageFile))
+                } else {
+                    resultImageView.setImageResource(edu.unikom.herbamedjabar.R.drawable.bg_place_holder)
                 }
                 resultImageView.contentDescription = plantName
             }
