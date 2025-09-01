@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/forum_subtitle"
+                    android:text="@string/scan_subtitle"
                     android:textColor="@color/text_muted_foreground"
                     android:textSize="12sp" />
             </LinearLayout>

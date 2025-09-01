@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven("https://central.sonatype.com/repository/maven-snapshots/")
         gradlePluginPortal()
     }
 }
@@ -21,4 +22,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "HerbaMed Jabar"
 include(":app")
- 

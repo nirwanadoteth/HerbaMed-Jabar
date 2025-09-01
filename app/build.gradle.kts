@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -5,6 +6,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlin.parcelize)
@@ -48,9 +50,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlin.compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
 
     buildFeatures {
         viewBinding = true
@@ -109,7 +109,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     // Dukungan Room untuk Coroutines
     implementation(libs.androidx.room.ktx)
 

@@ -9,7 +9,7 @@
     <color name="text_muted_foreground">#FF858585</color>
     <color name="text_blue">#FF2C3EA3</color>
     <color name="text_primary">#FF779867</color>
-    <color name="text_desctructive">#FFF72C5B</color>
+    <color name="text_destructive">#FFF72C5B</color>
     <color name="benefit_text">#609B5A</color>
     <color name="warning_text">#92400D</color>
     <color name="delete_text">#F53F3F</color>

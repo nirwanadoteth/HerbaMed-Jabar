@@ -39,15 +39,14 @@ class HistoryAdapter(
 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(history: ScanHistory) { // Terima posisi di sini
+        fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
-                val cached = history.id.let { htmlCache[it.toLong()] }
+                val key = history.id.toLong()
+                val cached = htmlCache[key]
                 val spanned = cached ?: run {
                     val html = MarkdownUtils.parseMarkdownToHtml(history.content)
-                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).also {
-                        history.id.let { id -> htmlCache.put(id.toLong(), it) }
-                    }
+                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY).also { htmlCache.put(key, it) }
                 }
                 descriptionTextView.text = spanned
 

@@ -68,7 +68,7 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/card1"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -104,7 +104,7 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/card2"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="0dp"
@@ -168,7 +168,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_nonherbal_count"
-                                android:textColor="@color/text_desctructive"
+                                android:textColor="@color/text_destructive"
                                 android:textStyle="bold" />
 
                         </LinearLayout>
