@@ -57,14 +57,15 @@
 
         <ImageView
             android:id="@+id/iv_menu_options"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@string/cd_post_options"
             android:focusable="true"
             android:src="@drawable/ic_more_hori"
+            android:padding="12dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/iv_user_profile"
             app:layout_constraintEnd_toEndOf="parent"
@@ -141,6 +142,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:breakStrategy="high_quality"
+                android:lineSpacingExtra="2dp"
                 android:textColor="@color/text_muted_foreground"
                 android:textSize="12sp"
                 tools:text="Deskripsi singkat" />
@@ -158,14 +161,17 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/custom_card_green_info"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp">
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp">
 
                 <TextView
                     android:id="@+id/tv_manfaat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="0dp"
+                    android:breakStrategy="high_quality"
+                    android:lineSpacingExtra="2dp"
                     android:textColor="@color/benefit_text"
                     android:textSize="12sp"
                     tools:text="Manfaat" />
@@ -185,14 +191,17 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/custom_effect_wrapper"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp">
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="12dp">
 
                 <TextView
                     android:id="@+id/tv_efek"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="0dp"
+                    android:breakStrategy="high_quality"
+                    android:lineSpacingExtra="2dp"
                     android:textColor="@color/warning_text"
                     android:textSize="12sp"
                     tools:text="Peringatan dan Efek Samping" />

@@ -88,10 +88,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:accessibilityHeading="true"
                     android:text="@string/forum_share_title"
                     android:textColor="@color/primary"
                     android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:targetApi="28" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -114,6 +116,7 @@
                 app:cornerRadius="12dp"
                 app:icon="@drawable/ic_plus"
                 app:iconGravity="textStart"
+                app:iconPadding="8dp"
                 app:iconTint="@color/white" />
 
         </LinearLayout>

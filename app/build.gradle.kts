@@ -49,8 +49,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
         buildConfig = true
+        viewBinding = true
     }
 
     sourceSets.getByName("androidTest") {

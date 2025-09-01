@@ -40,7 +40,7 @@ class HerbaAppApplication : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
-            .respectCacheHeaders(false)
+            .respectCacheHeaders(true)
             .apply { if (BuildConfig.DEBUG) logger(DebugLogger()) }
             .build()
     }

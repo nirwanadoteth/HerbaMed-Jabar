@@ -25,6 +25,9 @@ class PostRepository @Inject constructor(
     private val firestore: FirebaseFirestore
 ) {
 
+    data class UploadResult(val url: String, val publicId: String?)
+    class UploadException(val code: Int?, message: String) : Exception(message)
+
     fun getPosts(): Flow<List<Post>> = callbackFlow {
         val collection = firestore.collection("posts")
             .orderBy("timestamp", Query.Direction.DESCENDING)
@@ -46,6 +49,7 @@ class PostRepository @Inject constructor(
         val collection = firestore.collection("posts")
             .whereEqualTo("userId", userId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(QUERY_LIMIT)
 
         val listener = collection.addSnapshotListener { snapshot, error ->
             if (error != null) {
@@ -75,7 +79,7 @@ class PostRepository @Inject constructor(
             userId = userId,
             username = username,
             userProfilePictureUrl = userProfilePictureUrl,
-            imageUrl = imageUrl,
+            imageUrl = imageUrl.url,
             plantName = plantName,
             description = description,
             timestamp = System.currentTimeMillis(),
@@ -101,9 +105,10 @@ class PostRepository @Inject constructor(
 
     companion object {
         private const val CLOUDINARY_UPLOAD_TIMEOUT_MS = 60_000L
+        private const val QUERY_LIMIT = 50L
     }
 
-    private suspend fun uploadImageToCloudinary(imageUri: Uri): String =
+    private suspend fun uploadImageToCloudinary(imageUri: Uri): UploadResult =
         withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) {
             suspendCancellableCoroutine { continuation ->
                 var requestId: String? = null
@@ -115,11 +120,15 @@ class PostRepository @Inject constructor(
 
                         override fun onSuccess(requestId: String, resultData: Map<*, *>) {
                             val url = (resultData["secure_url"] ?: resultData["url"]) as? String
+                            val publicId = resultData["public_id"] as? String
                             if (url != null && continuation.isActive) {
-                                continuation.resume(url)
+                                continuation.resume(UploadResult(url, publicId))
                             } else if (continuation.isActive) {
                                 continuation.resumeWithException(
-                                    Exception("Cloudinary upload failed: URL is null (requestId=$requestId)")
+                                    UploadException(
+                                        null,
+                                        "Cloudinary upload failed: URL is null (requestId=$requestId)"
+                                    )
                                 )
                             }
                         }
@@ -127,8 +136,9 @@ class PostRepository @Inject constructor(
                         override fun onError(requestId: String, error: ErrorInfo) {
                             if (continuation.isActive) {
                                 continuation.resumeWithException(
-                                    Exception(
-                                        "Cloudinary error code=${error.code} desc=${error.description} (requestId=$requestId)"
+                                    UploadException(
+                                        error.code,
+                                        "Cloudinary: ${error.description} (requestId=$requestId)"
                                     )
                                 )
                             }

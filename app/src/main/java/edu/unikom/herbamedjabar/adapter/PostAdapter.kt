@@ -75,14 +75,17 @@ class PostAdapter(
                 if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
             binding.ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
             val tsMillis = if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000 else post.timestamp
-            binding.tvPostTimestamp.text = if (tsMillis > 0)
+            binding.tvPostTimestamp.text = if (tsMillis > 0) {
                 android.text.format.DateUtils.formatDateTime(
-                binding.root.context,
-                tsMillis,
-                android.text.format.DateUtils.FORMAT_SHOW_DATE or
-                    android.text.format.DateUtils.FORMAT_SHOW_YEAR or
-                    android.text.format.DateUtils.FORMAT_SHOW_TIME
-            ) else ""
+                    binding.root.context,
+                    tsMillis,
+                    android.text.format.DateUtils.FORMAT_SHOW_DATE or
+                        android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                        android.text.format.DateUtils.FORMAT_SHOW_TIME
+                )
+            } else {
+                ""
+            }
             binding.ivUserProfile.contentDescription =
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)
             binding.ivPostImage.contentDescription = binding.root.context.getString(
