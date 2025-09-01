@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.imageLoader
 import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -92,7 +93,7 @@ class ProfileFragment : Fragment() {
                 // Menggunakan tvFullName dari layout baru Anda
                 binding.tvUsername.text = it.displayName ?: "Nama Pengguna"
                 binding.tvEmail.text = it.email ?: "Email Pengguna"
-                binding.ivProfilePicture.load(it.photoUrl) {
+                binding.ivProfilePicture.load(it.photoUrl, binding.root.context.imageLoader) {
                     crossfade(true)
                     placeholder(R.drawable.ic_user_image_circular)
                     error(R.drawable.ic_user_image_circular)

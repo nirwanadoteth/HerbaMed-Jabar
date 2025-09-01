@@ -24,6 +24,7 @@ private const val TAG = "AuthViewModel"
 private fun Throwable.toUserMessage(fallback: String): String = when (this) {
     is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> "Email atau password salah."
     is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Akun tidak ditemukan atau dinonaktifkan."
+    is com.google.firebase.auth.FirebaseAuthUserCollisionException -> "Email sudah terdaftar."
     is com.google.firebase.FirebaseTooManyRequestsException -> "Terlalu banyak percobaan. Coba lagi nanti."
     is com.google.firebase.FirebaseNetworkException -> "Masalah koneksi internet."
     else -> fallback
@@ -58,13 +59,13 @@ class AuthViewModel @Inject constructor(
     }
 
     fun signInWithGoogleToken(idToken: String) {
+        if (idToken.isBlank()) {
+            Log.w(TAG, "signInWithGoogleToken: idToken is blank")
+            _authState.value = AuthState.Error("Token Google tidak valid.")
+            return
+        }
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            if (idToken.isBlank()) {
-                Log.w(TAG, "signInWithGoogleToken: idToken is blank")
-                _authState.value = AuthState.Error("Token Google tidak valid.")
-                return@launch
-            }
             val result = runCatching {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 firebaseAuth.signInWithCredential(credential).await()
@@ -104,7 +105,8 @@ class AuthViewModel @Inject constructor(
             _authState.value = if (result.isSuccess) {
                 AuthState.Authenticated
             } else {
-                AuthState.Error(result.exceptionOrNull()?.message ?: "Registrasi gagal")
+                Log.w(TAG, "registerUser: error", result.exceptionOrNull())
+                AuthState.Error(result.exceptionOrNull()?.toUserMessage("Registrasi gagal") ?: "Registrasi gagal")
             }
         }
     }

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import coil.imageLoader
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -70,7 +71,8 @@ class HistoryDetailFragment : Fragment() {
             warningBanner.visibility = if (history.warning.isBlank()) View.GONE else View.VISIBLE
             warningTextView.visibility = if (history.warning.isBlank()) View.GONE else View.VISIBLE
             resultImageView.load(
-                if (imageFile.exists()) Uri.fromFile(imageFile) else R.drawable.bg_place_holder
+                if (imageFile.exists()) Uri.fromFile(imageFile) else R.drawable.bg_place_holder,
+                binding.root.context.imageLoader
             ) {
                 crossfade(true)
             }

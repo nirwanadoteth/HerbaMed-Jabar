@@ -104,12 +104,15 @@ class PostRepository @Inject constructor(
     }
 
     private suspend fun uploadImageToCloudinary(imageUri: Uri): String =
-        withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) { // 60s timeout
+        withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) {
             suspendCancellableCoroutine { continuation ->
-                var requestId: String?
+                var requestId: String? = null
                 val uploader = MediaManager.get().upload(imageUri)
                     .callback(object : UploadCallback {
-                        @Suppress("EmptyFunctionBlock")
+                        override fun onStart(rId: String) {
+                            requestId = rId
+                        }
+
                         override fun onSuccess(requestId: String, resultData: Map<*, *>) {
                             val url = (resultData["secure_url"] ?: resultData["url"]) as? String
                             if (url != null && continuation.isActive) {
@@ -121,7 +124,6 @@ class PostRepository @Inject constructor(
                             }
                         }
 
-                        @Suppress("EmptyFunctionBlock")
                         override fun onError(requestId: String, error: ErrorInfo) {
                             if (continuation.isActive) {
                                 continuation.resumeWithException(
@@ -131,9 +133,6 @@ class PostRepository @Inject constructor(
                                 )
                             }
                         }
-
-                        @Suppress("EmptyFunctionBlock")
-                        override fun onStart(requestId: String) {}
 
                         @Suppress("EmptyFunctionBlock")
                         override fun onProgress(
@@ -148,10 +147,10 @@ class PostRepository @Inject constructor(
                             error: ErrorInfo
                         ) {}
                     })
-                requestId = uploader.dispatch()
                 continuation.invokeOnCancellation {
                     requestId?.let { MediaManager.get().cancelRequest(it) }
                 }
+                uploader.dispatch()
             }
         }
 

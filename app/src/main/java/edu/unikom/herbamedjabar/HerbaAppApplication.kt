@@ -1,6 +1,9 @@
 package edu.unikom.herbamedjabar
 
 import android.app.Application
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.util.DebugLogger
 import com.cloudinary.android.MediaManager
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.appCheck
@@ -11,17 +14,19 @@ import edu.unikom.herbamedjabar.migration.ScanHistoryMigrationManager
 import javax.inject.Inject
 
 @HiltAndroidApp
-class HerbaAppApplication : Application() {
+class HerbaAppApplication : Application(), ImageLoaderFactory {
     @Inject
     lateinit var scanHistoryMigrationManager: ScanHistoryMigrationManager
 
     override fun onCreate() {
         super.onCreate()
-
         Firebase.initialize(context = this)
-        Firebase.appCheck.installAppCheckProviderFactory(
-            DebugAppCheckProviderFactory.getInstance(),
-        )
+
+        if (BuildConfig.DEBUG) {
+            Firebase.appCheck.installAppCheckProviderFactory(
+                DebugAppCheckProviderFactory.getInstance(),
+            )
+        }
 
         val config = mapOf(
             "cloud_name" to "difspgu31",
@@ -31,5 +36,12 @@ class HerbaAppApplication : Application() {
         MediaManager.init(this, config)
 
         scanHistoryMigrationManager.runMigrationIfNeeded(this)
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .respectCacheHeaders(false)
+            .apply { if (BuildConfig.DEBUG) logger(DebugLogger()) }
+            .build()
     }
 }

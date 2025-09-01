@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorSurface"
-                android:padding="18dp"
+                style="?attr/tabPaddingTop"
                 app:navigationContentDescription="@string/back_button_desc"
                 app:navigationIcon="@drawable/ic_arrow_left"
                 app:title="@string/result_title"
@@ -47,7 +47,6 @@
                         android:id="@+id/resultImageView"
                         android:layout_width="match_parent"
                         android:layout_height="300dp"
-                        android:layout_marginBottom="19dp"
                         android:contentDescription="@string/cd_plant_image"
                         android:scaleType="centerCrop"
                         tools:src="@tools:sample/backgrounds/scenic" />
@@ -63,16 +62,18 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
                         android:labelFor="@id/plantNameTextView"
                         android:text="@string/label_plant_name_colon"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <TextView
                         android:id="@+id/plantNameTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:accessibilityHeading="true"
+                        android:layout_marginStart="4dp"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:textStyle="bold"

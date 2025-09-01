@@ -7,6 +7,7 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.imageLoader
 import coil.load
 import com.google.firebase.auth.FirebaseAuth
 import edu.unikom.herbamedjabar.R
@@ -16,10 +17,9 @@ import edu.unikom.herbamedjabar.util.MarkdownUtils
 
 class PostAdapter(
     private val onLikeClicked: (String) -> Unit,
-    private val onDeleteClicked: (Post) -> Unit
+    private val onDeleteClicked: (Post) -> Unit,
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback()) {
-
-    private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,15 +37,17 @@ class PostAdapter(
         fun bind(post: Post) {
             val currentUser = auth.currentUser
             binding.tvUsername.text = post.username
-            binding.ivUserProfile.load(post.userProfilePictureUrl) {
+            binding.ivUserProfile.load(post.userProfilePictureUrl, binding.root.context.imageLoader) {
                 crossfade(true)
                 placeholder(R.drawable.ic_user_image)
                 error(R.drawable.ic_user_image)
+                fallback(R.drawable.ic_user_image)
             }
-            binding.ivPostImage.load(post.imageUrl) {
+            binding.ivPostImage.load(post.imageUrl, binding.root.context.imageLoader) {
                 crossfade(true)
                 placeholder(R.drawable.bg_place_holder)
                 error(R.drawable.bg_place_holder)
+                fallback(R.drawable.bg_place_holder)
             }
             binding.tvPlantName.text = post.plantName
             binding.tvContent.text = HtmlCompat.fromHtml(
@@ -59,30 +61,34 @@ class PostAdapter(
                 MarkdownUtils.parseMarkdownToHtml(post.warning, true),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
             )
-            post.benefit?.let { binding.tvManfaat.visibility = if (it.isBlank()) View.GONE else View.VISIBLE }
-            post.warning?.let { binding.tvEfek.visibility = if (it.isBlank()) View.GONE else View.VISIBLE }
+            binding.tvManfaat.visibility = if (post.benefit.isNullOrBlank()) View.GONE else View.VISIBLE
+            binding.tvEfek.visibility = if (post.warning.isNullOrBlank()) View.GONE else View.VISIBLE
             binding.tvLikeCount.text = "${post.likes.size}"
-            binding.ivLike.setImageResource(
-                if (post.likes.contains(currentUser?.uid)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
-            )
-            binding.ivLike.setOnClickListener { onLikeClicked(post.id) }
+            val likedByMe = currentUser?.uid?.let(post.likes::contains) == true
+            binding.ivLike.setImageResource(if (likedByMe) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)
+            binding.ivLike.setOnClickListener {
+                it.isEnabled = false
+                onLikeClicked(post.id)
+                it.postDelayed({ it.isEnabled = true }, 400)
+            }
             binding.ivMenuOptions.visibility =
                 if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
             binding.ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
-            val tsMillis = if (post.timestamp < 1_000_000_000_000L) post.timestamp * 1000 else post.timestamp
-            binding.tvPostTimestamp.text = android.text.format.DateUtils.formatDateTime(
+            val tsMillis = if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000 else post.timestamp
+            binding.tvPostTimestamp.text = if (tsMillis > 0)
+                android.text.format.DateUtils.formatDateTime(
                 binding.root.context,
                 tsMillis,
                 android.text.format.DateUtils.FORMAT_SHOW_DATE or
                     android.text.format.DateUtils.FORMAT_SHOW_YEAR or
                     android.text.format.DateUtils.FORMAT_SHOW_TIME
-            )
+            ) else ""
             binding.ivUserProfile.contentDescription =
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)
             binding.ivPostImage.contentDescription = binding.root.context.getString(
                 R.string.cd_plant_image_of, post.plantName
             )
-            binding.ivLike.contentDescription = if (post.likes.contains(currentUser?.uid)) {
+            binding.ivLike.contentDescription = if (likedByMe) {
                 binding.root.context.getString(R.string.cd_liked)
             } else {
                 binding.root.context.getString(R.string.cd_like)

@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorSurface"
-                android:padding="18dp"
+                style="?attr/tabPaddingTop"
                 app:navigationContentDescription="@string/back_button_desc"
                 app:navigationIcon="@drawable/ic_arrow_left"
                 app:title="@string/history_detail_title"
@@ -35,12 +35,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="19dp">
+                android:padding="16dp">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="8dp"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="0dp">
 
@@ -48,7 +48,6 @@
                         android:id="@+id/resultImageView"
                         android:layout_width="match_parent"
                         android:layout_height="300dp"
-                        android:layout_marginBottom="19dp"
                         android:contentDescription="@string/cd_plant_image"
                         android:scaleType="centerCrop"
                         tools:src="@tools:sample/backgrounds/scenic" />
@@ -58,13 +57,14 @@
                     android:id="@+id/container_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:accessibilityHeading="true"
+                        android:labelFor="@id/plantNameTextView"
                         android:text="@string/label_plant_name_colon"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -74,6 +74,7 @@
                         android:id="@+id/plantNameTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:textStyle="bold"
@@ -84,8 +85,8 @@
                     android:id="@+id/content_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -93,8 +94,7 @@
                         android:layout_height="wrap_content"
                         android:accessibilityHeading="true"
                         android:text="@string/section_description_title"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
                         tools:targetApi="28" />
 
                     <TextView
@@ -104,6 +104,7 @@
                         android:layout_marginTop="4dp"
                         android:textColor="@color/text_muted_foreground"
                         android:textSize="12sp"
+                        android:lineSpacingExtra="2sp"
                         tools:text="Deskripsi singkat" />
 
                     <TextView
@@ -112,8 +113,7 @@
                         android:layout_height="wrap_content"
                         android:accessibilityHeading="true"
                         android:text="@string/section_benefit_title"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
                         tools:targetApi="28" />
 
                     <LinearLayout
@@ -122,14 +122,15 @@
                         android:layout_marginTop="8dp"
                         android:background="@drawable/custom_card_green_info"
                         android:orientation="vertical"
-                        android:paddingHorizontal="8dp">
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="12dp">
 
                         <TextView
                             android:id="@+id/benefitTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="0dp"
                             android:textColor="@color/benefit_text"
                             android:textSize="12sp"
                             tools:text="Manfaat" />
@@ -142,8 +143,7 @@
                         android:layout_marginTop="8dp"
                         android:accessibilityHeading="true"
                         android:text="@string/section_warning_title"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
                         tools:targetApi="28" />
 
                     <LinearLayout
@@ -152,14 +152,15 @@
                         android:layout_marginTop="8dp"
                         android:background="@drawable/custom_effect_wrapper"
                         android:orientation="vertical"
-                        android:paddingHorizontal="8dp">
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="12dp">
 
                         <TextView
                             android:id="@+id/warningTextView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="0dp"
                             android:textColor="@color/warning_text"
                             android:textSize="12sp"
                             tools:text="Peringatan dan Efek Samping" />
@@ -170,7 +171,7 @@
                     android:id="@+id/buttonContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
                     <com.google.android.material.button.MaterialButton
@@ -198,6 +199,9 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:accessibilityLiveRegion="polite"
+        android:contentDescription="@string/loading"
+        android:importantForAccessibility="yes"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

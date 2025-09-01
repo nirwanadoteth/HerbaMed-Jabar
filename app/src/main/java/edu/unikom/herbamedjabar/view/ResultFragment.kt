@@ -95,7 +95,7 @@ class ResultFragment : Fragment() {
             if (imagePath == null || resultText == null) {
                 Toast.makeText(
                     requireContext(),
-                    "Data tidak lengkap untuk diposting",
+                    getString(R.string.error_incomplete_post_data),
                     Toast.LENGTH_SHORT
                 ).show()
                 return@setOnClickListener

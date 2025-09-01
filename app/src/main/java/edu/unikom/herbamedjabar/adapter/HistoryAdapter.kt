@@ -8,6 +8,7 @@ import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.imageLoader
 import coil.load
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
@@ -62,7 +63,7 @@ class HistoryAdapter(
 
                 val imageFile = File(history.imagePath)
                 val data = if (imageFile.exists()) imageFile else R.drawable.bg_place_holder
-                historyImageView.load(data) {
+                historyImageView.load(data, binding.root.context.imageLoader) {
                     crossfade(true)
                     placeholder(R.drawable.bg_place_holder)
                     error(R.drawable.bg_place_holder)
