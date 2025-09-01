@@ -57,13 +57,13 @@ class PlantRepositoryImpl @Inject constructor(
                 // Simpan gambar ke file
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
 
-                val plantName = parsedData["plantName"] ?: ""
-                val benefit = parsedData["benefit"] ?: ""
-                val warning = parsedData["warning"] ?: ""
-                val content = parsedData["description"] ?: ""
+                val plantName = parsedData.plantName
+                val benefit = parsedData.benefit
+                val warning = parsedData.warning
+                val content = parsedData.description
 
                 // Use parsed herbalStatus from PlantDataParser
-                val herbalStatus = parsedData["herbalStatus"]?.lowercase() ?: "unknown"
+                val herbalStatus = parsedData.herbalStatus.lowercase()
                 val normalized = herbalStatus.replace("-", " ").trim()
                 val isHerbal = normalized.equals("herbal", ignoreCase = true)
 

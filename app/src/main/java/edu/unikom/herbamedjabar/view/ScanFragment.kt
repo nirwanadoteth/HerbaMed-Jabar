@@ -59,18 +59,18 @@ class ScanFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 try {
-                    lifecycleScope.launch {
+                    viewLifecycleOwner.lifecycleScope.launch {
                         val bitmap = withContext(kotlinx.coroutines.Dispatchers.IO) {
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                                 @Suppress("DEPRECATION")
                                 MediaStore.Images.Media.getBitmap(
-                                    requireActivity().contentResolver,
+                                    requireContext().contentResolver,
                                     uri
                                 )
                             } else {
                                 val source =
                                     ImageDecoder.createSource(
-                                        requireActivity().contentResolver,
+                                        requireContext().contentResolver,
                                         uri
                                     )
                                 ImageDecoder.decodeBitmap(source)

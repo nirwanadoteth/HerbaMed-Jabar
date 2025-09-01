@@ -7,9 +7,9 @@
     <string name="forum_title_med">Med</string>
     <string name="forum_share_title">Mulai Berbagi!</string>
     <string name="forum_share_subtitle">Bagikan penemuan herbal Anda</string>
-    <string name="cd_post_options">Opsi Post</string>
+    <string name="cd_post_options">Opsi Posting</string>
     <string name="cd_like">Suka</string>
-    <string name="cd_liked">Di Suka</string>
+    <string name="cd_liked">Disukai</string>
     <string name="scan_subtitle">Scan tanaman untuk identifikasi herbal.</string>
     <string name="scan_total">Total Scan</string>
     <string name="scan_total_count">%1$d</string>
@@ -67,7 +67,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selamat_datang">Selamat Datang!</string>
     <string name="selamat_datang_desc">Temukan tanaman herbal di sekitar Anda</string>
-    <string name="default_web_client_id">
+    <string name="default_web_client_id" translatable="false">
         374536660454-kicnn7hcuiu5pqehgsguom11krstg4e5.apps.googleusercontent.com</string>
     <string name="progress_percent">%1$d%%</string>
     <string name="back_button_desc">Kembali</string>
@@ -85,4 +85,6 @@
     <string name="processing_dialog_title">Menganalisis Tanaman…</string>
     <string name="processing_dialog_subtitle">AI sedang mengidentifikasi jenis tanaman herbal</string>
     <string name="processing_dialog_progress_sample">76%</string>
+    <string name="logout">Keluar</string>
+    <string name="cd_user_profile_of">Foto profil %s</string>
 </resources>

@@ -80,8 +80,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
                         android:text="@string/label_plant_name_colon"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <TextView
                         android:id="@+id/plantNameTextView"

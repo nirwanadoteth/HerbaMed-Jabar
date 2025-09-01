@@ -48,7 +48,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/herbamed"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/colorOnBackground"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -219,13 +219,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="10dp"
+                    android:accessibilityHeading="true"
                     android:backgroundTint="@color/primary"
                     android:text="@string/scan_take_picture"
                     android:textSize="12sp"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_camera"
                     app:iconGravity="textStart"
-                    app:iconTint="@color/white" />
+                    app:iconTint="@color/white"
+                    tools:targetApi="28" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_gallery"

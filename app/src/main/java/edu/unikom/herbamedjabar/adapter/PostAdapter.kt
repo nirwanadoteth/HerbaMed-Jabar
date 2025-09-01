@@ -42,6 +42,7 @@ class PostAdapter(
                 }
                 ivPostImage.load(post.imageUrl) {
                     placeholder(R.drawable.bg_place_holder)
+                    error(R.drawable.bg_place_holder)
                 }
 
                 tvPlantName.text = post.plantName
@@ -78,7 +79,8 @@ class PostAdapter(
                             android.text.format.DateUtils.FORMAT_SHOW_TIME
                 )
 
-                ivUserProfile.contentDescription = post.username
+                ivUserProfile.contentDescription =
+                    binding.root.context.getString(R.string.cd_user_profile_of, post.username)
                 ivPostImage.contentDescription = post.plantName
                 ivLike.contentDescription = if (post.likes.contains(currentUser?.uid))
                     root.context.getString(R.string.cd_liked) else root.context.getString(R.string.cd_like)

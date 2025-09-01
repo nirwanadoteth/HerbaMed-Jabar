@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import edu.unikom.herbamedjabar.data.Post
+import edu.unikom.herbamedjabar.util.PlantData
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -66,7 +67,7 @@ class PostRepository @Inject constructor(
         imageUri: Uri,
         plantName: String,
         description: String,
-        parsedData: Map<String, String>,
+        parsedData: PlantData,
     ) {
         val imageUrl = uploadImageToCloudinary(imageUri)
         val postId = firestore.collection("posts").document().id
@@ -79,9 +80,9 @@ class PostRepository @Inject constructor(
             plantName = plantName,
             description = description,
             timestamp = System.currentTimeMillis(),
-            benefit = parsedData["benefit"],
-            warning = parsedData["warning"],
-            content = parsedData["description"]
+            benefit = parsedData.benefit,
+            warning = parsedData.warning,
+            content = parsedData.description
         )
         firestore.collection("posts").document(postId).set(newPost).await()
     }

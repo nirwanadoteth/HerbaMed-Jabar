@@ -8,8 +8,12 @@
     tools:context=".view.ResultFragment">
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,6 +64,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="300dp"
                         android:layout_marginBottom="19dp"
+                        android:contentDescription="@string/cd_plant_image"
                         android:scaleType="centerCrop"
                         tools:src="@tools:sample/backgrounds/scenic" />
                 </androidx.cardview.widget.CardView>
@@ -74,8 +79,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
                         android:text="@string/label_plant_name_colon"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <TextView
                         android:id="@+id/plantNameTextView"
@@ -98,9 +106,12 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
+                        android:contentDescription="@string/section_description_title_a11y"
                         android:text="@string/section_description_title"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <TextView
                         android:id="@+id/contentTextView"
@@ -115,9 +126,12 @@
                         android:id="@+id/benefit_banner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
+                        android:contentDescription="@string/section_benefit_title_a11y"
                         android:text="@string/section_benefit_title"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -143,9 +157,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
+                        android:accessibilityHeading="true"
+                        android:contentDescription="@string/section_warning_title_a11y"
                         android:text="@string/section_warning_title"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:targetApi="28" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

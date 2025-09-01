@@ -75,6 +75,7 @@ class ResultFragment : Fragment() {
                 if (imageFile.exists()) {
                     resultImageView.setImageURI(Uri.fromFile(imageFile))
                 }
+                resultImageView.contentDescription = plantName
             }
         }
     }

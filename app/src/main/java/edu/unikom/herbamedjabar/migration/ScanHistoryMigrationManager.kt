@@ -35,10 +35,10 @@ class ScanHistoryMigrationManager @Inject constructor(
                         for (history in page) {
                             val parsed = PlantDataParser.parsePlantData(history.resultText)
                             val updatedHistory = history.copy(
-                                plantName = parsed["plantName"] ?: "",
-                                content = parsed["description"] ?: "",
-                                benefit = parsed["benefit"] ?: "",
-                                warning = parsed["warning"] ?: ""
+                                plantName = parsed.plantName,
+                                content = parsed.description,
+                                benefit = parsed.benefit,
+                                warning = parsed.warning
                             )
                             // updateHistory is suspend, so mark lambda as suspend
                             scanHistoryDao.updateHistory(updatedHistory)

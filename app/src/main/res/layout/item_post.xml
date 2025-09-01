@@ -30,6 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -58,6 +60,7 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@string/cd_post_options"
             android:focusable="true"
@@ -72,10 +75,12 @@
         <ImageView
             android:id="@+id/iv_post_image"
             android:layout_width="0dp"
-            android:layout_height="300dp"
+            android:layout_height="0dp"
             android:layout_marginTop="12dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/cd_plant_image"
             android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="4:3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_user_profile"
@@ -96,8 +101,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:accessibilityHeading="true"
                 android:text="@string/label_plant_name_colon"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:targetApi="28" />
 
             <TextView
                 android:id="@+id/tv_plant_name"
@@ -196,7 +204,9 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/cd_like"
+            android:focusable="true"
             android:src="@drawable/ic_heart_filled"
             app:layout_constraintStart_toStartOf="@id/content_wrapper"
             app:layout_constraintTop_toBottomOf="@id/content_wrapper" />

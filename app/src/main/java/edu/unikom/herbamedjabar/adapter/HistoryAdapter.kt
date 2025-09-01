@@ -20,8 +20,10 @@ class HistoryAdapter(
 ) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
 
-    private val htmlCache = object : LruCache<String, Spanned>(64_000) {
-        override fun sizeOf(key: String, value: Spanned): Int = value.length
+    companion object {
+        private val htmlCache = object : LruCache<String, Spanned>(64_000) {
+            override fun sizeOf(key: String, value: Spanned): Int = value.length
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {

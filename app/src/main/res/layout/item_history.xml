@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/containerImage"
@@ -79,6 +79,7 @@
             android:textColor="@color/text_muted_foreground"
             android:textSize="11sp"
             app:drawableStartCompat="@drawable/ic_clock"
+            app:drawableTint="?attr/colorOnSurfaceVariant"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/containerImage"

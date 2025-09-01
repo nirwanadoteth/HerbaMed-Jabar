@@ -40,6 +40,7 @@ class HistoryFragment : Fragment() {
             (activity as? MainActivity)?.showHistoryDetailFragment(it)
         }
         binding.historyRecyclerView.adapter = historyAdapter
+        binding.historyRecyclerView.setHasFixedSize(true)
     }
 
     private fun observeViewModel() {

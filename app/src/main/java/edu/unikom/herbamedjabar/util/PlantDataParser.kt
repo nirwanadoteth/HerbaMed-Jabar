@@ -1,5 +1,13 @@
 package edu.unikom.herbamedjabar.util
 
+data class PlantData(
+    val plantName: String,
+    val description: String,
+    val benefit: String,
+    val warning: String,
+    val herbalStatus: String = "Unknown"
+)
+
 /**
  * Utility object for parsing structured plant data from AI-generated Markdown text.
  *
@@ -9,49 +17,45 @@ package edu.unikom.herbamedjabar.util
  *   ### 📝 Deskripsi
  *   ### 🩺 Potensi Manfaat & Kegunaan
  *   ### ⚠️ Peringatan & Efek Samping
+ *   ### Jenis Tanaman
  *
  * Returns a map with keys: plantName, description, benefit, warning.
  * If the plant cannot be identified, returns a standard message.
  */
 object PlantDataParser {
-    private const val KEY_PLANT_NAME = "plantName"
-    private const val KEY_DESCRIPTION = "description"
-    private const val KEY_BENEFIT = "benefit"
-    private const val KEY_WARNING = "warning"
-    private const val KEY_HERBAL_STATUS = "herbalStatus"
 
     /**
      * Parses plant data from AI-generated Markdown text.
      *
      * @param text The Markdown text to parse.
-     * @return Map with keys: plantName, description, benefit, warning.
+     * @return PlantData containing parsed fields.
      */
-    fun parsePlantData(text: String): Map<String, String> {
-        val dataMap = mutableMapOf<String, String>()
+    fun parsePlantData(text: String): PlantData {
         val originalText = text
 
         if (isUnidentifiedPlant(originalText)) {
-            dataMap[KEY_PLANT_NAME] = "Tanaman tidak dapat di-identifikasi"
-            dataMap[KEY_DESCRIPTION] = "Pastikan gambar jelas dan fokus pada satu jenis tanaman."
-            dataMap[KEY_BENEFIT] = ""
-            dataMap[KEY_WARNING] = ""
-            dataMap[KEY_HERBAL_STATUS] = "Unknown"
-            return dataMap
+            return PlantData(
+                plantName = "Tanaman tidak dapat di-identifikasi",
+                description = "Pastikan gambar jelas dan fokus pada satu jenis tanaman.",
+                benefit = "",
+                warning = "",
+                herbalStatus = "Unknown"
+            )
         }
 
-        dataMap[KEY_PLANT_NAME] = parsePlantName(originalText)
-        dataMap[KEY_DESCRIPTION] = parseSection(originalText, Section.DESCRIPTION)
-        dataMap[KEY_BENEFIT] = parseSection(originalText, Section.BENEFIT)
-        dataMap[KEY_WARNING] = parseSection(originalText, Section.WARNING)
-        dataMap[KEY_HERBAL_STATUS] = parseSection(originalText, Section.HERBAL_STATUS)
+        val plantName = parsePlantName(originalText)
+        val description = parseSection(originalText, Section.DESCRIPTION).ifBlank { "" }
+        val benefit = parseSection(originalText, Section.BENEFIT).ifBlank { "" }
+        val warning = parseSection(originalText, Section.WARNING).ifBlank { "" }
+        val herbalStatus = parseSection(originalText, Section.HERBAL_STATUS).ifBlank { "Unknown" }
 
-        dataMap.putIfAbsent(KEY_DESCRIPTION, "")
-        dataMap.putIfAbsent(KEY_BENEFIT, "")
-        dataMap.putIfAbsent(KEY_WARNING, "")
-        dataMap.putIfAbsent(KEY_HERBAL_STATUS, "Unknown")
-
-        return dataMap
-
+        return PlantData(
+            plantName = plantName,
+            description = description,
+            benefit = benefit,
+            warning = warning,
+            herbalStatus = herbalStatus
+        )
     }
 
     private enum class Section {
@@ -64,8 +68,12 @@ object PlantDataParser {
 
     private fun parsePlantName(text: String): String {
         val namePattern = Regex(
-            pattern = "🌿\\s*(.*?)\\s*\\*?Nama\\s+Ilmiah\\b",
-            options = setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE)
+            pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?(.*?)\s*\*?Nama\s+Ilmiah\b""",
+            options = setOf(
+                RegexOption.DOT_MATCHES_ALL,
+                RegexOption.IGNORE_CASE,
+                RegexOption.MULTILINE
+            )
         )
         return namePattern.find(text)?.destructured?.let { (name) -> name.trim() }
             ?: text.lines().firstOrNull()?.replace(Regex("[#*🌿]"), "")?.trim()
