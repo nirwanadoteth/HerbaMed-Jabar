@@ -22,8 +22,8 @@ sealed class AuthState {
 }
 
 private fun Throwable.toUserMessage(fallback: String): String = when (this) {
-    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> "Email atau password salah."
-    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Akun tidak ditemukan atau dinonaktifkan."
+    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException,
+    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Email atau password salah."
     is com.google.firebase.auth.FirebaseAuthUserCollisionException -> "Email sudah terdaftar."
     is com.google.firebase.FirebaseTooManyRequestsException -> "Terlalu banyak percobaan. Coba lagi nanti."
     is com.google.firebase.FirebaseNetworkException -> "Masalah koneksi internet."
@@ -47,7 +47,9 @@ class AuthViewModel @Inject constructor(
             return
         }
         runAuthOp("Login") {
-            firebaseAuth.signInWithEmailAndPassword(emailT, password).await()
+            withTimeout(AUTH_TIMEOUT_MS) {
+                firebaseAuth.signInWithEmailAndPassword(emailT, password).await()
+            }
         }
     }
 
@@ -59,7 +61,7 @@ class AuthViewModel @Inject constructor(
             return
         }
         runAuthOp("Login dengan Google") {
-            withTimeout(GOOGLE_LOGIN_TIMEOUT) {
+            withTimeout(AUTH_TIMEOUT_MS) {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 firebaseAuth.signInWithCredential(credential).await()
             }
@@ -76,7 +78,7 @@ class AuthViewModel @Inject constructor(
         }
         runAuthOp("Registrasi") {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(emailT, password).await()
-            val user = authResult.user ?: error("User tidak tersedia setelah registrasi")
+            val user = requireNotNull(authResult.user) { "User tidak tersedia setelah registrasi" }
             val profileUpdates = userProfileChangeRequest { displayName = nameT }
             user.updateProfile(profileUpdates).await()
             Log.d(TAG, "User profile updated.")
@@ -106,7 +108,7 @@ class AuthViewModel @Inject constructor(
         when {
             listOf(name, email, password, confirmPassword).any { it.isBlank() } ->
                 error = "Semua kolom harus diisi."
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() ->
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
                 error = "Email tidak valid."
             password != confirmPassword ->
                 error = "Password dan konfirmasi password tidak cocok."
@@ -120,6 +122,10 @@ class AuthViewModel @Inject constructor(
         opName: String,
         crossinline block: suspend () -> Unit
     ) = viewModelScope.launch {
+        if (_authState.value == AuthState.Loading) {
+            Log.d(TAG, "$opName: Ignored because another auth op is in progress")
+            return@launch
+        }
         _authState.value = AuthState.Loading
         try {
             block()
@@ -137,7 +143,7 @@ class AuthViewModel @Inject constructor(
     }
 
     companion object {
-        private const val GOOGLE_LOGIN_TIMEOUT = 15_000L
+        private const val AUTH_TIMEOUT_MS = 30_000L
         private const val MIN_PASSWORD_LENGTH = 6
         private const val TAG = "AuthViewModel"
     }
