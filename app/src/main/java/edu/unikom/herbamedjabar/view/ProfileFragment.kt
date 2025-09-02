@@ -48,19 +48,7 @@ class ProfileFragment : Fragment() {
         observeViewModel()
 
         binding.btnLogout.setOnClickListener {
-            viewModel.logout()
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    val credentialManager = CredentialManager.create(requireContext())
-                    val clearRequest = ClearCredentialStateRequest()
-                    credentialManager.clearCredentialState(clearRequest)
-                } catch (e: ClearCredentialException) {
-                    Log.e("ProfileFragment", "Gagal membersihkan kredensial: ${e.localizedMessage}")
-                } finally {
-                    startActivity(Intent(requireContext(), AuthActivity::class.java))
-                    activity?.finish()
-                }
-            }
+            handleLogout()
         }
     }
 
@@ -124,6 +112,29 @@ class ProfileFragment : Fragment() {
         badges.forEachIndexed { i, badge ->
             badge.visibility = if (postCount >= thresholds[i]) View.VISIBLE else View.GONE
         }
+    }
+
+    private fun handleLogout() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Konfirmasi Logout")
+            .setMessage("Apakah Anda yakin ingin logout?")
+            .setNegativeButton("Batal", null)
+            .setPositiveButton("Ya") { _, _ ->
+                viewModel.logout()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        val credentialManager = CredentialManager.create(requireContext())
+                        val clearRequest = ClearCredentialStateRequest()
+                        credentialManager.clearCredentialState(clearRequest)
+                    } catch (e: ClearCredentialException) {
+                        Log.e("ProfileFragment", "Gagal membersihkan kredensial: ${e.localizedMessage}")
+                    } finally {
+                        startActivity(Intent(requireContext(), AuthActivity::class.java))
+                        activity?.finish()
+                    }
+                }
+            }
+            .show()
     }
 
     override fun onDestroyView() {
