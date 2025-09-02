@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".view.ResultFragment">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationContentDescription="@string/back_button_desc"
+        app:navigationIcon="@drawable/ic_arrow_left"
+        app:title="@string/result_title" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -13,203 +25,188 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/topAppBar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorSurface"
-                style="@style/Widget.AppCompat.ActionBar.TabBar"
-                android:minHeight="?attr/actionBarSize"
-                app:navigationContentDescription="@string/back_button_desc"
-                app:navigationIcon="@drawable/ic_arrow_left"
-                app:title="@string/result_title"
-                app:titleCentered="true" />
+                android:layout_height="@dimen/image_height"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="19dp">
-
-                <com.google.android.material.card.MaterialCardView
+                <ImageView
+                    android:id="@+id/resultImageView"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/image_height"
-                    android:layout_marginBottom="10dp"
-                    app:cardCornerRadius="10dp">
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/cd_plant_image"
+                    android:scaleType="centerCrop"
+                    tools:src="@tools:sample/backgrounds/scenic" />
+            </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:id="@+id/resultImageView"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/image_height"
-                        android:contentDescription="@string/cd_plant_image"
-                        android:scaleType="centerCrop"
-                        tools:src="@tools:sample/backgrounds/scenic" />
-                </com.google.android.material.card.MaterialCardView>
+            <LinearLayout
+                android:id="@+id/container_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:id="@+id/container_detail"
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:accessibilityHeading="true"
+                    android:labelFor="@id/plantNameTextView"
+                    android:text="@string/label_plant_name_colon"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:targetApi="28" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/plantNameTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="4dp"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:targetApi="28"
+                    tools:text="Nama Tanaman" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:accessibilityHeading="true"
-                        android:labelFor="@id/plantNameTextView"
-                        android:text="@string/label_plant_name_colon"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:targetApi="28" />
+            <LinearLayout
+                android:id="@+id/content_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/plantNameTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:textColor="@android:color/black"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:targetApi="28"
-                        tools:text="Nama Tanaman" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/content_wrapper"
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical">
+                    android:accessibilityHeading="true"
+                    android:text="@string/section_description_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:targetApi="28" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:accessibilityHeading="true"
-                        android:text="@string/section_description_title"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:targetApi="28" />
-
-                    <TextView
-                        android:id="@+id/contentTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:breakStrategy="high_quality"
-                        android:lineSpacingExtra="2dp"
-                        android:textColor="@color/text_muted_foreground"
-                        android:textSize="12sp"
-                        tools:text="Deskripsi singkat" />
-
-                    <TextView
-                        android:id="@+id/benefit_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:accessibilityHeading="true"
-                        android:text="@string/section_benefit_title"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:targetApi="28" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/custom_card_green_info"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="12dp">
-
-                        <TextView
-                            android:id="@+id/benefitTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginTop="0dp"
-                            android:textColor="@color/benefit_text"
-                            android:textSize="12sp"
-                            tools:text="Manfaat" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/warning_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:accessibilityHeading="true"
-                        android:text="@string/section_warning_title"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        tools:targetApi="28" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/custom_effect_wrapper"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="12dp">
-
-                        <TextView
-                            android:id="@+id/warningTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_marginTop="0dp"
-                            android:textColor="@color/warning_text"
-                            android:textSize="12sp"
-                            tools:text="Peringatan dan Efek Samping" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/buttonContainer"
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/contentTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="4dp"
+                    android:breakStrategy="high_quality"
+                    android:lineSpacingExtra="2dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    tools:text="Deskripsi singkat" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/scanAgainButton"
-                        style="@style/Widget.Material3.Button"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:text="@string/scan_again"
-                        app:backgroundTint="@color/primary"
-                        app:cornerRadius="10dp"
-                        app:icon="@drawable/ic_camera"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/benefit_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:accessibilityHeading="true"
+                    android:text="@string/section_benefit_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:targetApi="28" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_post_to_forum"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:text="@string/post_to_forum"
-                        android:textColor="@color/primary"
-                        app:cornerRadius="10dp"
-                        app:icon="@drawable/ic_plus"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        app:iconTint="@color/primary"
-                        app:strokeColor="@color/primary" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/custom_card_green_info"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/benefitTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                        android:textColor="@color/benefit_text"
+                        tools:text="Manfaat" />
                 </LinearLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/warning_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:accessibilityHeading="true"
+                    android:text="@string/section_warning_title"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    android:textColor="?attr/colorOnSurface"
+                    tools:targetApi="28" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/custom_effect_wrapper"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="12dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/warningTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                        android:textColor="@color/warning_text"
+                        tools:text="Peringatan dan Efek Samping" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/buttonContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/scanAgainButton"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/scan_again"
+                    app:backgroundTint="@color/primary"
+                    app:cornerRadius="10dp"
+                    app:icon="@drawable/ic_camera"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_post_to_forum"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/post_to_forum"
+                    android:textColor="@color/primary"
+                    app:cornerRadius="10dp"
+                    app:icon="@drawable/ic_plus"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
+                    app:iconTint="@color/primary"
+                    app:strokeColor="@color/primary" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

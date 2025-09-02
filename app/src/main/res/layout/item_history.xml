@@ -13,40 +13,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/containerImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
+            app:cardElevation="2dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
+            app:strokeColor="?colorOutlineVariant"
+            app:strokeWidth="1dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/historyImageView"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:contentDescription="@string/cd_plant_image"
                 android:scaleType="centerCrop"
+                app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/backgrounds/scenic" />
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/plantNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="0dp"
             android:accessibilityHeading="true"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
             app:layout_constraintBottom_toTopOf="@id/descriptionTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/containerImage"
@@ -54,7 +57,7 @@
             tools:targetApi="28"
             tools:text="Nama Tanaman" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/descriptionTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -62,24 +65,25 @@
             android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/text_muted_foreground"
-            android:textSize="12sp"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/containerImage"
             app:layout_constraintTop_toBottomOf="@id/plantNameTextView"
             tools:text="Deskripsi singkat tanaman" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="0dp"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
-            android:textColor="@color/text_muted_foreground"
-            android:textSize="11sp"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
             app:drawableStartCompat="@drawable/ic_clock"
             app:drawableTint="?attr/colorOnSurfaceVariant"
             app:layout_constraintBottom_toBottomOf="parent"
