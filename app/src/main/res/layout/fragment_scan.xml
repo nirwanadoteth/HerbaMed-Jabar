@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_color"
+        android:background="?android:attr/colorBackground"
         tools:context=".view.MainActivity">
 
         <ScrollView
@@ -20,7 +20,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/bg_color"
+                android:background="?android:attr/colorBackground"
                 android:orientation="vertical"
                 android:padding="18dp">
 
@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/appTitleTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -52,12 +52,11 @@
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/TextAppearance.Material3.TitleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/scan_subtitle"
-                            android:textColor="@color/text_muted_foreground"
-                            android:textSize="12sp" />
+                            android:text="@string/scan_subtitle" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -83,22 +82,21 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="#DBEAFE"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:padding="10dp"
+                            android:background="?attr/colorSurfaceContainer">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_total"
                                 android:textSize="11sp" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/totalScanTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_blue"
                                 android:textStyle="bold"
                                 tools:text="0" />
 
@@ -120,23 +118,22 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="#DCFCE7"
+                            android:background="?attr/colorSecondaryContainer"
                             android:gravity="center"
                             android:orientation="vertical"
                             android:padding="10dp">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_herbal"
                                 android:textAlignment="center"
                                 android:textSize="11sp" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/herbalScanTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_primary"
                                 android:textStyle="bold"
                                 tools:text="0" />
 
@@ -157,23 +154,22 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="#FEDBDB"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:padding="10dp"
+                            android:background="?attr/colorErrorContainer">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_nonherbal"
                                 android:textAlignment="center"
                                 android:textSize="11sp" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/nonHerbalScanTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/text_destructive"
                                 android:textStyle="bold"
                                 tools:text="0" />
 
@@ -205,7 +201,6 @@
                                 android:id="@+id/plantImageView"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="@color/white"
                                 android:contentDescription="@string/gambar_tanaman_yang_diambil"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/picture_placeholder" />
@@ -216,29 +211,22 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/scanButton"
+                    style="@style/Widget.Material3Expressive.Button"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/primary"
                     android:text="@string/scan_take_picture"
-                    android:textSize="12sp"
-                    app:cornerRadius="12dp"
                     app:icon="@drawable/ic_camera"
-                    app:iconGravity="textStart"
-                    app:iconTint="@color/white" />
+                    app:iconGravity="textStart"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_gallery"
-                    style="@style/Widget.Material3.Button.IconButton"
+                    style="@style/Widget.Material3Expressive.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/scan_upload_gallery"
-                    android:textColor="@color/primary"
-                    app:cornerRadius="10dp"
                     app:icon="@drawable/ic_upload"
-                    app:iconGravity="textStart"
-                    app:iconPadding="10dp"
-                    app:iconTint="@color/primary" />
+                    app:iconGravity="textStart" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -261,36 +249,32 @@
                         android:layout_marginStart="10dp"
                         android:orientation="vertical">
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
                             android:text="@string/scan_tips_title"
-                            android:textColor="@color/text_blue"
                             android:textSize="11sp"
                             android:textStyle="bold" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/scan_tips_1"
-                            android:textColor="@color/text_blue"
                             android:textSize="11sp"
                             android:textStyle="italic" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/scan_tips_2"
-                            android:textColor="@color/text_blue"
                             android:textSize="11sp"
                             android:textStyle="italic" />
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/scan_tips_3"
-                            android:textColor="@color/text_blue"
                             android:textSize="11sp"
                             android:textStyle="italic" />
                     </LinearLayout>

@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     private val viewModel: AuthViewModel by viewModels()
 
@@ -38,7 +39,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
@@ -61,13 +62,12 @@ class LoginFragment : Fragment() {
             viewModel.loginUser(email, password)
         }
 
-        binding.loginWithGoogleButton.setOnClickListener {
-            launchGoogleSignIn()
-        }
+        binding.loginWithGoogleButton.setOnClickListener { launchGoogleSignIn() }
 
         binding.registerTextView.setOnClickListener {
             // Navigasi ke RegisterFragment
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.fragment_container, RegisterFragment())
                 .addToBackStack(null) // Agar bisa kembali ke login
                 .commit()
@@ -76,14 +76,15 @@ class LoginFragment : Fragment() {
 
     private fun launchGoogleSignIn() {
         // Create the dialog configuration for the Credential Manager request
-        val signInWithGoogleOption = GetSignInWithGoogleOption
-            .Builder(serverClientId = requireContext().getString(R.string.default_web_client_id))
-            .build()
+        val signInWithGoogleOption =
+            GetSignInWithGoogleOption.Builder(
+                    serverClientId = requireContext().getString(R.string.default_web_client_id)
+                )
+                .build()
 
         // Create the Credential Manager request using the configuration created above
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(signInWithGoogleOption)
-            .build()
+        val request =
+            GetCredentialRequest.Builder().addCredentialOption(signInWithGoogleOption).build()
 
         launchCredentialManager(request)
     }
@@ -91,13 +92,18 @@ class LoginFragment : Fragment() {
     private fun launchCredentialManager(request: GetCredentialRequest) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val credential = credentialManager.getCredential(
-                    context = requireContext(),
-                    request = request
-                ).credential
+                val credential =
+                    credentialManager
+                        .getCredential(context = requireContext(), request = request)
+                        .credential
                 createGoogleIdToken(credential)
             } catch (e: androidx.credentials.exceptions.NoCredentialException) {
-                Toast.makeText(requireContext(), "Tidak ada kredensial yang tersedia.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                        requireContext(),
+                        "Tidak ada kredensial yang tersedia.",
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
                 Log.w(TAG, "NoCredentialException: ${e.localizedMessage}")
             } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")

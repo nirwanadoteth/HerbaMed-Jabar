@@ -9,32 +9,36 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
-import javax.inject.Inject
 
 sealed class AuthState {
     object Idle : AuthState()
+
     object Loading : AuthState()
+
     object Authenticated : AuthState()
+
     data class Error(val message: String) : AuthState()
 }
 
-private fun Throwable.toUserMessage(fallback: String): String = when (this) {
-    is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException,
-    is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Email atau password salah."
-    is com.google.firebase.auth.FirebaseAuthUserCollisionException -> "Email sudah terdaftar."
-    is com.google.firebase.FirebaseTooManyRequestsException -> "Terlalu banyak percobaan. Coba lagi nanti."
-    is com.google.firebase.FirebaseNetworkException -> "Masalah koneksi internet."
-    is kotlinx.coroutines.TimeoutCancellationException -> "Permintaan waktu habis. Coba lagi nanti."
-    else -> fallback
-}
+private fun Throwable.toUserMessage(fallback: String): String =
+    when (this) {
+        is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException,
+        is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Email atau password salah."
+        is com.google.firebase.auth.FirebaseAuthUserCollisionException -> "Email sudah terdaftar."
+        is com.google.firebase.FirebaseTooManyRequestsException ->
+            "Terlalu banyak percobaan. Coba lagi nanti."
+        is com.google.firebase.FirebaseNetworkException -> "Masalah koneksi internet."
+        is kotlinx.coroutines.TimeoutCancellationException ->
+            "Permintaan waktu habis. Coba lagi nanti."
+        else -> fallback
+    }
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
-) : ViewModel() {
+class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) : ViewModel() {
 
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState> = _authState
@@ -102,7 +106,7 @@ class AuthViewModel @Inject constructor(
         name: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
     ): String? {
         var error: String? = null
         when {
@@ -110,37 +114,34 @@ class AuthViewModel @Inject constructor(
                 error = "Semua kolom harus diisi."
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
                 error = "Email tidak valid."
-            password != confirmPassword ->
-                error = "Password dan konfirmasi password tidak cocok."
+            password != confirmPassword -> error = "Password dan konfirmasi password tidak cocok."
             password.length < MIN_PASSWORD_LENGTH ->
                 error = "Password minimal harus $MIN_PASSWORD_LENGTH karakter."
         }
         return error
     }
 
-    private inline fun runAuthOp(
-        opName: String,
-        crossinline block: suspend () -> Unit
-    ) = viewModelScope.launch {
-        if (_authState.value == AuthState.Loading) {
-            Log.d(TAG, "$opName: Ignored because another auth op is in progress")
-            return@launch
+    private inline fun runAuthOp(opName: String, crossinline block: suspend () -> Unit) =
+        viewModelScope.launch {
+            if (_authState.value == AuthState.Loading) {
+                Log.d(TAG, "$opName: Ignored because another auth op is in progress")
+                return@launch
+            }
+            _authState.value = AuthState.Loading
+            try {
+                block()
+                Log.d(TAG, "$opName: Authenticated")
+                _authState.value = AuthState.Authenticated
+            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+                Log.w(TAG, "$opName: Timeout", e)
+                _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (t: Throwable) {
+                Log.w(TAG, "$opName: Error", t)
+                _authState.value = AuthState.Error(t.toUserMessage("$opName gagal"))
+            }
         }
-        _authState.value = AuthState.Loading
-        try {
-            block()
-            Log.d(TAG, "$opName: Authenticated")
-            _authState.value = AuthState.Authenticated
-        } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
-            Log.w(TAG, "$opName: Timeout", e)
-            _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
-        } catch (e: kotlinx.coroutines.CancellationException) {
-            throw e
-        } catch (t: Throwable) {
-            Log.w(TAG, "$opName: Error", t)
-            _authState.value = AuthState.Error(t.toUserMessage("$opName gagal"))
-        }
-    }
 
     companion object {
         private const val AUTH_TIMEOUT_MS = 30_000L

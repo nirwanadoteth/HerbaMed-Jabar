@@ -19,14 +19,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.HerbaMedJabar"
+        android:theme="@style/Theme.App"
         tools:targetApi="31">
 
         <!-- SplashActivity adalah titik masuk -->
         <activity
             android:name=".view.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.App.Starting">
+            android:theme="@style/Theme.App.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

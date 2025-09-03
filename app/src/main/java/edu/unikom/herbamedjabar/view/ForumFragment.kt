@@ -19,7 +19,8 @@ import edu.unikom.herbamedjabar.viewModel.ForumViewModel
 class ForumFragment : Fragment() {
 
     private var _binding: FragmentForumBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     private val viewModel: ForumViewModel by viewModels()
     private lateinit var postAdapter: PostAdapter
@@ -27,7 +28,7 @@ class ForumFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentForumBinding.inflate(inflater, container, false)
 
@@ -47,21 +48,18 @@ class ForumFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        postAdapter = PostAdapter(
-            onLikeClicked = { postId ->
-                viewModel.toggleLikeOnPost(postId)
-            },
-            onDeleteClicked = { post ->
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Hapus Postingan")
-                    .setMessage("Apakah Anda yakin ingin menghapus postingan ini?")
-                    .setNegativeButton("Batal", null)
-                    .setPositiveButton("Hapus") { _, _ ->
-                        viewModel.deletePost(post)
-                    }
-                    .show()
-            }
-        )
+        postAdapter =
+            PostAdapter(
+                onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
+                onDeleteClicked = { post ->
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Hapus Postingan")
+                        .setMessage("Apakah Anda yakin ingin menghapus postingan ini?")
+                        .setNegativeButton("Batal", null)
+                        .setPositiveButton("Hapus") { _, _ -> viewModel.deletePost(post) }
+                        .show()
+                },
+            )
 
         binding.rvPosts.apply {
             adapter = postAdapter
@@ -70,9 +68,7 @@ class ForumFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.posts.observe(viewLifecycleOwner) { posts ->
-            postAdapter.submitList(posts)
-        }
+        viewModel.posts.observe(viewLifecycleOwner) { posts -> postAdapter.submitList(posts) }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE

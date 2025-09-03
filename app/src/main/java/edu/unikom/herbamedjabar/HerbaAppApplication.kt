@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class HerbaAppApplication : Application(), ImageLoaderFactory {
-    @Inject
-    lateinit var scanHistoryMigrationManager: ScanHistoryMigrationManager
+    @Inject lateinit var scanHistoryMigrationManager: ScanHistoryMigrationManager
 
     override fun onCreate() {
         super.onCreate()
@@ -24,15 +23,16 @@ class HerbaAppApplication : Application(), ImageLoaderFactory {
 
         if (BuildConfig.DEBUG) {
             Firebase.appCheck.installAppCheckProviderFactory(
-                DebugAppCheckProviderFactory.getInstance(),
+                DebugAppCheckProviderFactory.getInstance()
             )
         }
 
-        val config = mapOf(
-            "cloud_name" to "difspgu31",
-            "api_key" to "152559576226315",
-            "api_secret" to "uUY-_zXEUO_UZActj_jPsiRYzIg"
-        )
+        val config =
+            mapOf(
+                "cloud_name" to "difspgu31",
+                "api_key" to "152559576226315",
+                "api_secret" to "uUY-_zXEUO_UZActj_jPsiRYzIg",
+            )
         MediaManager.init(this, config)
 
         scanHistoryMigrationManager.runMigrationIfNeeded(this)

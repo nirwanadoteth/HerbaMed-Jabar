@@ -1,97 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="4dp"
-    android:background="@drawable/custom_card_info"
-    android:padding="12dp">
+    android:layout_margin="8dp"
+    style="@style/Widget.Material3.CardView.Elevated">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/containerImage"
-            android:layout_width="wrap_content"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/historyImageView"
+            android:layout_width="96dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/cd_plant_image"
+            android:scaleType="centerCrop"
+            style="@style/Widget.Material3.CardView.Filled"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
-            app:strokeColor="?colorOutlineVariant"
-            app:strokeWidth="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/historyImageView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:contentDescription="@string/cd_plant_image"
-                android:scaleType="centerCrop"
-                app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/backgrounds/scenic" />
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/plantNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:accessibilityHeading="true"
+                android:gravity="top"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                tools:targetApi="28"
+                tools:text="Nama Tanaman" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/plantNameTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="0dp"
-            android:accessibilityHeading="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="?attr/colorOnSurface"
-            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-            app:layout_constraintBottom_toTopOf="@id/descriptionTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/containerImage"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:targetApi="28"
-            tools:text="Nama Tanaman" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/descriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                app:layout_goneMarginTop="4dp"
+                tools:text="Ini adalah tempat deksripsi gambar dari hasil scan yang pernah anda lakukan sebelumnya, maksimal 2 baris" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/descriptionTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@id/containerImage"
-            app:layout_constraintTop_toBottomOf="@id/plantNameTextView"
-            tools:text="Deskripsi singkat tanaman" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/timeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="4dp"
+                android:gravity="bottom"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                app:drawableStartCompat="@drawable/ic_clock"
+                app:drawableTint="?attr/colorOnSurfaceVariant"
+                tools:text="17 Aug 2025, 09:45" />
+        </LinearLayout>
+    </LinearLayout>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="0dp"
-            android:drawablePadding="4dp"
-            android:gravity="center_vertical"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-            app:drawableStartCompat="@drawable/ic_clock"
-            app:drawableTint="?attr/colorOnSurfaceVariant"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/containerImage"
-            app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
-            tools:text="17 Aug 2025, 09:45" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

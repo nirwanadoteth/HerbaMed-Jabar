@@ -10,14 +10,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "scan_history", indices = [Index("timestamp"), Index("plantName")])
 data class ScanHistory(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val resultText: String,
     val imagePath: String,
-    @ColumnInfo(collate = ColumnInfo.NOCASE)
-    val plantName: String,
+    @ColumnInfo(collate = ColumnInfo.NOCASE) val plantName: String,
     val content: String = "",
     val benefit: String = "",
     val warning: String = "",
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
 ) : Parcelable

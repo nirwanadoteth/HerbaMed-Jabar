@@ -10,9 +10,7 @@ data class Post(
     val description: String = "",
     val timestamp: Long = System.currentTimeMillis(),
     val likes: List<String> = emptyList(),
-
     val content: String? = null,
     val benefit: String? = null,
-    val warning: String? = null
-
+    val warning: String? = null,
 )

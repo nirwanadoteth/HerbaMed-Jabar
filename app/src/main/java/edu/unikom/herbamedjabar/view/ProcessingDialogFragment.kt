@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 class ProcessingDialogFragment : DialogFragment() {
 
     private var _binding: FragmentProcessingDialogBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +26,7 @@ class ProcessingDialogFragment : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentProcessingDialogBinding.inflate(inflater, container, false)
         return binding.root

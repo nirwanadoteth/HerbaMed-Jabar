@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_banner" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,107 +56,92 @@
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/white"
-            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/iv_banner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_profile_picture"
             tools:text="Full Name" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/text_muted_foreground"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_profile_picture"
             app:layout_constraintTop_toBottomOf="@id/tv_username"
             tools:text="email@example.com" />
 
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButtonGroup
             android:id="@+id/badge_container"
+            style="@style/Widget.Material3.MaterialButtonGroup.Connected"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="12dp"
+            android:gravity="center_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_profile_picture">
 
             <com.google.android.material.button.MaterialButton
+                style="?attr/materialIconButtonFilledStyle"
                 android:id="@+id/badge_1"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="2dp"
+                android:layout_height="wrap_content"
                 android:clickable="false"
-                android:padding="0dp"
+                android:focusable="false"
+                android:importantForAccessibility="no"
                 android:text="@string/badge_plant_hunter"
-                android:textColor="#609B5A"
-                android:textSize="11sp"
-                app:backgroundTint="#E4FFED" />
+                />
 
             <com.google.android.material.button.MaterialButton
+                style="?attr/materialIconButtonFilledStyle"
                 android:id="@+id/badge_2"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginHorizontal="2dp"
+                android:layout_height="wrap_content"
                 android:clickable="false"
-                android:padding="0dp"
-                android:text="@string/badge_plant_adventure"
-                android:textColor="#854D0E"
-                android:textSize="11sp"
-                app:backgroundTint="#FEF9C3" />
+                android:focusable="false"
+                android:importantForAccessibility="no"
+                android:text="@string/badge_plant_adventure" />
 
             <com.google.android.material.button.MaterialButton
+                style="?attr/materialIconButtonFilledStyle"
                 android:id="@+id/badge_3"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginHorizontal="2dp"
+                android:layout_height="wrap_content"
                 android:clickable="false"
-                android:padding="0dp"
-                android:text="@string/badge_plant_lover"
-                android:textColor="#1E40AF"
-                android:textSize="11sp"
-                app:backgroundTint="#DBEAFE" />
+                android:focusable="false"
+                android:importantForAccessibility="no"
+                android:text="@string/badge_plant_lover"/>
 
             <com.google.android.material.button.MaterialButton
+                style="?attr/materialIconButtonFilledStyle"
                 android:id="@+id/badge_4"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="4dp"
+                android:layout_height="wrap_content"
                 android:clickable="false"
-                android:padding="0dp"
-                android:text="@string/badge_king_plant"
-                android:textColor="#6E24A8"
-                android:textSize="11sp"
-                app:backgroundTint="#F3E8FF" />
+                android:focusable="false"
+                android:importantForAccessibility="no"
+                android:text="@string/badge_king_plant" />
 
-        </LinearLayout>
+        </com.google.android.material.button.MaterialButtonGroup>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.8dp"
             android:layout_marginBottom="10dp"
-            android:background="#D9D9D9"
             app:layout_constraintBottom_toTopOf="@id/tv_my_posts_title" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_my_posts_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
             android:text="@string/my_posts_title"
-            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -175,7 +160,7 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_post" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_no_posts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

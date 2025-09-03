@@ -9,14 +9,14 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.repository.PostRepository
 import edu.unikom.herbamedjabar.util.PlantDataParser
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ResultViewModel @Inject constructor(
-    private val postRepository: PostRepository,
-    private val auth: FirebaseAuth
-) : ViewModel() {
+class ResultViewModel
+@Inject
+constructor(private val postRepository: PostRepository, private val auth: FirebaseAuth) :
+    ViewModel() {
 
     private val _postResult = MutableLiveData<Result<Unit>>()
     val postResult: LiveData<Result<Unit>> = _postResult
@@ -37,10 +37,10 @@ class ResultViewModel @Inject constructor(
                     imageUri = imageUri,
                     plantName = plantName,
                     description = description,
-                    parsedData = parsedData
+                    parsedData = parsedData,
                 )
             }
-            _postResult.value = result.map { }
+            _postResult.value = result.map {}
             _isLoading.value = false
         }
     }

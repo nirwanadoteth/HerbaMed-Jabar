@@ -34,7 +34,8 @@ class ScanFragment : Fragment() {
 
     // Camera permission launcher
     private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
+            ->
             if (isAdded) {
                 if (isGranted) {
                     takePictureLauncher.launch(null)
@@ -60,22 +61,23 @@ class ScanFragment : Fragment() {
             if (uri != null) {
                 try {
                     viewLifecycleOwner.lifecycleScope.launch {
-                        val bitmap = withContext(kotlinx.coroutines.Dispatchers.IO) {
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                                @Suppress("DEPRECATION")
-                                MediaStore.Images.Media.getBitmap(
-                                    requireContext().contentResolver,
-                                    uri
-                                )
-                            } else {
-                                val source =
-                                    ImageDecoder.createSource(
+                        val bitmap =
+                            withContext(kotlinx.coroutines.Dispatchers.IO) {
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                                    @Suppress("DEPRECATION")
+                                    MediaStore.Images.Media.getBitmap(
                                         requireContext().contentResolver,
-                                        uri
+                                        uri,
                                     )
-                                ImageDecoder.decodeBitmap(source)
+                                } else {
+                                    val source =
+                                        ImageDecoder.createSource(
+                                            requireContext().contentResolver,
+                                            uri,
+                                        )
+                                    ImageDecoder.decodeBitmap(source)
+                                }
                             }
-                        }
                         binding.plantImageView.setImageBitmap(bitmap)
                         viewModel.analyzeImage(bitmap)
                     }
@@ -104,12 +106,15 @@ class ScanFragment : Fragment() {
         val spannable = android.text.SpannableString(fullText)
         if (medStart >= 0) {
             val primaryColor =
-                ContextCompat.getColor(requireContext(), edu.unikom.herbamedjabar.R.color.primary)
+                ContextCompat.getColor(
+                    requireContext(),
+                    edu.unikom.herbamedjabar.R.color.md_theme_primary,
+                )
             spannable.setSpan(
                 android.text.style.ForegroundColorSpan(primaryColor),
                 medStart,
                 medEnd,
-                android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
             )
         }
         binding.appTitleTextView.text = spannable
@@ -185,6 +190,7 @@ class ScanFragment : Fragment() {
             }
         }
     }
+
     companion object {
         private const val MED_SUBSTRING_LENGTH = 3
     }

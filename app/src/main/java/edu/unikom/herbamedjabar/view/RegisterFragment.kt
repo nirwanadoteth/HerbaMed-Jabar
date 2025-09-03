@@ -18,14 +18,15 @@ import edu.unikom.herbamedjabar.viewModel.AuthViewModel
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     private val viewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,12 +45,10 @@ class RegisterFragment : Fragment() {
                 binding.nameEditText.text.toString().trim(),
                 binding.emailEditText.text.toString().trim(),
                 binding.passwordEditText.text.toString().trim(),
-                binding.confirmPasswordEditText.text.toString().trim()
+                binding.confirmPasswordEditText.text.toString().trim(),
             )
         }
-        binding.loginTextView.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
+        binding.loginTextView.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 
     private fun observeViewModel() {

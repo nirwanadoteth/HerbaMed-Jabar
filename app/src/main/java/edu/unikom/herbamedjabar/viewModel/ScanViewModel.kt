@@ -8,20 +8,22 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.useCase.AnalyzePlantUseCase
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 sealed class UiState {
     object Idle : UiState()
+
     object Loading : UiState()
+
     object Success : UiState()
+
     data class Error(val message: String) : UiState()
 }
 
 @HiltViewModel
-class ScanViewModel @Inject constructor(
-    private val analyzePlantUseCase: AnalyzePlantUseCase
-) : ViewModel() {
+class ScanViewModel @Inject constructor(private val analyzePlantUseCase: AnalyzePlantUseCase) :
+    ViewModel() {
 
     private val _uiState = MutableLiveData<UiState>(UiState.Idle)
     val uiState: LiveData<UiState> = _uiState
@@ -39,19 +41,23 @@ class ScanViewModel @Inject constructor(
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             val result = analyzePlantUseCase(bitmap)
-            result.onSuccess { analysisResult ->
-                _uiState.value = UiState.Success
-                _navigateToResult.value = analysisResult
-                val stats = _scanStats.value ?: ScanStats()
-                val newStats = if (analysisResult.isHerbal) {
-                    stats.copy(total = stats.total + 1, herbal = stats.herbal + 1)
-                } else {
-                    stats.copy(total = stats.total + 1, nonHerbal = stats.nonHerbal + 1)
+            result
+                .onSuccess { analysisResult ->
+                    _uiState.value = UiState.Success
+                    _navigateToResult.value = analysisResult
+                    val stats = _scanStats.value ?: ScanStats()
+                    val newStats =
+                        if (analysisResult.isHerbal) {
+                            stats.copy(total = stats.total + 1, herbal = stats.herbal + 1)
+                        } else {
+                            stats.copy(total = stats.total + 1, nonHerbal = stats.nonHerbal + 1)
+                        }
+                    _scanStats.value = newStats
                 }
-                _scanStats.value = newStats
-            }.onFailure { error ->
-                _uiState.value = UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
-            }
+                .onFailure { error ->
+                    _uiState.value =
+                        UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
+                }
         }
     }
 

@@ -1,5 +1,8 @@
 import java.util.Properties
 
+val localPropertiesFile = rootProject.file("local.properties")
+val properties = Properties()
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,7 +10,10 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ktfmt)
 }
+
+ktfmt { kotlinLangStyle() }
 
 android {
     namespace = "edu.unikom.herbamedjabar"
@@ -19,18 +25,13 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables.useSupportLibrary = true
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // Membaca API key dari local.properties
-        val properties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
             localPropertiesFile.inputStream().use(properties::load)
         }
 
         val apiKey = properties.getProperty("apiKey", "")
-        // Menyediakan API key sebagai string resource
         resValue("string", "api_key", apiKey)
     }
 
@@ -53,9 +54,7 @@ android {
         viewBinding = true
     }
 
-    sourceSets.getByName("androidTest") {
-        assets.srcDir("$projectDir/schemas")
-    }
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
 dependencies {
@@ -80,9 +79,6 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     debugImplementation(libs.firebase.appcheck.debug)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // Gemini API (Generative AI)
     implementation(libs.generativeai)

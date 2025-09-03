@@ -9,17 +9,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_color"
         tools:context=".view.ForumFragment">
 
 
         <LinearLayout
             android:id="@+id/welcome_wrapper"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="horizontal"
-            android:padding="18dp"
+            android:padding="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -40,29 +38,25 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/forum_title_herba"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized" />
 
-                    <TextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/forum_title_med"
-                        android:textColor="@color/primary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
+                        android:textColor="?attr/colorPrimary" />
                 </LinearLayout>
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/scan_subtitle"
-                    android:textColor="@color/text_muted_foreground"
-                    android:textSize="12sp" />
+                    style="@style/TextAppearance.Material3.TitleSmall" />
             </LinearLayout>
         </LinearLayout>
 
@@ -71,8 +65,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="18dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/custom_card_green_info"
             android:gravity="center_vertical"
@@ -87,23 +81,19 @@
                 android:layout_marginEnd="10dp"
                 android:orientation="vertical">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:accessibilityHeading="true"
                     android:text="@string/forum_share_title"
-                    android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                     tools:targetApi="28" />
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/forum_share_subtitle"
-                    android:textColor="@color/primary"
-                    android:textSize="12sp"
-                    android:textStyle="normal" />
+                    style="@style/TextAppearance.Material3.BodySmall"/>
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -111,15 +101,11 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/primary"
                 android:padding="0dp"
                 android:text="@string/post_to_forum"
-                android:textSize="12sp"
-                app:cornerRadius="12dp"
                 app:icon="@drawable/ic_plus"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconTint="@color/white" />
+                app:iconPadding="8dp" />
 
         </LinearLayout>
 

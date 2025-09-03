@@ -23,9 +23,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+    @Provides @Singleton fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
@@ -41,20 +39,14 @@ object AppModule {
     @Singleton
     fun provideGenerativeModel(app: Application): GenerativeModel {
         val apiKey = app.getString(R.string.api_key)
-        return GenerativeModel(
-            modelName = "gemini-1.5-flash",
-            apiKey = apiKey
-        )
+        return GenerativeModel(modelName = "gemini-1.5-flash", apiKey = apiKey)
     }
 
     @Provides
     @Singleton
     fun provideAppDatabase(app: Application): AppDatabase {
-        return Room.databaseBuilder(
-            app,
-            AppDatabase::class.java,
-            "herb_app_db"
-        ).addMigrations(AppDatabase.MIGRATION_1_2)
+        return Room.databaseBuilder(app, AppDatabase::class.java, "herb_app_db")
+            .addMigrations(AppDatabase.MIGRATION_1_2)
             .build()
     }
 
@@ -69,7 +61,7 @@ object AppModule {
     fun providePlantRepository(
         generativeModel: GenerativeModel,
         scanHistoryDao: ScanHistoryDao,
-        app: Application
+        app: Application,
     ): PlantRepository {
         return PlantRepositoryImpl(generativeModel, scanHistoryDao, app)
     }

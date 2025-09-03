@@ -1,4 +1,9 @@
 <resources>
+    <!-- Accessibility descriptions for history fragment -->
+    <string name="history_list_content_desc">Daftar riwayat pemindaian tanaman</string>
+    <string name="history_empty_image_desc">Ilustrasi tidak ada riwayat pemindaian tanaman</string>
+    <!-- Accessibility descriptions for result fragment -->
+    <string name="result_scroll_content_desc">Hasil identifikasi tanaman</string>
     <string name="nav_home">Beranda</string>
     <string name="nav_scan">Scan</string>
     <string name="nav_history">Riwayat</string>
@@ -28,10 +33,10 @@
     <string name="post_to_forum">Post ke Forum</string>
     <string name="history_title">Riwayat Scan</string>
     <string name="history_subtitle">Tanaman herbal yang pernah Anda scan</string>
-    <string name="badge_plant_hunter">🌱 Plant Hunter</string>
-    <string name="badge_plant_adventure">🍃 Plant Adventure</string>
-    <string name="badge_plant_lover">❤️ Plant Lover</string>
-    <string name="badge_king_plant">👑 King Plant</string>
+    <string name="badge_plant_hunter">🌱 Hunter</string>
+    <string name="badge_plant_adventure">🍃 Adventure</string>
+    <string name="badge_plant_lover">❤️ Lover</string>
+    <string name="badge_king_plant">👑 King</string>
     <string name="my_posts_title">Postingan Saya</string>
     <string name="no_posts">Anda belum membuat postingan.</string>
     <string name="register_title">Bergabung dengan kami</string>
@@ -75,8 +80,8 @@
     <string name="cd_plant_image">Gambar Tanaman</string>
     <string name="label_plant_name_colon">Nama Tanaman:&#160;</string>
     <string name="section_description_title">📝 Deskripsi</string>
-    <string name="section_benefit_title">🩺 Potensi Manfaat &amp; Kegunaan</string>
-    <string name="section_warning_title">⚠️ Peringatan &amp; Efek Samping</string>
+    <string name="section_benefit_label">Manfaat</string>
+    <string name="section_warning_label">Peringatan</string>
     <string name="action_delete">Hapus</string>
     <string name="logo">Logo</string>
     <string name="section_description_title_a11y">Deskripsi</string>

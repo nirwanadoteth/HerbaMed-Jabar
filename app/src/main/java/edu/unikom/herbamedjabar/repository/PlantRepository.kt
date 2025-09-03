@@ -8,15 +8,15 @@ import com.google.ai.client.generativeai.type.content
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.util.PlantDataParser
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import java.io.File
-import java.io.FileOutputStream
-import java.util.UUID
-import javax.inject.Inject
 
 data class AnalysisResult(
     val resultText: String,
@@ -30,14 +30,18 @@ data class AnalysisResult(
 
 interface PlantRepository {
     suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult
+
     fun getAllHistory(): Flow<List<ScanHistory>>
+
     suspend fun deleteHistory(history: ScanHistory)
 }
 
-class PlantRepositoryImpl @Inject constructor(
+class PlantRepositoryImpl
+@Inject
+constructor(
     private val generativeModel: GenerativeModel,
     private val scanHistoryDao: ScanHistoryDao,
-    private val application: Application
+    private val application: Application,
 ) : PlantRepository {
 
     companion object {
@@ -57,22 +61,25 @@ class PlantRepositoryImpl @Inject constructor(
                     image(bitmap)
                     text(prompt)
                 }
-                val response = withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
+                val response =
+                    withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
                 val resultText = response.text ?: error("Hasil teks dari AI kosong.")
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
-                val isHerbal = parsedData.herbalStatus
-                    .replace("-", " ")
-                    .trim()
-                    .equals("herbal", ignoreCase = true)
-                val history = ScanHistory(
-                    resultText = resultText,
-                    imagePath = imagePath,
-                    plantName = parsedData.plantName,
-                    benefit = parsedData.benefit,
-                    warning = parsedData.warning,
-                    content = parsedData.description
-                )
+                val isHerbal =
+                    parsedData.herbalStatus
+                        .replace("-", " ")
+                        .trim()
+                        .equals("herbal", ignoreCase = true)
+                val history =
+                    ScanHistory(
+                        resultText = resultText,
+                        imagePath = imagePath,
+                        plantName = parsedData.plantName,
+                        benefit = parsedData.benefit,
+                        warning = parsedData.warning,
+                        content = parsedData.description,
+                    )
                 try {
                     scanHistoryDao.insertHistory(history)
                 } catch (se: SQLiteException) {
@@ -89,10 +96,12 @@ class PlantRepositoryImpl @Inject constructor(
                     benefit = parsedData.benefit,
                     warning = parsedData.warning,
                     content = parsedData.description,
-                    isHerbal = isHerbal
+                    isHerbal = isHerbal,
                 )
             }
-            result.onSuccess { return it }
+            result.onSuccess {
+                return it
+            }
             result.onFailure { e ->
                 if (e is kotlinx.coroutines.CancellationException) throw e
                 savedImagePath?.let { runCatching { File(it).delete() } }
@@ -103,8 +112,7 @@ class PlantRepositoryImpl @Inject constructor(
                 delayTime = (delayTime * 2).coerceAtMost(AI_TIMEOUT_MS)
             }
         }
-        throw lastError
-            ?: error("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
+        throw lastError ?: error("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
     }
 
     override fun getAllHistory(): Flow<List<ScanHistory>> {

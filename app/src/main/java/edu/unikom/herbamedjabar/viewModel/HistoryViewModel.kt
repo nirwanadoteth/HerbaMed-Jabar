@@ -7,9 +7,7 @@ import edu.unikom.herbamedjabar.repository.PlantRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoryViewModel @Inject constructor(
-    plantRepository: PlantRepository
-) : ViewModel() {
+class HistoryViewModel @Inject constructor(plantRepository: PlantRepository) : ViewModel() {
 
     val allHistory = plantRepository.getAllHistory().asLiveData()
 }

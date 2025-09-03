@@ -21,7 +21,8 @@ import java.io.File
 class ResultFragment : Fragment() {
 
     private var _binding: FragmentResultBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     // Inject ResultViewModel
     private val viewModel: ResultViewModel by viewModels()
@@ -49,22 +50,29 @@ class ResultFragment : Fragment() {
         val content = arguments?.getString(ARG_CONTENT).orEmpty()
         val benefit = arguments?.getString(ARG_BENEFIT).orEmpty()
         val warning = arguments?.getString(ARG_WARNING).orEmpty()
+        val card = binding.plantCardLayout
 
-        binding.apply {
+        card.apply {
             plantNameTextView.text = plantName
-            contentTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(content), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            benefitTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(benefit), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            warningTextView.text = HtmlCompat.fromHtml(
-                MarkdownUtils.parseMarkdownToHtml(warning), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            benefitBanner.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
-            benefitTextView.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
-            warningBanner.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
-            warningTextView.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
+            contentTextView.text =
+                HtmlCompat.fromHtml(
+                    MarkdownUtils.parseMarkdownToHtml(content),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                )
+            benefitTextView.text =
+                HtmlCompat.fromHtml(
+                    MarkdownUtils.parseMarkdownToHtml(benefit),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                )
+            warningTextView.text =
+                HtmlCompat.fromHtml(
+                    MarkdownUtils.parseMarkdownToHtml(warning),
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                )
+            benefitCard.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
+            warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
+            primaryButton.visibility =
+                if (benefit.isBlank() or warning.isBlank()) View.GONE else View.VISIBLE
             if (imagePath != null) {
                 val imageFile = File(imagePath)
                 if (imageFile.exists()) {
@@ -73,43 +81,43 @@ class ResultFragment : Fragment() {
                     resultImageView.setImageResource(R.drawable.bg_place_holder)
                 }
             }
-            resultImageView.contentDescription = root.context.getString(R.string.cd_plant_image_of, plantName)
+            resultImageView.contentDescription =
+                root.context.getString(R.string.cd_plant_image_of, plantName)
         }
     }
 
     private fun setupListeners() {
-        binding.topAppBar.setNavigationOnClickListener { activity?.supportFragmentManager?.popBackStack() }
-
-        binding.scanAgainButton.setOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
+            activity?.supportFragmentManager?.popBackStack()
+        }
+        binding.plantCardLayout.secondaryButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
                 "scan_again_request",
                 Bundle().apply { putBoolean("open_camera", true) },
             )
             activity?.supportFragmentManager?.popBackStack()
         }
-
-        binding.btnPostToForum.setOnClickListener {
+        binding.plantCardLayout.primaryButton.setOnClickListener {
             val imagePath = arguments?.getString(ARG_IMAGE_PATH)
             val resultText = arguments?.getString(ARG_RESULT_TEXT)
+            val plantName = arguments?.getString(ARG_PLANT_NAME) ?: ""
 
             if (imagePath == null || resultText == null) {
                 Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_incomplete_post_data),
-                    Toast.LENGTH_SHORT
-                ).show()
+                        requireContext(),
+                        getString(R.string.error_incomplete_post_data),
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
                 return@setOnClickListener
             }
-
-            val plantName = resultText.lines().firstOrNull()
-                ?.replace("#", "")?.replace("*", "")?.trim() ?: "Tanaman Hasil Scan"
 
             val imageUri = Uri.fromFile(File(imagePath))
 
             viewModel.createPostFromScan(
                 imageUri = imageUri,
                 plantName = plantName,
-                description = resultText
+                description = resultText,
             )
         }
     }
@@ -117,23 +125,30 @@ class ResultFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            binding.btnPostToForum.isEnabled = !isLoading
-            binding.scanAgainButton.isEnabled = !isLoading
+            binding.plantCardLayout.primaryButton.isEnabled = !isLoading // Post button
+            binding.plantCardLayout.secondaryButton.isEnabled = !isLoading // Scan again button
         }
 
         viewModel.postResult.observe(viewLifecycleOwner) { result ->
-            result.onSuccess {
-                Toast.makeText(requireContext(), "Berhasil diposting ke forum!", Toast.LENGTH_SHORT)
-                    .show()
-                // Kembali ke halaman scan setelah berhasil
-                activity?.supportFragmentManager?.popBackStack()
-            }.onFailure {
-                Toast.makeText(
-                    requireContext(),
-                    "Gagal memposting: ${it.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            result
+                .onSuccess {
+                    Toast.makeText(
+                            requireContext(),
+                            "Berhasil diposting ke forum!",
+                            Toast.LENGTH_SHORT,
+                        )
+                        .show()
+                    // Kembali ke halaman scan setelah berhasil
+                    activity?.supportFragmentManager?.popBackStack()
+                }
+                .onFailure {
+                    Toast.makeText(
+                            requireContext(),
+                            "Gagal memposting: ${it.message}",
+                            Toast.LENGTH_LONG,
+                        )
+                        .show()
+                }
         }
     }
 
@@ -150,18 +165,17 @@ class ResultFragment : Fragment() {
         private const val ARG_WARNING = "warning"
         private const val ARG_CONTENT = "content"
 
-        fun newInstance(
-            args: AnalysisResult
-        ): ResultFragment {
+        fun newInstance(args: AnalysisResult): ResultFragment {
             val fragment = ResultFragment()
-            val bundle = Bundle().apply {
-                putString(ARG_IMAGE_PATH, args.imagePath)
-                putString(ARG_RESULT_TEXT, args.resultText)
-                putString(ARG_PLANT_NAME, args.plantName)
-                putString(ARG_BENEFIT, args.benefit)
-                putString(ARG_WARNING, args.warning)
-                putString(ARG_CONTENT, args.content)
-            }
+            val bundle =
+                Bundle().apply {
+                    putString(ARG_IMAGE_PATH, args.imagePath)
+                    putString(ARG_RESULT_TEXT, args.resultText)
+                    putString(ARG_PLANT_NAME, args.plantName)
+                    putString(ARG_BENEFIT, args.benefit)
+                    putString(ARG_WARNING, args.warning)
+                    putString(ARG_CONTENT, args.content)
+                }
             fragment.arguments = bundle
             return fragment
         }

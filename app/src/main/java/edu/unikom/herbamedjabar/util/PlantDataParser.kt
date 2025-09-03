@@ -5,22 +5,25 @@ data class PlantData(
     val description: String,
     val benefit: String,
     val warning: String,
-    val herbalStatus: String = "Unknown"
+    val herbalStatus: String,
 )
 
 /**
  * Utility object for parsing structured plant data from AI-generated Markdown text.
  *
  * Expected input format:
- * - Contains sections with emoji headers, e.g.:
- *   🌿 [Plant Name]*Nama Ilmiah
- *   ### 📝 Deskripsi
- *   ### 🩺 Potensi Manfaat & Kegunaan
- *   ### ⚠️ Peringatan & Efek Samping
- *   ### Jenis Tanaman
+ * - Contains sections with emoji headers, e.g.: 🌿 [Plant Name]*Nama Ilmiah
  *
- * Returns a PlantData with fields: plantName, description, benefit, warning, herbalStatus.
- * If the plant cannot be identified, returns a standard placeholder response.
+ * ### 📝 Deskripsi
+ *
+ * ### 🩺 Potensi Manfaat & Kegunaan
+ *
+ * ### ⚠️ Peringatan & Efek Samping
+ *
+ * ### Jenis Tanaman
+ *
+ * Returns a PlantData with fields: plantName, description, benefit, warning, herbalStatus. If the
+ * plant cannot be identified, returns a standard placeholder response.
  */
 object PlantDataParser {
 
@@ -39,7 +42,7 @@ object PlantDataParser {
                 description = "Pastikan gambar jelas dan fokus pada satu jenis tanaman.",
                 benefit = "",
                 warning = "",
-                herbalStatus = "Unknown"
+                herbalStatus = "",
             )
         }
 
@@ -47,19 +50,22 @@ object PlantDataParser {
         val description = parseSection(originalText, Section.DESCRIPTION).ifBlank { "" }
         val benefit = parseSection(originalText, Section.BENEFIT).ifBlank { "" }
         val warning = parseSection(originalText, Section.WARNING).ifBlank { "" }
-        val herbalStatus = parseSection(originalText, Section.HERBAL_STATUS).ifBlank { "Unknown" }
+        val herbalStatus = parseSection(originalText, Section.HERBAL_STATUS).ifBlank { "" }
 
         return PlantData(
             plantName = plantName,
             description = description,
             benefit = benefit,
             warning = warning,
-            herbalStatus = herbalStatus
+            herbalStatus = herbalStatus,
         )
     }
 
     private enum class Section {
-        DESCRIPTION, BENEFIT, WARNING, HERBAL_STATUS
+        DESCRIPTION,
+        BENEFIT,
+        WARNING,
+        HERBAL_STATUS,
     }
 
     private fun isUnidentifiedPlant(text: String): Boolean =
@@ -67,49 +73,54 @@ object PlantDataParser {
             .containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
-        val namePattern = Regex(
-            pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?(.*?)\s*\*?Nama\s+Ilmiah\b""",
-            options = setOf(
-                RegexOption.DOT_MATCHES_ALL,
-                RegexOption.IGNORE_CASE,
-                RegexOption.MULTILINE
+        val namePattern =
+            Regex(
+                pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?(.*?)\s*\*?Nama\s+Ilmiah\b""",
+                options =
+                    setOf(
+                        RegexOption.DOT_MATCHES_ALL,
+                        RegexOption.IGNORE_CASE,
+                        RegexOption.MULTILINE,
+                    ),
             )
-        )
         return namePattern.find(text)?.destructured?.let { (name) -> name.trim() }
-            ?: text.lineSequence().firstOrNull()
-                ?.replace(Regex("""^[#*\s🌿]+"""), "")
-                ?.trim()
-            ?: "Nama tidak ditemukan"
+            ?: text.lineSequence().firstOrNull()?.replace(Regex("""^[#*\s🌿]+"""), "")?.trim()
+            ?: ""
     }
 
     private fun parseSection(text: String, section: Section): String {
         val opts =
             setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
-        val (pattern, fallback) = when (section) {
-            Section.DESCRIPTION ->
-                Regex(
-                    pattern = """^#{2,6}\s*(?:📝\s*)?Deskripsi\b(.*?)(?=^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
-                    options = opts
-                ) to ""
+        val (pattern, fallback) =
+            when (section) {
+                Section.DESCRIPTION ->
+                    Regex(
+                        pattern =
+                            """^#{2,6}\s*(?:📝\s*)?Deskripsi\b(.*?)(?=^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                        options = opts,
+                    ) to ""
 
-            Section.BENEFIT ->
-                Regex(
-                    pattern = """^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
-                    options = opts
-                ) to ""
+                Section.BENEFIT ->
+                    Regex(
+                        pattern =
+                            """^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                        options = opts,
+                    ) to ""
 
-            Section.WARNING ->
-                Regex(
-                    pattern = """^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
-                    options = opts
-                ) to ""
+                Section.WARNING ->
+                    Regex(
+                        pattern =
+                            """^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                        options = opts,
+                    ) to ""
 
-            Section.HERBAL_STATUS ->
-                Regex(
-                    pattern = """^#{2,6}\s*Jenis\s+Tanaman\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
-                    options = opts
-                ) to ""
-        }
+                Section.HERBAL_STATUS ->
+                    Regex(
+                        pattern =
+                            """^#{2,6}\s*Jenis\s+Tanaman\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
+                        options = opts,
+                    ) to ""
+            }
         return pattern.find(text)?.destructured?.let { (content) ->
             content.replace(Regex("""(?m)^\s*---\s*$"""), "").trim()
         } ?: fallback

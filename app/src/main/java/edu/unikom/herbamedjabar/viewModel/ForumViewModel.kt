@@ -8,15 +8,15 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
+import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class ForumViewModel @Inject constructor(
-    private val postRepository: PostRepository,
-    private val auth: FirebaseAuth
-) : ViewModel() {
+class ForumViewModel
+@Inject
+constructor(private val postRepository: PostRepository, private val auth: FirebaseAuth) :
+    ViewModel() {
 
     private val _posts = MutableLiveData<List<Post>>()
     val posts: LiveData<List<Post>> = _posts
@@ -34,7 +34,8 @@ class ForumViewModel @Inject constructor(
     private fun fetchPosts() {
         viewModelScope.launch {
             _isLoading.value = true
-            postRepository.getPosts()
+            postRepository
+                .getPosts()
                 .catch { e ->
                     _error.value = e.message
                     _isLoading.value = false
@@ -55,8 +56,6 @@ class ForumViewModel @Inject constructor(
     }
 
     fun deletePost(post: Post) {
-        viewModelScope.launch {
-            postRepository.deletePost(post)
-        }
+        viewModelScope.launch { postRepository.deletePost(post) }
     }
 }

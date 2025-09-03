@@ -9,13 +9,15 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+class ProfileViewModel
+@Inject
+constructor(
     private val auth: FirebaseAuth,
-    private val postRepository: PostRepository // Inject PostRepository
+    private val postRepository: PostRepository, // Inject PostRepository
 ) : ViewModel() {
 
     private val _user = MutableLiveData<FirebaseUser?>()
@@ -32,9 +34,7 @@ class ProfileViewModel @Inject constructor(
     private fun fetchUserPosts() {
         val userId = auth.currentUser?.uid ?: return
         viewModelScope.launch {
-            postRepository.getPostsByUserId(userId).collect { posts ->
-                _userPosts.value = posts
-            }
+            postRepository.getPostsByUserId(userId).collect { posts -> _userPosts.value = posts }
         }
     }
 
@@ -46,9 +46,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun deletePost(post: Post) {
-        viewModelScope.launch {
-            postRepository.deletePost(post)
-        }
+        viewModelScope.launch { postRepository.deletePost(post) }
     }
 
     fun logout() {

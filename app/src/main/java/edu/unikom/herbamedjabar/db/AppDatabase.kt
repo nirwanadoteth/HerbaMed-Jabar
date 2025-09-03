@@ -10,13 +10,22 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scanHistoryDao(): ScanHistoryDao
 
     companion object {
-        val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
-            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE scan_history ADD COLUMN plantName TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE scan_history ADD COLUMN content TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE scan_history ADD COLUMN benefit TEXT NOT NULL DEFAULT ''")
-                db.execSQL("ALTER TABLE scan_history ADD COLUMN warning TEXT NOT NULL DEFAULT ''")
+        val MIGRATION_1_2 =
+            object : androidx.room.migration.Migration(1, 2) {
+                override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                    db.execSQL(
+                        "ALTER TABLE scan_history ADD COLUMN plantName TEXT NOT NULL DEFAULT ''"
+                    )
+                    db.execSQL(
+                        "ALTER TABLE scan_history ADD COLUMN content TEXT NOT NULL DEFAULT ''"
+                    )
+                    db.execSQL(
+                        "ALTER TABLE scan_history ADD COLUMN benefit TEXT NOT NULL DEFAULT ''"
+                    )
+                    db.execSQL(
+                        "ALTER TABLE scan_history ADD COLUMN warning TEXT NOT NULL DEFAULT ''"
+                    )
+                }
             }
-        }
     }
 }

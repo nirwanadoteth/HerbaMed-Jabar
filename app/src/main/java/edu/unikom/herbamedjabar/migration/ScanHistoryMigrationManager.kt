@@ -6,17 +6,16 @@ import androidx.room.withTransaction
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.db.AppDatabase
 import edu.unikom.herbamedjabar.util.PlantDataParser
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
-class ScanHistoryMigrationManager @Inject constructor(
-    private val scanHistoryDao: ScanHistoryDao,
-    private val db: AppDatabase
-) {
+class ScanHistoryMigrationManager
+@Inject
+constructor(private val scanHistoryDao: ScanHistoryDao, private val db: AppDatabase) {
     companion object {
         private const val PAGE_SIZE = 200
         private const val TAG = "ScanHistoryMigration"
@@ -45,7 +44,7 @@ class ScanHistoryMigrationManager @Inject constructor(
                                     plantName = parsed.plantName,
                                     content = parsed.description,
                                     benefit = parsed.benefit,
-                                    warning = parsed.warning
+                                    warning = parsed.warning,
                                 )
                             )
                         }

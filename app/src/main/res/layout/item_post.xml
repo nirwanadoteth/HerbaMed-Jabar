@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="0dp">
+    style="@style/Widget.Material3.CardView.Elevated">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp">
+        android:layout_height="wrap_content">
 
         <!-- User Info -->
         <de.hdodenhof.circleimageview.CircleImageView
@@ -64,12 +62,14 @@
             android:clickable="true"
             android:contentDescription="@string/cd_post_options"
             android:focusable="true"
-            android:src="@drawable/ic_more_hori"
             android:padding="12dp"
+            android:src="@drawable/ic_more_hori"
+            android:tooltipText="@string/cd_post_options"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/iv_user_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/iv_user_profile"
+            tools:targetApi="26"
             tools:visibility="visible" />
 
 
@@ -81,11 +81,11 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/cd_plant_image"
             android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/container_post"
             app:layout_constraintDimensionRatio="4:3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_user_profile"
-            app:layout_constraintBottom_toTopOf="@id/container_post"
             tools:src="@drawable/bg_place_holder" />
 
         <!-- Plant Name -->
@@ -145,14 +145,13 @@
                 android:layout_marginTop="4dp"
                 android:breakStrategy="high_quality"
                 android:lineSpacingExtra="2sp"
-                android:textColor="@color/text_muted_foreground"
                 android:textSize="12sp"
                 tools:text="Deskripsi singkat" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/section_benefit_title"
+                android:text="@string/section_benefit_label"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -169,12 +168,11 @@
                     android:id="@+id/tv_manfaat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:breakStrategy="high_quality"
                     android:lineSpacingExtra="2sp"
-                    android:textColor="@color/benefit_text"
                     android:textSize="12sp"
                     tools:text="Manfaat" />
             </LinearLayout>
@@ -183,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/section_warning_title"
+                android:text="@string/section_warning_label"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -200,12 +198,11 @@
                     android:id="@+id/tv_efek"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="0dp"
                     android:breakStrategy="high_quality"
                     android:lineSpacingExtra="2sp"
-                    android:textColor="@color/warning_text"
                     android:textSize="12sp"
                     tools:text="Peringatan dan Efek Samping" />
             </LinearLayout>
@@ -219,13 +216,15 @@
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
             android:contentDescription="@string/cd_like"
             android:focusable="true"
-            android:clickable="true"
             android:padding="12dp"
             android:src="@drawable/ic_heart_filled"
+            android:tooltipText="@string/cd_like"
             app:layout_constraintStart_toStartOf="@id/content_wrapper"
-            app:layout_constraintTop_toBottomOf="@id/content_wrapper" />
+            app:layout_constraintTop_toBottomOf="@id/content_wrapper"
+            tools:targetApi="26" />
 
         <TextView
             android:id="@+id/tv_like_count"
@@ -240,4 +239,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

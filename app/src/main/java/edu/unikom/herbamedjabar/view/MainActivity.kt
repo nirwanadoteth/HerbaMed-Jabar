@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    @Inject
-    lateinit var auth: FirebaseAuth
+    @Inject lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +40,14 @@ class MainActivity : AppCompatActivity() {
             return
         }
         binding.navView.setOnItemSelectedListener { item ->
-            val fragment = when (item.itemId) {
-                R.id.navigation_scan -> ScanFragment()
-                R.id.navigation_forum -> ForumFragment()
-                R.id.navigation_history -> HistoryFragment()
-                R.id.navigation_profile -> ProfileFragment()
-                else -> null
-            }
+            val fragment =
+                when (item.itemId) {
+                    R.id.navigation_scan -> ScanFragment()
+                    R.id.navigation_forum -> ForumFragment()
+                    R.id.navigation_history -> HistoryFragment()
+                    R.id.navigation_profile -> ProfileFragment()
+                    else -> null
+                }
             fragment?.let {
                 setCurrentFragment(it, false)
                 true
@@ -77,9 +77,7 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun showResultFragment(
-        args: AnalysisResult
-    ) {
+    fun showResultFragment(args: AnalysisResult) {
         val resultFragment = ResultFragment.newInstance(args)
         setCurrentFragment(resultFragment, true)
     }

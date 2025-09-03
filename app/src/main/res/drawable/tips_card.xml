@@ -4,5 +4,5 @@
         android:width="0.3dp"
         android:color="#C4BBF7" />
     <corners android:radius="10dp" />
-    <solid android:color="@color/bg_blue" />
+    <solid android:color="?android:attr/textColorHighlightInverse" />
 </shape>
