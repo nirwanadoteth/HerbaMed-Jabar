@@ -25,6 +25,12 @@ abstract class AppDatabase : RoomDatabase() {
                     db.execSQL(
                         "ALTER TABLE scan_history ADD COLUMN warning TEXT NOT NULL DEFAULT ''"
                     )
+                    db.execSQL(
+                        "CREATE INDEX IF NOT EXISTS index_scan_history_plantName ON scan_history(plantName COLLATE NOCASE)"
+                    )
+                    db.execSQL(
+                        "CREATE INDEX IF NOT EXISTS index_scan_history_timestamp ON scan_history(timestamp)"
+                    )
                 }
             }
     }

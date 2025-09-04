@@ -46,7 +46,6 @@
             android:textAlignment="center"
             style="@style/TextAppearance.Material3.TitleSmall"
             android:textColor="?attr/colorOnBackground"
-            app:layout_constraintBottom_toTopOf="@id/subtitleTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTextView" />
@@ -209,8 +208,7 @@
                     android:text="@string/register_button"
                     android:textColor="?attr/colorOnPrimary"
                     android:textSize="16sp"
-                    app:cornerRadius="12dp"
-                    android:contentDescription="@string/register_button" />
+                    app:cornerRadius="12dp" />
 
                 <LinearLayout
                     android:id="@+id/loginLayout"

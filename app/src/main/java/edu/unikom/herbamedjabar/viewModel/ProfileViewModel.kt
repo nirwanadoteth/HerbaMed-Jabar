@@ -41,12 +41,16 @@ constructor(
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid ?: return@launch
-            postRepository.toggleLike(postId, userId)
+            runCatching { postRepository.toggleLike(postId, userId) }
+                .onFailure { /* TODO: report to UI/logger */ }
         }
     }
 
     fun deletePost(post: Post) {
-        viewModelScope.launch { postRepository.deletePost(post) }
+        viewModelScope.launch {
+            runCatching { postRepository.deletePost(post) }
+                .onFailure { /* TODO: report to UI/logger */ }
+        }
     }
 
     fun logout() {

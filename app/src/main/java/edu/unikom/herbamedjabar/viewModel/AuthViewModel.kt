@@ -81,10 +81,14 @@ class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) 
             return
         }
         runAuthOp("Registrasi") {
-            val authResult = firebaseAuth.createUserWithEmailAndPassword(emailT, password).await()
-            val user = requireNotNull(authResult.user) { "User tidak tersedia setelah registrasi" }
-            val profileUpdates = userProfileChangeRequest { displayName = nameT }
-            user.updateProfile(profileUpdates).await()
+            withTimeout(AUTH_TIMEOUT_MS) {
+                val authResult =
+                    firebaseAuth.createUserWithEmailAndPassword(emailT, password).await()
+                val user =
+                    requireNotNull(authResult.user) { "User tidak tersedia setelah registrasi" }
+                val profileUpdates = userProfileChangeRequest { displayName = nameT }
+                user.updateProfile(profileUpdates).await()
+            }
             Log.d(TAG, "User profile updated.")
         }
     }

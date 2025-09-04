@@ -13,6 +13,7 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -103,7 +104,7 @@ constructor(
                 return it
             }
             result.onFailure { e ->
-                if (e is kotlinx.coroutines.CancellationException) throw e
+                if (e is kotlinx.coroutines.CancellationException && e !is TimeoutCancellationException) throw e
                 savedImagePath?.let { runCatching { File(it).delete() } }
                 lastError = e
             }

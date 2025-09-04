@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         tools:context=".view.ProfileFragment">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_banner"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -23,14 +23,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.Material3Expressive.Button.IconButton.Outlined"
             android:id="@+id/btn_logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="18dp"
             android:contentDescription="@string/logout"
-            android:src="@drawable/ic_menu"
+            app:icon="@drawable/ic_logout"
+            app:iconTint="@color/md_theme_error_highContrast"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,7 +80,7 @@
 
         <com.google.android.material.button.MaterialButtonGroup
             android:id="@+id/badge_container"
-            style="@style/Widget.Material3.MaterialButtonGroup.Connected"
+            style="@style/Widget.Material3.MaterialButtonGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -129,10 +132,11 @@
 
         </com.google.android.material.button.MaterialButtonGroup>
 
-        <View
+        <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
-            android:layout_height="0.8dp"
-            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content"
+            app:dividerInsetStart="20dp"
+            app:dividerInsetEnd="20dp"
             app:layout_constraintBottom_toTopOf="@id/tv_my_posts_title" />
 
         <com.google.android.material.textview.MaterialTextView

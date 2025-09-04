@@ -22,30 +22,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="16dp"
             android:ellipsize="end"
+            style="@style/TextAppearance.Material3.TitleSmall.Emphasized"
             android:maxLines="1"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tv_post_timestamp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_user_profile"
             app:layout_constraintTop_toTopOf="@id/iv_user_profile"
             tools:text="Username" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_post_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
-            android:textSize="12sp"
+            style="@style/TextAppearance.Material3.BodySmall"
             app:drawableStartCompat="@drawable/ic_clock"
             app:layout_constraintBottom_toBottomOf="@id/iv_user_profile"
             app:layout_constraintStart_toStartOf="@id/tv_username"

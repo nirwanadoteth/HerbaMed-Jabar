@@ -2,10 +2,11 @@ package edu.unikom.herbamedjabar.view
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,22 +62,57 @@ class ScanFragment : Fragment() {
             if (uri != null) {
                 try {
                     viewLifecycleOwner.lifecycleScope.launch {
-                        val bitmap =
+                        var bounds: BitmapFactory.Options
+                        val bitmap: Bitmap =
                             withContext(kotlinx.coroutines.Dispatchers.IO) {
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                                    @Suppress("DEPRECATION")
-                                    MediaStore.Images.Media.getBitmap(
-                                        requireContext().contentResolver,
-                                        uri,
-                                    )
+                                (if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                                    // Pre-P: decode with sampling
+                                    val resolver = requireContext().contentResolver
+                                    resolver.openInputStream(uri)!!.use { input ->
+                                        // bounds pass
+                                        bounds =
+                                            BitmapFactory.Options().apply {
+                                                inJustDecodeBounds = true
+                                            }
+                                        BitmapFactory.decodeStream(
+                                            input,
+                                            null,
+                                            bounds,
+                                        )
+                                    }
+                                    val targetMaxDim = 2048
+                                    val resolver2 = requireContext().contentResolver
+                                    resolver2.openInputStream(uri)!!.use { input ->
+                                        val opts =
+                                            BitmapFactory.Options().apply {
+                                                inSampleSize =
+                                                    maxOf(
+                                                        1,
+                                                        maxOf(bounds.outWidth, bounds.outHeight) /
+                                                                targetMaxDim,
+                                                    )
+                                            }
+                                        BitmapFactory.decodeStream(
+                                            input,
+                                            null,
+                                            opts,
+                                        )
+                                    }
                                 } else {
                                     val source =
                                         ImageDecoder.createSource(
                                             requireContext().contentResolver,
                                             uri,
                                         )
-                                    ImageDecoder.decodeBitmap(source)
-                                }
+                                    ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                                        val maxDim = 2048
+                                        val w = info.size.width
+                                        val h = info.size.height
+                                        val scale = maxOf(1, maxOf(w, h) / maxDim)
+                                        decoder.setTargetSize(w / scale, h / scale)
+                                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                                    }
+                                })!!
                             }
                         binding.plantImageView.setImageBitmap(bitmap)
                         viewModel.analyzeImage(bitmap)

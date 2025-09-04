@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ktfmt)
+    alias(libs.plugins.room)
 }
 
 ktfmt { kotlinLangStyle() }
@@ -55,6 +56,10 @@ android {
     }
 
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -119,10 +124,4 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
-}
-
-ksp {
-    arg("room.incremental", "true")
-    arg("room.generateKotlin", "true")
-    arg("room.schemaLocation", "$projectDir/schemas")
 }

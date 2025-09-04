@@ -40,9 +40,9 @@ class ScanViewModel @Inject constructor(private val analyzePlantUseCase: Analyze
         if (_uiState.value is UiState.Loading) return
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            val result = analyzePlantUseCase(bitmap)
-            result
-                .onSuccess { analysisResult ->
+            try {
+                val result = analyzePlantUseCase(bitmap)
+                result.onSuccess { analysisResult ->
                     _uiState.value = UiState.Success
                     _navigateToResult.value = analysisResult
                     val stats = _scanStats.value ?: ScanStats()
@@ -53,11 +53,13 @@ class ScanViewModel @Inject constructor(private val analyzePlantUseCase: Analyze
                             stats.copy(total = stats.total + 1, nonHerbal = stats.nonHerbal + 1)
                         }
                     _scanStats.value = newStats
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.value =
                         UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
                 }
+            } catch (t: Throwable) {
+                _uiState.value = UiState.Error(t.message ?: "Terjadi kesalahan tidak diketahui")
+            }
         }
     }
 

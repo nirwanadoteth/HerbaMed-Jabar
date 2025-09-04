@@ -14,10 +14,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/resultImageView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_height"
+            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
             android:contentDescription="@string/cd_plant_image"
             android:importantForAccessibility="yes"
             android:scaleType="centerCrop"
@@ -72,6 +73,8 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_benefit"
+                            android:contentDescription="@null"
+                            android:importantForAccessibility="no"
                             app:tint="?attr/colorOnSecondaryContainer" />
 
                         <com.google.android.material.textview.MaterialTextView
@@ -119,6 +122,8 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_warning"
+                            android:contentDescription="@null"
+                            android:importantForAccessibility="no"
                             app:tint="?attr/colorOnTertiaryContainer" />
 
                         <com.google.android.material.textview.MaterialTextView

@@ -113,8 +113,14 @@ class LoginFragment : Fragment() {
 
     private fun createGoogleIdToken(credential: Credential) {
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
+            try {
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(requireContext(), "Token Google tidak valid.", Toast.LENGTH_SHORT)
+                    .show()
+                Log.w(TAG, "Invalid Google ID token credential", e)
+            }
         } else {
             Log.w(TAG, "Kredensial tidak sesuai dengan Google ID Token")
         }

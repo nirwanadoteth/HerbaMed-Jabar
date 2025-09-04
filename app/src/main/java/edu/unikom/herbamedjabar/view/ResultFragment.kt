@@ -73,13 +73,11 @@ class ResultFragment : Fragment() {
             warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
             primaryButton.visibility =
                 if (benefit.isBlank() or warning.isBlank()) View.GONE else View.VISIBLE
-            if (imagePath != null) {
-                val imageFile = File(imagePath)
-                if (imageFile.exists()) {
-                    resultImageView.setImageURI(Uri.fromFile(imageFile))
-                } else {
-                    resultImageView.setImageResource(R.drawable.bg_place_holder)
-                }
+            val imageFile = imagePath?.let(::File)
+            if (imageFile?.exists() == true) {
+                resultImageView.setImageURI(Uri.fromFile(imageFile))
+            } else {
+                resultImageView.setImageResource(R.drawable.bg_place_holder)
             }
             resultImageView.contentDescription =
                 root.context.getString(R.string.cd_plant_image_of, plantName)
@@ -134,7 +132,7 @@ class ResultFragment : Fragment() {
                 .onSuccess {
                     Toast.makeText(
                             requireContext(),
-                            "Berhasil diposting ke forum!",
+                        getString(R.string.post_success),
                             Toast.LENGTH_SHORT,
                         )
                         .show()
@@ -144,7 +142,7 @@ class ResultFragment : Fragment() {
                 .onFailure {
                     Toast.makeText(
                             requireContext(),
-                            "Gagal memposting: ${it.message}",
+                        getString(R.string.post_failed_with_reason, it.message ?: getString(R.string.unknown_error)),
                             Toast.LENGTH_LONG,
                         )
                         .show()

@@ -51,11 +51,21 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid ?: return@launch
-            postRepository.toggleLike(postId, userId)
+            try {
+                postRepository.toggleLike(postId, userId)
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
         }
     }
 
     fun deletePost(post: Post) {
-        viewModelScope.launch { postRepository.deletePost(post) }
+        viewModelScope.launch {
+            try {
+                postRepository.deletePost(post)
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
     }
 }

@@ -88,6 +88,8 @@ class HistoryDetailFragment : Fragment() {
                 } else {
                     resultImageView.setImageResource(R.drawable.bg_place_holder)
                 }
+            } else {
+                resultImageView.setImageResource(R.drawable.bg_place_holder)
             }
             resultImageView.contentDescription =
                 root.context.getString(R.string.cd_plant_image_of, plantName)

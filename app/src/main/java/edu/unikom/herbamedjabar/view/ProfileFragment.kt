@@ -127,8 +127,12 @@ class ProfileFragment : Fragment() {
                             "Gagal membersihkan kredensial: ${e.localizedMessage}",
                         )
                     } finally {
-                        startActivity(Intent(requireContext(), AuthActivity::class.java))
-                        activity?.finish()
+                        val intent =
+                            Intent(requireContext(), AuthActivity::class.java).apply {
+                                flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                        startActivity(intent)
                     }
                 }
             }

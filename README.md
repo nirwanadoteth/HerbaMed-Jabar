@@ -33,7 +33,7 @@ HerbaMed Jabar adalah aplikasi Android yang dirancang untuk membantu pengguna me
 1. **Clone repositori ini:**
 
     ```bash
-    git clone https://github.com/ebinugraha/herbamed-jabar.git
+    git clone https://github.com/nirwanadoteth/herbamed-jabar.git
     ```
 
 2. **Buka proyek di Android Studio.**

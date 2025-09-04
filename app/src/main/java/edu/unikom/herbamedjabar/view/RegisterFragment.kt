@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentRegisterBinding
 import edu.unikom.herbamedjabar.viewModel.AuthState
 import edu.unikom.herbamedjabar.viewModel.AuthViewModel
@@ -41,12 +42,11 @@ class RegisterFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.registerButton.setOnClickListener {
-            viewModel.registerUser(
-                binding.nameEditText.text.toString().trim(),
-                binding.emailEditText.text.toString().trim(),
-                binding.passwordEditText.text.toString().trim(),
-                binding.confirmPasswordEditText.text.toString().trim(),
-            )
+            val name = binding.nameEditText.text.toString().trim()
+            val email = binding.emailEditText.text.toString().trim().lowercase()
+            val password = binding.passwordEditText.text.toString()
+            val confirmPassword = binding.confirmPasswordEditText.text.toString()
+            viewModel.registerUser(name, email, password, confirmPassword)
         }
         binding.loginTextView.setOnClickListener { parentFragmentManager.popBackStack() }
     }
@@ -57,8 +57,11 @@ class RegisterFragment : Fragment() {
 
             when (state) {
                 is AuthState.Authenticated -> {
-                    Toast.makeText(requireContext(), "Registrasi Berhasil!", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.registration_success),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                     // Pindah ke MainActivity dan bersihkan back stack
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
