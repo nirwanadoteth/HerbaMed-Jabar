@@ -208,7 +208,8 @@
                         android:textColor="?attr/colorPrimary"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackgroundBorderless" />
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:paddingHorizontal="8dp"/>
                 </LinearLayout>
 
             </LinearLayout>
