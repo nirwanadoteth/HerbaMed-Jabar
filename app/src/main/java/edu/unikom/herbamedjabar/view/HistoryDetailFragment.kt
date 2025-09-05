@@ -1,6 +1,5 @@
 package edu.unikom.herbamedjabar.view
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,19 +51,19 @@ class HistoryDetailFragment : Fragment() {
 
     private fun setupView(history: ScanHistory) {
         val historyId = history.id
-        val imagePath = arguments?.getString(ARG_IMAGE_PATH)
-        val plantName = arguments?.getString(ARG_PLANT_NAME).orEmpty()
-        val content = arguments?.getString(ARG_CONTENT).orEmpty()
-        val benefit = arguments?.getString(ARG_BENEFIT).orEmpty()
-        val warning = arguments?.getString(ARG_WARNING).orEmpty()
+        val imagePath = history.imagePath
+        val plantName = history.plantName
+        val content   = history.content
+        val benefit   = history.benefit
+        val warning   = history.warning
         val card = binding.plantCardLayout
 
         card.apply {
             plantNameTextView.text = plantName
 
-            val key = "history:content:${historyId}"
-            val benefitKey = "history:benefit:${historyId}"
-            val warningKey = "history:warning:${historyId}"
+            val key = "history:content:${historyId}:fmt0:hash=${content.hashCode()}"
+            val benefitKey = "history:benefit:${historyId}:fmt0:hash=${benefit.hashCode()}"
+            val warningKey = "history:warning:${historyId}:fmt0:hash=${warning.hashCode()}"
 
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(content, key)
             val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(benefit, benefitKey, true)
@@ -75,15 +74,11 @@ class HistoryDetailFragment : Fragment() {
             warningTextView.text = warningSpanned
             benefitCard.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
             warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
-            if (imagePath != null) {
-                val imageFile = File(imagePath)
-                if (imageFile.exists()) {
-                    resultImageView.load(Uri.fromFile(imageFile))
-                } else {
-                    resultImageView.setImageResource(R.drawable.bg_place_holder)
-                }
-            } else {
-                resultImageView.setImageResource(R.drawable.bg_place_holder)
+            resultImageView.load(File(imagePath)) {
+                placeholder(R.drawable.bg_place_holder)
+                error(R.drawable.bg_place_holder)
+                fallback(R.drawable.bg_place_holder)
+                crossfade(true)
             }
             resultImageView.contentDescription =
                 root.context.getString(R.string.cd_plant_image_of, plantName)
@@ -96,14 +91,15 @@ class HistoryDetailFragment : Fragment() {
         deleteButton.apply {
             text = getString(R.string.action_delete)
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_trash)
-            iconTint =
-                ContextCompat.getColorStateList(requireContext(), R.color.md_theme_onErrorContainer)
-            setBackgroundColor(
-                ContextCompat.getColor(requireContext(), R.color.md_theme_errorContainer)
+            val errorContainer = com.google.android.material.color.MaterialColors.getColor(
+                this, com.google.android.material.R.attr.colorErrorContainer
             )
-            setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.md_theme_onErrorContainer)
+            val onErrorContainer = com.google.android.material.color.MaterialColors.getColor(
+                this, com.google.android.material.R.attr.colorOnErrorContainer
             )
+            iconTint = android.content.res.ColorStateList.valueOf(onErrorContainer)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(errorContainer)
+            setTextColor(onErrorContainer)
 
             setOnClickListener {
                 MaterialAlertDialogBuilder(requireContext())

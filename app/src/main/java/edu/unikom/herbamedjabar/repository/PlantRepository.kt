@@ -65,7 +65,7 @@ constructor(
                 val response =
                     withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
                 val resultText = response.text?.trim().orEmpty()
-                check(resultText.isNotBlank()) { "Hasil teks dari AI kosong." }
+                check(resultText.isNotBlank()) { application.getString(R.string.ai_text_empty) }
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
                 val isHerbal = parsedData.isHerbal
@@ -98,11 +98,12 @@ constructor(
                 lastError = e
             }
             if (attempt < MAX_RETRIES - 1) {
-                delay(delayTime)
+                val jitter = (delayTime / 5) // ±20%
+                delay(delayTime + kotlin.random.Random.nextLong(-jitter, jitter + 1))
                 delayTime = (delayTime * 2).coerceAtMost(MAX_BACKOFF_MS)
             }
         }
-        throw lastError ?: error("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
+        throw lastError ?: error(application.getString(R.string.analysis_failed_after_retries))
     }
 
     override fun getAllHistory(): Flow<List<ScanHistory>> {
@@ -119,8 +120,10 @@ constructor(
             val directory = wrapper.getDir("images", android.content.Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
             try {
-                FileOutputStream(file).use { outputStream ->
-                    check(bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)) {
+                FileOutputStream(file).buffered().use { outputStream ->
+                    check(
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)
+                    ) {
                         application.getString(R.string.compression_failed)
                     }
                     outputStream.flush()

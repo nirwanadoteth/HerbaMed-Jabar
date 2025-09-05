@@ -122,4 +122,6 @@
     <string name="default_email">Email Pengguna</string>
     <string name="password_toggle">Tampilkan/Sembunyikan kata sandi</string>
     <string name="camera_permission_denied_permanent">Izin kamera ditolak permanen</string>
+    <string name="ai_text_empty">Hasil teks dari AI kosong.</string>
+    <string name="analysis_failed_after_retries">Gagal menganalisis tanaman setelah beberapa kali percobaan.</string>
 </resources>

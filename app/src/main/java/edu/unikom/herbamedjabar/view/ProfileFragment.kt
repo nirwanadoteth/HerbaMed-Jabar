@@ -101,7 +101,7 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
     }
 
@@ -116,7 +116,7 @@ class ProfileFragment : Fragment() {
 
     private fun handleLogout() {
         val appCtx = requireContext().applicationContext
-        MaterialAlertDialogBuilder(appCtx)
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.logout_title))
             .setMessage(getString(R.string.logout_message))
             .setNegativeButton(getString(R.string.action_cancel), null)

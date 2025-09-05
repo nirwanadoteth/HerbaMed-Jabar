@@ -73,12 +73,13 @@ class ForumFragment : Fragment() {
         viewModel.posts.observe(viewLifecycleOwner) { posts -> postAdapter?.submitList(posts) }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvPosts.adapter = null
         postAdapter = null
         _binding = null
     }

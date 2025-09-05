@@ -24,9 +24,7 @@
                 android:layout_height="48dp"
                 android:layout_marginEnd="12dp"
                 android:src="@drawable/avatar"
-                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
-                app:tint="?attr/colorOnSurfaceVariant"
-                app:tintMode="screen" />
+                app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <LinearLayout
                 android:layout_width="0dp"

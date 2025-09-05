@@ -36,7 +36,7 @@ constructor(
     private val _userPosts = MutableLiveData<List<Post>>()
     val userPosts: LiveData<List<Post>> = _userPosts
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _error = MutableLiveData<String?>()
@@ -88,13 +88,13 @@ constructor(
 
     fun deletePost(post: Post) {
         viewModelScope.launch {
-            runCatching { withContext(Dispatchers.IO) { postRepository.deletePost(post) } }
-                .onFailure {
-                    when (it) {
-                        is CancellationException -> throw it
-                        else -> _error.value = it.message
-                    }
-                }
+            try {
+                withContext(Dispatchers.IO) { postRepository.deletePost(post) }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (t: Throwable) {
+                _error.value = t.message
+            }
         }
     }
 

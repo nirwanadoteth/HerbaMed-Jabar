@@ -116,13 +116,8 @@ object PlantDataParser {
     private fun parsePlantName(text: String): String {
         val namePattern =
             Regex(
-                pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?(.*?)\s*\*?Nama\s+Ilmiah\b""",
-                options =
-                    setOf(
-                        RegexOption.DOT_MATCHES_ALL,
-                        RegexOption.IGNORE_CASE,
-                        RegexOption.MULTILINE,
-                    ),
+                pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?([^\r\n#*]+?)\s*\*?\s*Nama\s+Ilmiah(?:\s*[:：])?\b""",
+                options = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE),
             )
         return namePattern.find(text)?.destructured?.let { (name) -> name.trim() }
             ?: text.lineSequence().firstOrNull()?.replace(Regex("""^[#*\s🌿]+"""), "")?.trim()
@@ -132,7 +127,7 @@ object PlantDataParser {
     private fun parseSection(text: String, section: Section): String {
         val regex = SECTION_REGEXES[section] ?: return ""
         return regex.find(text)?.destructured?.let { (content) ->
-            content.replace(Regex("""---+\s*$"""), "").trim()
+            content.replace(Regex("""(?m)^\s*(?:[-*_]{3,})\s*$"""), "").trim()
         } ?: ""
     }
 

@@ -33,7 +33,7 @@ class PostAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post) {
-            val currentUser = currentUser
+            val user = this@PostAdapter.currentUser
             binding.tvUsername.text = post.username
             binding.ivUserProfile.load(post.userProfilePictureUrl) {
                 crossfade(true)
@@ -53,9 +53,11 @@ class PostAdapter(
             val contentText = post.content
             val benefitText = post.benefit.orEmpty()
             val warningText = post.warning.orEmpty()
-            val contentKey = "post:${post.id}:content:${contentText.hashCode()}"
-            val benefitKey = "post:${post.id}:benefit:${benefitText.hashCode()}"
-            val warningKey = "post:${post.id}:warning:${warningText.hashCode()}"
+
+            val contentKey = "post:content:${post.id}:fmt0:hash=${contentText.hashCode()}"
+            val benefitKey = "post:benefit:${post.id}:fmt0:hash=${benefitText.hashCode()}"
+            val warningKey = "post:warning:${post.id}:fmt0:hash=${warningText.hashCode()}"
+
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(contentText, contentKey)
             val benefitSpanned =
                 MarkdownUtils.parseMarkdownToSpanned(benefitText, benefitKey, true)
@@ -70,13 +72,13 @@ class PostAdapter(
             binding.warningCard.visibility =
                 if (post.warning.isNullOrBlank()) View.GONE else View.VISIBLE
             binding.tvLikeCount.text = "${post.likes.size}"
-            val likedByMe = currentUser?.uid?.let(post.likes::contains) == true
+            val likedByMe = user?.uid?.let(post.likes::contains) == true
             binding.btnLike.isChecked = likedByMe
             binding.btnLike.setOnClickListener {
                 onLikeClicked(post.id)
             }
             binding.btnMenuOptions.visibility =
-                if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
+                if (post.userId == user?.uid) View.VISIBLE else View.GONE
             binding.btnMenuOptions.setOnClickListener { onDeleteClicked(post) }
             val tsMillis =
                 if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000

@@ -52,7 +52,7 @@ object MarkdownUtils {
      * Parse markdown and return an Android Spanned (already HTML->Spanned converted). Results are
      * cached to reduce GC and CPU when RecyclerView binds rapidly.
      *
-     * Thread safety: htmlCache access is synchronized to allow safe use from any thread.
+     * Thread safety: spannedCache access is synchronized to allow safe use from any thread.
      */
     fun parseMarkdownToSpanned(
         input: String?,
@@ -68,6 +68,8 @@ object MarkdownUtils {
             append(input?.hashCode() ?: 0)
             append("|len:")
             append(input?.length ?: 0)
+            append("|mode:")
+            append(htmlMode)
         }
         synchronized(spannedCache) {
             val cached = spannedCache[compositeKey]

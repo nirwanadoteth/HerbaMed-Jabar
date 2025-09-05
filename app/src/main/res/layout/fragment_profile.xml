@@ -46,9 +46,7 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_banner"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_banner"
-            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
-            app:tint="?attr/colorOnSurfaceVariant"
-            app:tintMode="screen" />
+            app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_username"
