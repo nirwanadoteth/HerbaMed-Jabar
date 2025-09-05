@@ -68,11 +68,7 @@ constructor(
                 check(resultText.isNotBlank()) { "Hasil teks dari AI kosong." }
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
-                val isHerbal =
-                    parsedData.herbalStatus
-                        .replace("-", " ")
-                        .trim()
-                        .equals("herbal", ignoreCase = true)
+                val isHerbal = parsedData.isHerbal
                 val history =
                     ScanHistory(
                         resultText = resultText,

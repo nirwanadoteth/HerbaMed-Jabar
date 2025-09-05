@@ -5,7 +5,7 @@ data class PlantData(
     val description: String,
     val benefit: String,
     val warning: String,
-    val herbalStatus: String,
+    val isHerbal: Boolean,
 )
 
 /**
@@ -42,7 +42,7 @@ object PlantDataParser {
                 description = "Pastikan gambar jelas dan fokus pada satu jenis tanaman.",
                 benefit = "",
                 warning = "",
-                herbalStatus = "",
+                isHerbal = false,
             )
         }
 
@@ -51,13 +51,14 @@ object PlantDataParser {
         val benefit = parseSection(originalText, Section.BENEFIT).ifBlank { "" }
         val warning = parseSection(originalText, Section.WARNING).ifBlank { "" }
         val herbalStatus = parseSection(originalText, Section.HERBAL_STATUS).ifBlank { "" }
+        val isHerbal = parsePlantType(herbalStatus)
 
         return PlantData(
             plantName = plantName,
             description = description,
             benefit = benefit,
             warning = warning,
-            herbalStatus = herbalStatus,
+            isHerbal = isHerbal,
         )
     }
 
@@ -125,4 +126,6 @@ object PlantDataParser {
             content.replace(Regex("""(?m)^\s*---\s*$"""), "").trim()
         } ?: fallback
     }
+
+    private fun parsePlantType(text: String): Boolean = text.replace("-", " ").trim().equals("herbal", ignoreCase = true)
 }

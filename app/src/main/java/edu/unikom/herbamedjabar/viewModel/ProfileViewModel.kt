@@ -10,6 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
@@ -22,6 +24,8 @@ constructor(
     private val auth: FirebaseAuth,
     private val postRepository: PostRepository, // Inject PostRepository
 ) : ViewModel() {
+
+    private var userPostsJob: Job? = null
 
     private val _user = MutableLiveData<FirebaseUser?>()
     val user: LiveData<FirebaseUser?> = _user
@@ -38,8 +42,11 @@ constructor(
 
     private fun fetchUserPosts() {
         val userId = auth.currentUser?.uid ?: return
-        viewModelScope.launch {
-            postRepository.getPostsByUserId(userId).collect { posts -> _userPosts.value = posts }
+        userPostsJob?.cancel()
+        userPostsJob = viewModelScope.launch {
+            postRepository.getPostsByUserId(userId)
+                .catch { /* TODO: report to UI/logger */ }
+                .collect { posts -> _userPosts.value = posts }
         }
     }
 
@@ -68,6 +75,7 @@ constructor(
 
     fun logout() {
         auth.signOut()
+        userPostsJob?.cancel()
         _user.value = null
         _userPosts.value = emptyList()
     }
