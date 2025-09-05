@@ -29,9 +29,10 @@
                 app:tintMode="screen" />
 
             <LinearLayout
-                android:layout_width="240dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="fill_horizontal"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView

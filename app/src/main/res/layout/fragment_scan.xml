@@ -9,7 +9,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorBackground"
         tools:context=".view.MainActivity">
 
         <ScrollView
@@ -49,16 +48,16 @@
                             android:orientation="horizontal">
 
                             <com.google.android.material.textview.MaterialTextView
+                                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/forum_title_herba"
-                                style="@style/TextAppearance.Material3.TitleMedium.Emphasized" />
+                                android:text="@string/forum_title_herba" />
 
                             <com.google.android.material.textview.MaterialTextView
+                                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/forum_title_med"
-                                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                                 android:textColor="?attr/colorPrimary" />
                         </LinearLayout>
 
@@ -77,16 +76,14 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp">
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card1"
+                        style="@style/Widget.Material3.CardView.Filled"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/card2"
                         app:layout_constraintStart_toStartOf="parent"
-
                         app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
@@ -98,28 +95,29 @@
                             android:padding="10dp">
 
                             <com.google.android.material.textview.MaterialTextView
+                                style="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_total"
-                                android:textSize="11sp" />
+                                android:textColor="?attr/colorOnSurface" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/totalScanTextView"
+                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSurface"
                                 tools:text="0" />
 
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card2"
+                        style="@style/Widget.Material3.CardView.Filled"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/card3"
                         app:layout_constraintStart_toEndOf="@+id/card1"
@@ -134,28 +132,29 @@
                             android:padding="10dp">
 
                             <com.google.android.material.textview.MaterialTextView
+                                style="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_herbal"
                                 android:textAlignment="center"
-                                android:textSize="11sp" />
+                                android:textColor="?attr/colorOnSecondaryContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/herbalScanTextView"
+                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnSecondaryContainer"
                                 tools:text="0" />
 
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card3"
+                        style="@style/Widget.Material3.CardView.Filled"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/card2"
@@ -170,28 +169,31 @@
                             android:padding="10dp">
 
                             <com.google.android.material.textview.MaterialTextView
+                                style="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_nonherbal"
                                 android:textAlignment="center"
-                                android:textSize="11sp" />
+                                android:textColor="?attr/colorOnErrorContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/nonHerbalScanTextView"
+                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"
+                                android:textColor="?attr/colorOnErrorContainer"
                                 tools:text="0" />
 
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.card.MaterialCardView
                     style="@style/Widget.Material3.CardView.Outlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Large">
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Large"
+                    app:strokeColor="?attr/colorOutline">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/plantImageView"
@@ -224,10 +226,10 @@
                     app:iconGravity="textStart" />
 
                 <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    style="@style/Widget.Material3.CardView.Elevated"
                     app:cardBackgroundColor="?attr/colorSurfaceContainerHighest">
 
                     <LinearLayout

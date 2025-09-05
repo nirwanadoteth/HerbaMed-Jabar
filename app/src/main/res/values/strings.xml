@@ -56,7 +56,7 @@
     <string name="full_name_hint">Masukkan nama lengkap Anda</string>
     <string name="confirm_password">Konfirmasi Kata Sandi</string>
     <string name="confirm_password_hint">Konfirmasi kata sandi</string>
-    <string name="already_have_account">Sudah punya akun?&#160;</string>
+    <string name="already_have_account">Sudah punya akun?</string>
     <string name="register_footer">Dengan Mendaftar, Anda menyetujui Syarat &amp; ketentuan dan
         Kebijakan Privasi kami</string>
     <string name="login_title">Selamat Datang Kembali</string>
@@ -68,7 +68,7 @@
     <string name="password_hint">Masukkan kata sandi Anda</string>
     <string name="or">atau</string>
     <string name="login_with_google">Lanjutkan dengan Google</string>
-    <string name="no_account">Belum punya akun?&#160;</string>
+    <string name="no_account">Belum punya akun?</string>
     <string name="register_here">Daftar di sini</string>
     <string name="app_name">HerbaMed Jabar</string>
     <string name="scan_tanaman">Scan Tanaman</string>

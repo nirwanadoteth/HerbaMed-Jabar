@@ -205,7 +205,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/register_here"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:textColor="?attr/colorPrimary"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless" />
                 </LinearLayout>
 
             </LinearLayout>
