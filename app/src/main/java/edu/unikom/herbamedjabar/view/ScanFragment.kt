@@ -66,59 +66,52 @@ class ScanFragment : Fragment() {
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                try {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        val ctx = context ?: return@launch
-                        val resolver = ctx.contentResolver
-                        try {
-                            val bitmap: Bitmap =
-                                withContext(kotlinx.coroutines.Dispatchers.IO) {
-                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                                        // Pre-P: 2-pass decode with sampling
-                                        val targetMaxDim = 2048
-                                        val bounds =
-                                            BitmapFactory.Options().apply {
-                                                inJustDecodeBounds = true
-                                            }
-                                        resolver.openInputStream(uri)?.use { input ->
-                                            BitmapFactory.decodeStream(input, null, bounds)
-                                        }
-                                            ?: throw IllegalStateException(
-                                                "Gagal membuka stream (bounds)."
-                                            )
-                                        val maxDim =
-                                            maxOf(bounds.outWidth, bounds.outHeight).takeIf {
-                                                it > 0
-                                            } ?: targetMaxDim
-                                        val sample = maxOf(1, maxDim / targetMaxDim)
-                                        val opts =
-                                            BitmapFactory.Options().apply { inSampleSize = sample }
-                                        resolver.openInputStream(uri)?.use { input ->
-                                            BitmapFactory.decodeStream(input, null, opts)
-                                        }
-                                            ?: throw IllegalStateException(
-                                                "Gagal membuka stream (decode)."
-                                            )
-                                    } else {
-                                        val source = ImageDecoder.createSource(resolver, uri)
-                                        ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
-                                            val maxDim = 2048
-                                            val w = info.size.width
-                                            val h = info.size.height
-                                            val scale = maxOf(1, maxOf(w, h) / maxDim)
-                                            decoder.setTargetSize(w / scale, h / scale)
-                                            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                        }
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val ctx = context ?: return@launch
+                    val resolver = ctx.contentResolver
+                    try {
+                        val bitmap: Bitmap =
+                            withContext(kotlinx.coroutines.Dispatchers.IO) {
+                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                                    // Pre-P: 2-pass decode with sampling
+                                    val targetMaxDim = 2048
+                                    val bounds =
+                                        BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                                    resolver.openInputStream(uri)?.use { input ->
+                                        BitmapFactory.decodeStream(input, null, bounds)
+                                    }
+                                        ?: throw IllegalStateException(
+                                            "Gagal membuka stream (bounds)."
+                                        )
+                                    val maxDim =
+                                        maxOf(bounds.outWidth, bounds.outHeight).takeIf { it > 0 }
+                                            ?: targetMaxDim
+                                    val sample = maxOf(1, maxDim / targetMaxDim)
+                                    val opts =
+                                        BitmapFactory.Options().apply { inSampleSize = sample }
+                                    resolver.openInputStream(uri)?.use { input ->
+                                        BitmapFactory.decodeStream(input, null, opts)
+                                    }
+                                        ?: throw IllegalStateException(
+                                            "Gagal membuka stream (decode)."
+                                        )
+                                } else {
+                                    val source = ImageDecoder.createSource(resolver, uri)
+                                    ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                                        val maxDim = 2048
+                                        val w = info.size.width
+                                        val h = info.size.height
+                                        val scale = maxOf(1, maxOf(w, h) / maxDim)
+                                        decoder.setTargetSize(w / scale, h / scale)
+                                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
                                     }
                                 }
-                            binding.plantImageView.setImageBitmap(bitmap)
-                            viewModel.analyzeImage(bitmap)
-                        } catch (_: Exception) {
-                            Toast.makeText(ctx, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
-                        }
+                            }
+                        binding.plantImageView.setImageBitmap(bitmap)
+                        viewModel.analyzeImage(bitmap)
+                    } catch (_: Exception) {
+                        Toast.makeText(ctx, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
                     }
-                } catch (_: Exception) {
-                    Toast.makeText(context, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -204,7 +197,12 @@ class ScanFragment : Fragment() {
                 takePictureLauncher.launch(null)
             }
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                Toast.makeText(requireContext(), getString(R.string.camera_permission_rationale), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                        requireContext(),
+                        getString(R.string.camera_permission_rationale),
+                        Toast.LENGTH_LONG,
+                    )
+                    .show()
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
             else -> {
