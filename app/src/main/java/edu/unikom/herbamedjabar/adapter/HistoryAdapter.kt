@@ -1,10 +1,7 @@
 package edu.unikom.herbamedjabar.adapter
 
-import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.collection.LruCache
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,14 +14,6 @@ import java.io.File
 
 class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
-
-    companion object {
-        private const val HTML_CACHE_SIZE = 64_000
-        private val htmlCache =
-            object : LruCache<String, Spanned>(HTML_CACHE_SIZE) {
-                override fun sizeOf(key: String, value: Spanned): Int = value.length
-            }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val binding = ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -41,16 +30,9 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
         fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
+                
                 val key = "${history.id}:${history.content.hashCode()}"
-                val cached = htmlCache[key]
-                val spanned =
-                    cached
-                        ?: run {
-                            val html = MarkdownUtils.parseMarkdownToHtml(history.content)
-                            HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT).also {
-                                htmlCache.put(key, it)
-                            }
-                        }
+                val spanned = MarkdownUtils.parseMarkdownToSpanned(history.content, key)
                 descriptionTextView.text = spanned
 
                 timeTextView.text =

@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
@@ -62,6 +63,7 @@ class ProfileFragment : Fragment() {
                         .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
+                auth = FirebaseAuth.getInstance()
             )
         postAdapter = thisadapter
         binding.rvMyPosts.apply {

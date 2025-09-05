@@ -3,7 +3,6 @@ package edu.unikom.herbamedjabar.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,7 @@ import edu.unikom.herbamedjabar.util.MarkdownUtils
 class PostAdapter(
     private val onLikeClicked: (String) -> Unit,
     private val onDeleteClicked: (Post) -> Unit,
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val auth: FirebaseAuth,
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -49,21 +48,18 @@ class PostAdapter(
                 fallback(R.drawable.bg_place_holder)
             }
             binding.plantNameTextView.text = post.plantName
-            binding.contentTextView.text =
-                HtmlCompat.fromHtml(
-                    MarkdownUtils.parseMarkdownToHtml(post.content),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                )
-            binding.benefitTextView.text =
-                HtmlCompat.fromHtml(
-                    MarkdownUtils.parseMarkdownToHtml(post.benefit, true),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                )
-            binding.warningTextView.text =
-                HtmlCompat.fromHtml(
-                    MarkdownUtils.parseMarkdownToHtml(post.warning, true),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                )
+            // Use cached Spanned results to avoid reparsing HTML on every bind.
+            val contentKey = "${post.id}:${post.content.hashCode()}"
+            val benefitKey = "${post.id}:${post.benefit.hashCode()}"
+            val warningKey = "${post.id}:${post.warning.hashCode()}"
+
+            val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(post.content, contentKey)
+            val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(post.benefit, benefitKey ,true)
+            val warningSpanned = MarkdownUtils.parseMarkdownToSpanned(post.warning, warningKey, true)
+
+            binding.contentTextView.text = contentSpanned
+            binding.benefitTextView.text = benefitSpanned
+            binding.warningTextView.text = warningSpanned
             binding.benefitCard.visibility =
                 if (post.benefit.isNullOrBlank()) View.GONE else View.VISIBLE
             binding.warningCard.visibility =

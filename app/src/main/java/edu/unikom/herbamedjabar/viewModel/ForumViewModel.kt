@@ -57,24 +57,19 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
             val userId = auth.currentUser?.uid ?: return@launch
             if (!inFlightLikes.add(postId)) return@launch
             runCatching {
-                withContext(Dispatchers.IO) {
-                    postRepository.toggleLike(postId, userId)
+                    withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
                 }
-            }.onFailure {
-                // TODO: report to UI/logger and/or emit a UI event
-            }.onSuccess {
-                inFlightLikes.remove(postId)
-            }
+                .onFailure {
+                    // TODO: report to UI/logger and/or emit a UI event
+                }
+                .onSuccess { inFlightLikes.remove(postId) }
         }
     }
 
     fun deletePost(post: Post) {
         viewModelScope.launch {
-            try {
-                postRepository.deletePost(post)
-            } catch (e: Exception) {
-                _error.value = e.message
-            }
+            runCatching { withContext(Dispatchers.IO) { postRepository.deletePost(post) } }
+                .onFailure { _error.value = it.message }
         }
     }
 }

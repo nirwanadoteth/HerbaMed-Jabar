@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
@@ -53,12 +54,13 @@ class ForumFragment : Fragment() {
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Hapus Postingan")
-                        .setMessage("Apakah Anda yakin ingin menghapus postingan ini?")
-                        .setNegativeButton("Batal", null)
-                        .setPositiveButton("Hapus") { _, _ -> viewModel.deletePost(post) }
+                        .setTitle(getString(R.string.delete_post_title))
+                        .setMessage(getString(R.string.delete_post_message))
+                        .setNegativeButton(getString(R.string.action_cancel), null)
+                        .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
+                auth = FirebaseAuth.getInstance()
             )
 
         binding.rvPosts.apply {

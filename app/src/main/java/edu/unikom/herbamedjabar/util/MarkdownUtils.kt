@@ -1,5 +1,8 @@
 package edu.unikom.herbamedjabar.util
 
+import android.text.Spanned
+import androidx.collection.LruCache
+import androidx.core.text.HtmlCompat
 import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -7,6 +10,13 @@ import org.intellij.markdown.parser.MarkdownParser
 object MarkdownUtils {
     private val flavour by lazy { CommonMarkFlavourDescriptor() }
     private val parser by lazy { MarkdownParser(flavour) }
+
+    private const val HTML_CACHE_SIZE = 64_000
+    // Cache parsed Spanned results keyed by "flag|markdown" to avoid reparsing during binds
+    private val htmlCache =
+        object : LruCache<String, Spanned>(HTML_CACHE_SIZE) {
+            override fun sizeOf(key: String, value: Spanned): Int = value.length
+        }
 
     /**
      * Converts a Markdown string to HTML.
@@ -20,6 +30,22 @@ object MarkdownUtils {
         val formatted = if (formatList) addLineBreaksToNumberedList(raw) else raw
         val parsedTree = parser.buildMarkdownTreeFromString(formatted)
         return HtmlGenerator(formatted, parsedTree, flavour).generateHtml()
+    }
+
+    /**
+     * Parse markdown and return an Android Spanned (already HTML->Spanned converted).
+     * Results are cached to reduce GC and CPU when RecyclerView binds rapidly.
+     */
+    fun parseMarkdownToSpanned(input: String?, key: String, formatList: Boolean = false): Spanned {
+        val cached = htmlCache[key]
+
+        return cached
+            ?: run {
+                val html = MarkdownUtils.parseMarkdownToHtml(input, formatList)
+                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT).also {
+                    htmlCache.put(key, it)
+                }
+            }
     }
 
     /**

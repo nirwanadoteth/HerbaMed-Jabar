@@ -57,7 +57,8 @@ class ScanFragment : Fragment() {
     private val takePictureLauncher =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             if (bitmap != null) {
-                binding.plantImageView.setImageBitmap(bitmap)
+                val b = _binding ?: return@registerForActivityResult
+                b.plantImageView.setImageBitmap(bitmap)
                 viewModel.analyzeImage(bitmap)
             }
         }
