@@ -22,7 +22,7 @@ data class PlantData(
  *
  * ### Jenis Tanaman
  *
- * Returns a PlantData with fields: plantName, description, benefit, warning, herbalStatus. If the
+ * Returns a PlantData with fields: plantName, description, benefit, warning, isHerbal. If the
  * plant cannot be identified, returns a standard placeholder response.
  */
 object PlantDataParser {
@@ -70,7 +70,10 @@ object PlantDataParser {
     }
 
     private fun isUnidentifiedPlant(text: String): Boolean =
-        Regex("""tanaman\s+tidak\s+dapat\s+di-?identifikasi""", RegexOption.IGNORE_CASE)
+        Regex(
+            """tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""",
+            RegexOption.IGNORE_CASE
+        )
             .containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
@@ -97,28 +100,28 @@ object PlantDataParser {
                 Section.DESCRIPTION ->
                     Regex(
                         pattern =
-                            """^#{2,6}\s*(?:📝\s*)?Deskripsi\b(.*?)(?=^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                            """^#{1,6}\s*(?:📝\s*)?Deskripsi\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
                         options = opts,
                     ) to ""
 
                 Section.BENEFIT ->
                     Regex(
                         pattern =
-                            """^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                            """^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
                         options = opts,
                     ) to ""
 
                 Section.WARNING ->
                     Regex(
                         pattern =
-                            """^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*Jenis\s+Tanaman\b|\z)""",
+                            """^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
                         options = opts,
                     ) to ""
 
                 Section.HERBAL_STATUS ->
                     Regex(
                         pattern =
-                            """^#{2,6}\s*Jenis\s+Tanaman\b(.*?)(?=^#{2,6}\s*(?:📝\s*)?Deskripsi\b|^#{2,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{2,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
+                            """^#{1,6}\s*Jenis\s+Tanaman\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
                         options = opts,
                     ) to ""
             }

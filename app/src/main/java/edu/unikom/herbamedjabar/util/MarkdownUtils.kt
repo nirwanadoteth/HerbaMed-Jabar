@@ -11,10 +11,10 @@ object MarkdownUtils {
     private val flavour by lazy { CommonMarkFlavourDescriptor() }
     private val parser by lazy { MarkdownParser(flavour) }
 
-    private const val HTML_CACHE_SIZE = 64_000
+    private const val SPANNED_CACHE_CHAR_BUDGET = 64_000
     // Cache parsed Spanned results keyed by "flag|markdown" to avoid reparsing during binds
     private val htmlCache =
-        object : LruCache<String, Spanned>(HTML_CACHE_SIZE) {
+        object : LruCache<String, Spanned>(SPANNED_CACHE_CHAR_BUDGET) {
             override fun sizeOf(key: String, value: Spanned): Int = value.length
         }
 
@@ -35,17 +35,25 @@ object MarkdownUtils {
     /**
      * Parse markdown and return an Android Spanned (already HTML->Spanned converted).
      * Results are cached to reduce GC and CPU when RecyclerView binds rapidly.
+     *
+     * Thread safety: htmlCache access is synchronized to allow safe use from any thread.
      */
     fun parseMarkdownToSpanned(input: String?, key: String, formatList: Boolean = false): Spanned {
-        val cached = htmlCache[key]
-
-        return cached
-            ?: run {
-                val html = MarkdownUtils.parseMarkdownToHtml(input, formatList)
-                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT).also {
-                    htmlCache.put(key, it)
-                }
-            }
+        val compositeKey = buildString {
+            append(key)
+            append("|fmt:")
+            append(if (formatList) 1 else 0)
+            append("|md:")
+            append(input?.hashCode() ?: 0)
+        }
+        synchronized(htmlCache) {
+            val cached = htmlCache[compositeKey]
+            if (cached != null) return cached
+            val html = parseMarkdownToHtml(input, formatList)
+            val spanned = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            htmlCache.put(compositeKey, spanned)
+            return spanned
+        }
     }
 
     /**
@@ -59,7 +67,9 @@ object MarkdownUtils {
         // Insert a newline before inline "n. " that aren't already at line start.
         // - Not at start-of-input, not already preceded by \n, and consume optional spaces before
         // the number.
-        val pattern = Regex("""(?<!\A)(?<![\n\r])\s*(\d+\.\s)""")
-        return text.replace(pattern, "\n$1")
+        return text.replace(numberedListPattern, "\n$1")
     }
+
+    // Preceded by a non-newline, then optional spaces before "n. "
+    private val numberedListPattern by lazy { Regex("(?<=[^\\n\\r])\\s*(\\d+\\.\\s)") }
 }

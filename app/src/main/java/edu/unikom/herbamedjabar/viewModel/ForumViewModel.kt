@@ -10,17 +10,18 @@ import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class ForumViewModel
 @Inject
-constructor(private val postRepository: PostRepository, private val auth: FirebaseAuth) :
+constructor(private val postRepository: PostRepository, internal val auth: FirebaseAuth) :
     ViewModel() {
 
     private val _posts = MutableLiveData<List<Post>>()
@@ -43,24 +44,33 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
             postRepository
                 .getPosts()
                 .onStart { _isLoading.value = true }
-                .catch { e -> _error.value = e.message }
-                .onCompletion { _isLoading.value = false }
-                .collect { postList ->
+                .catch { e ->
+                    _error.value = e.message
+                    _isLoading.value = false
+                }
+                .collectLatest { postList ->
                     _posts.value = postList
                     _error.value = null
+                    _isLoading.value = false
                 }
         }
     }
 
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
-            val userId = auth.currentUser?.uid ?: return@launch
+            val userId =
+                auth.currentUser?.uid
+                    ?: run {
+                        _error.value = "Not authenticated"
+                        return@launch
+                    }
             if (!inFlightLikes.add(postId)) return@launch
             runCatching {
                     withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
                 }
                 .onFailure {
-                    // TODO: report to UI/logger and/or emit a UI event
+                    _error.value = it.message
+                    inFlightLikes.remove(postId)
                 }
                 .onSuccess { inFlightLikes.remove(postId) }
         }
@@ -69,7 +79,12 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
     fun deletePost(post: Post) {
         viewModelScope.launch {
             runCatching { withContext(Dispatchers.IO) { postRepository.deletePost(post) } }
-                .onFailure { _error.value = it.message }
+                .onFailure {
+                    when (it) {
+                        is CancellationException -> throw it
+                        else -> _error.value = it.message
+                    }
+                }
         }
     }
 }

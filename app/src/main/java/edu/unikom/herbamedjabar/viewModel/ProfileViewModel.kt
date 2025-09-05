@@ -12,16 +12,19 @@ import edu.unikom.herbamedjabar.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class ProfileViewModel
 @Inject
 constructor(
-    private val auth: FirebaseAuth,
+    internal val auth: FirebaseAuth,
     private val postRepository: PostRepository, // Inject PostRepository
 ) : ViewModel() {
 
@@ -32,6 +35,12 @@ constructor(
 
     private val _userPosts = MutableLiveData<List<Post>>()
     val userPosts: LiveData<List<Post>> = _userPosts
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     init {
         _user.value = auth.currentUser
@@ -45,20 +54,32 @@ constructor(
         userPostsJob?.cancel()
         userPostsJob = viewModelScope.launch {
             postRepository.getPostsByUserId(userId)
-                .catch { /* TODO: report to UI/logger */ }
-                .collect { posts -> _userPosts.value = posts }
+                .onStart { _isLoading.value = true }
+                .catch { e ->
+                    _error.value = e.message
+                    _isLoading.value = false
+                }
+                .collectLatest { postList ->
+                    _userPosts.value = postList
+                    _error.value = null
+                    _isLoading.value = false
+                }
         }
     }
 
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
-            val userId = auth.currentUser?.uid ?: return@launch
+            val userId = auth.currentUser?.uid ?: run {
+                _error.value = "Not authenticated"
+                return@launch
+            }
             if (!inFlightLikes.add(postId)) return@launch
             runCatching {
                     withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
                 }
                 .onFailure {
-                    // TODO: report to UI/logger and/or emit a UI event
+                    _error.value = it.message
+                    inFlightLikes.remove(postId)
                 }
                 .onSuccess { inFlightLikes.remove(postId) }
         }
@@ -68,7 +89,10 @@ constructor(
         viewModelScope.launch {
             runCatching { withContext(Dispatchers.IO) { postRepository.deletePost(post) } }
                 .onFailure {
-                    // TODO: report to UI/logger and/or emit a UI event
+                    when (it) {
+                        is CancellationException -> throw it
+                        else -> _error.value = it.message
+                    }
                 }
         }
     }

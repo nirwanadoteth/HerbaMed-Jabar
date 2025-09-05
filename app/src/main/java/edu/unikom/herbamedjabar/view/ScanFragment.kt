@@ -43,12 +43,26 @@ class ScanFragment : Fragment() {
                 if (isGranted) {
                     takePictureLauncher.launch(null)
                 } else {
-                    Toast.makeText(
+                    if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                        // Permanently denied: guide user to Settings
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.camera_permission_denied_permanent),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        val intent = android.content.Intent(
+                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            android.net.Uri.fromParts("package", requireContext().packageName, null)
+                        ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    } else {
+                        // Temporarily denied: just inform
+                        Toast.makeText(
                             requireContext(),
                             getString(R.string.camera_permission_denied),
-                            Toast.LENGTH_SHORT,
-                        )
-                        .show()
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
@@ -59,6 +73,7 @@ class ScanFragment : Fragment() {
             if (bitmap != null) {
                 val b = _binding ?: return@registerForActivityResult
                 b.plantImageView.setImageBitmap(bitmap)
+                b.plantImageView.contentDescription = getString(R.string.cd_plant_image)
                 viewModel.analyzeImage(bitmap)
             }
         }
@@ -67,8 +82,9 @@ class ScanFragment : Fragment() {
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                viewLifecycleOwner.lifecycleScope.launch {
+                lifecycleScope.launch {
                     val ctx = context ?: return@launch
+                    val b = _binding ?: return@launch
                     val resolver = ctx.contentResolver
                     try {
                         val bitmap: Bitmap =
@@ -108,10 +124,15 @@ class ScanFragment : Fragment() {
                                     }
                                 }
                             }
-                        binding.plantImageView.setImageBitmap(bitmap)
+                        b.plantImageView.setImageBitmap(bitmap)
+                        b.plantImageView.contentDescription = getString(R.string.cd_plant_image)
                         viewModel.analyzeImage(bitmap)
                     } catch (_: Exception) {
-                        Toast.makeText(ctx, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            ctx,
+                            getString(R.string.error_image_load_failed),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

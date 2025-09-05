@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
@@ -63,7 +62,7 @@ class ProfileFragment : Fragment() {
                         .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
-                auth = FirebaseAuth.getInstance()
+                auth = viewModel.auth
             )
         postAdapter = thisadapter
         binding.rvMyPosts.apply {
@@ -75,8 +74,8 @@ class ProfileFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
-                binding.tvUsername.text = it.displayName ?: "Nama Pengguna"
-                binding.tvEmail.text = it.email ?: "Email Pengguna"
+                binding.tvUsername.text = it.displayName ?: getString(R.string.default_username)
+                binding.tvEmail.text = it.email ?: getString(R.string.default_email)
                 binding.ivProfilePicture.load(it.photoUrl) {
                     crossfade(true)
                     placeholder(R.drawable.ic_user_image_circular)
@@ -99,6 +98,10 @@ class ProfileFragment : Fragment() {
                 binding.tvNoPosts.visibility = View.GONE
                 binding.rvMyPosts.visibility = View.VISIBLE
             }
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
     }
 

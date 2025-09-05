@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
@@ -60,7 +59,7 @@ class ForumFragment : Fragment() {
                         .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
-                auth = FirebaseAuth.getInstance()
+                auth = viewModel.auth
             )
 
         binding.rvPosts.apply {

@@ -50,12 +50,14 @@ class PostAdapter(
             binding.plantNameTextView.text = post.plantName
             // Use cached Spanned results to avoid reparsing HTML on every bind.
             val contentKey = "${post.id}:${post.content.hashCode()}"
-            val benefitKey = "${post.id}:${post.benefit.hashCode()}"
-            val warningKey = "${post.id}:${post.warning.hashCode()}"
+            val benefitKey = "${post.id}:${post.benefit?.hashCode() ?: 0}"
+            val warningKey = "${post.id}:${post.warning?.hashCode() ?: 0}"
 
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(post.content, contentKey)
-            val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(post.benefit, benefitKey ,true)
-            val warningSpanned = MarkdownUtils.parseMarkdownToSpanned(post.warning, warningKey, true)
+            val benefitSpanned =
+                MarkdownUtils.parseMarkdownToSpanned(post.benefit.orEmpty(), benefitKey, true)
+            val warningSpanned =
+                MarkdownUtils.parseMarkdownToSpanned(post.warning.orEmpty(), warningKey, true)
 
             binding.contentTextView.text = contentSpanned
             binding.benefitTextView.text = benefitSpanned
@@ -66,13 +68,13 @@ class PostAdapter(
                 if (post.warning.isNullOrBlank()) View.GONE else View.VISIBLE
             binding.tvLikeCount.text = "${post.likes.size}"
             val likedByMe = currentUser?.uid?.let(post.likes::contains) == true
-            binding.ivLike.isChecked = likedByMe
-            binding.ivLike.setOnClickListener {
+            binding.btnLike.isChecked = likedByMe
+            binding.btnLike.setOnClickListener {
                 onLikeClicked(post.id)
             }
-            binding.ivMenuOptions.visibility =
+            binding.btnMenuOptions.visibility =
                 if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
-            binding.ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
+            binding.btnMenuOptions.setOnClickListener { onDeleteClicked(post) }
             val tsMillis =
                 if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000
                 else post.timestamp
@@ -92,7 +94,7 @@ class PostAdapter(
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)
             binding.ivPostImage.contentDescription =
                 binding.root.context.getString(R.string.cd_plant_image_of, post.plantName)
-            binding.ivLike.contentDescription =
+            binding.btnLike.contentDescription =
                 if (likedByMe) {
                     binding.root.context.getString(R.string.cd_liked)
                 } else {

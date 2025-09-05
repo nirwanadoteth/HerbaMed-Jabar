@@ -15,6 +15,12 @@ import java.io.File
 class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
 
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long = getItem(position).id.toLong()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val binding = ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return HistoryViewHolder(binding)
@@ -30,8 +36,8 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
         fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
-                
-                val key = "${history.id}:${history.content.hashCode()}"
+
+                val key = "history:${history.id}"
                 val spanned = MarkdownUtils.parseMarkdownToSpanned(history.content, key)
                 descriptionTextView.text = spanned
 
@@ -44,8 +50,10 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
                             android.text.format.DateUtils.FORMAT_SHOW_TIME,
                     )
 
-                val imageFile = File(history.imagePath)
-                val data = if (imageFile.exists()) imageFile else R.drawable.bg_place_holder
+                val data = history.imagePath
+                    .takeIf { it.isNotBlank() }
+                    ?.let { path -> File(path).takeIf { it.exists() } }
+                    ?: R.drawable.bg_place_holder
                 historyImageView.load(data) {
                     crossfade(true)
                     placeholder(R.drawable.bg_place_holder)
