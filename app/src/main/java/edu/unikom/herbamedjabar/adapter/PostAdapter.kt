@@ -49,9 +49,9 @@ class PostAdapter(
             }
             binding.plantNameTextView.text = post.plantName
             // Use cached Spanned results to avoid reparsing HTML on every bind.
-            val contentKey = "${post.id}:${post.content.hashCode()}"
-            val benefitKey = "${post.id}:${post.benefit?.hashCode() ?: 0}"
-            val warningKey = "${post.id}:${post.warning?.hashCode() ?: 0}"
+            val contentKey = "post:content:${post.id}}"
+            val benefitKey = "post:benefit:${post.id}}"
+            val warningKey = "post:warning:${post.id}}"
 
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(post.content, contentKey)
             val benefitSpanned =

@@ -37,7 +37,7 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
             binding.apply {
                 plantNameTextView.text = history.plantName
 
-                val key = "history:${history.id}"
+                val key = "history:content:${history.id}"
                 val spanned = MarkdownUtils.parseMarkdownToSpanned(history.content, key)
                 descriptionTextView.text = spanned
 

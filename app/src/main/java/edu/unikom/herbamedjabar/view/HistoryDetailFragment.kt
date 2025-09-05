@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
@@ -48,14 +47,15 @@ class HistoryDetailFragment : Fragment() {
             }
 
         if (history != null) {
-            setupView()
+            setupView(history)
             setupAction(history)
         } else {
             parentFragmentManager.popBackStack()
         }
     }
 
-    private fun setupView() {
+    private fun setupView(history: ScanHistory) {
+        val historyId = history.id
         val imagePath = arguments?.getString(ARG_IMAGE_PATH)
         val plantName = arguments?.getString(ARG_PLANT_NAME).orEmpty()
         val content = arguments?.getString(ARG_CONTENT).orEmpty()
@@ -65,21 +65,18 @@ class HistoryDetailFragment : Fragment() {
 
         card.apply {
             plantNameTextView.text = plantName
-            contentTextView.text =
-                HtmlCompat.fromHtml(
-                    MarkdownUtils.parseMarkdownToHtml(content),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                )
-            benefitTextView.text =
-                HtmlCompat.fromHtml(
-                    MarkdownUtils.parseMarkdownToHtml(benefit),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                )
-            warningTextView.text =
-                HtmlCompat.fromHtml(
-                    MarkdownUtils.parseMarkdownToHtml(warning),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT,
-                )
+
+            val key = "history:content:${historyId}"
+            val benefitKey = "history:benefit:${historyId}"
+            val warningKey = "history:warning:${historyId}"
+
+            val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(content, key)
+            val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(benefit, benefitKey, true)
+            val warningSpanned = MarkdownUtils.parseMarkdownToSpanned(warning, warningKey, true)
+
+            contentTextView.text = contentSpanned
+            benefitTextView.text = benefitSpanned
+            warningTextView.text = warningSpanned
             benefitCard.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
             warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
             if (imagePath != null) {
