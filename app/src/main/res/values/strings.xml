@@ -117,4 +117,9 @@
     <string name="no_credentials_available">Tidak ada kredensial yang tersedia.</string>
     <string name="action_logout">Keluar</string>
     <string name="camera_permission_rationale">Untuk dapat memindai tanaman, aplikasi ini memerlukan izin untuk mengakses kamera Anda. Mohon izinkan akses kamera pada permintaan berikutnya.</string>
+    <string name="error_image_load_failed">Gagal memuat gambar</string>
+    <string name="default_username">Nama Pengguna</string>
+    <string name="default_email">Email Pengguna</string>
+    <string name="password_toggle">Tampilkan/Sembunyikan kata sandi</string>
+    <string name="camera_permission_denied_permanent">Izin kamera ditolak permanen</string>
 </resources>

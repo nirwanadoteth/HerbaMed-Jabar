@@ -31,7 +31,6 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="fill_horizontal"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -58,7 +57,7 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/iv_menu_options"
+                android:id="@+id/btnMenuOptions"
                 style="@style/Widget.Material3Expressive.Button.IconButton.Outlined"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -213,7 +212,7 @@
             android:paddingHorizontal="16dp">
             <!-- Like Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/iv_like"
+                android:id="@+id/btnLike"
                 style="@style/Widget.Material3Expressive.Button.IconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

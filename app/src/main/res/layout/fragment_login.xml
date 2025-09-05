@@ -83,6 +83,7 @@
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:hintEnabled="false"
+                    app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_mail">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -116,7 +117,9 @@
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusTopStart="12dp"
                     app:endIconMode="password_toggle"
+                    app:endIconContentDescription="@string/password_toggle"
                     app:hintEnabled="false"
+                    app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_lock">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -139,8 +142,7 @@
                     android:layout_height="50dp"
                     style="@style/Widget.Material3Expressive.Button"
                     android:layout_marginTop="24dp"
-                    android:text="@string/login_button"
-                    android:contentDescription="@string/login_button" />
+                    android:text="@string/login_button" />
 
                 <LinearLayout
                     android:id="@+id/orLayout"
@@ -179,7 +181,6 @@
                     android:layout_height="50dp"
                     style="@style/Widget.Material3Expressive.Button.OutlinedButton"
                     android:text="@string/login_with_google"
-                    android:contentDescription="@string/login_with_google"
                     app:icon="@drawable/ic_google"
                     app:iconGravity="textStart"
                     app:iconTint="@color/common_google_signin_btn_tint"
@@ -223,6 +224,7 @@
             android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/loading"
             android:importantForAccessibility="yes"
+            android:indeterminate="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
