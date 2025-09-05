@@ -33,6 +33,14 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onClick(getItem(pos))
+                }
+            }
+        }
         fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
@@ -62,8 +70,6 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
                 }
                 historyImageView.contentDescription =
                     binding.root.context.getString(R.string.cd_plant_image_of, history.plantName)
-
-                itemView.setOnClickListener { onClick(history) }
             }
         }
     }

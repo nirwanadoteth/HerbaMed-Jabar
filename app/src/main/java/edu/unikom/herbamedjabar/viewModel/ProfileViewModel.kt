@@ -24,7 +24,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class ProfileViewModel
 @Inject
 constructor(
-    internal val auth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val postRepository: PostRepository, // Inject PostRepository
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ constructor(
     val error: LiveData<String?> = _error
 
     init {
-        _user.value = auth.currentUser
+        _user.value = getCurrentUser()
         fetchUserPosts()
     }
 
@@ -69,19 +69,20 @@ constructor(
 
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
-            val userId = auth.currentUser?.uid ?: run {
-                _error.value = "Not authenticated"
+            val userId = getCurrentUserId() ?: run {
+                _error.value = AUTH_REQUIRED_ERROR
                 return@launch
             }
             if (!inFlightLikes.add(postId)) return@launch
-            runCatching {
-                    withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
-                }
-                .onFailure {
-                    _error.value = it.message
-                    inFlightLikes.remove(postId)
-                }
-                .onSuccess { inFlightLikes.remove(postId) }
+            try {
+                withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (t: Throwable) {
+                _error.value = t.message
+            } finally {
+                inFlightLikes.remove(postId)
+            }
         }
     }
 
@@ -97,10 +98,22 @@ constructor(
         }
     }
 
-    fun logout() {
+    fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
+    fun getCurrentUserId(): String? = auth.currentUser?.uid
+
+    fun isUserAuthenticated(): Boolean = auth.currentUser != null
+
+    fun signOut() {
         auth.signOut()
         userPostsJob?.cancel()
         _user.value = null
         _userPosts.value = emptyList()
     }
+
+    fun logout() {
+        signOut()
+    }
+
+    companion object { const val AUTH_REQUIRED_ERROR = "auth_required" }
 }

@@ -1,7 +1,6 @@
 package edu.unikom.herbamedjabar.view
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -39,12 +38,9 @@ class HistoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val history =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                @Suppress("DEPRECATION") arguments?.getParcelable(EXTRA_HISTORY)
-            } else {
-                arguments?.getParcelable(EXTRA_HISTORY, ScanHistory::class.java)
-            }
+        val history = arguments?.let {
+            androidx.core.os.BundleCompat.getParcelable(it, EXTRA_HISTORY, ScanHistory::class.java)
+        }
 
         if (history != null) {
             setupView(history)

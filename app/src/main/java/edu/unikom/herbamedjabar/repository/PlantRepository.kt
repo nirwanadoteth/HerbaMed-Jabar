@@ -125,9 +125,12 @@ constructor(
                     }
                     outputStream.flush()
                 }
-            } catch (e: Exception) {
+            } catch (ioe: java.io.IOException) {
                 runCatching { file.delete() }
-                throw e
+                throw ioe
+            } catch (ise: IllegalStateException) {
+                runCatching { file.delete() }
+                throw ise
             }
             file.absolutePath
         }

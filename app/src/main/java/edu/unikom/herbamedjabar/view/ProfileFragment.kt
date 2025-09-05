@@ -51,7 +51,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val thisadapter =
+        val adapterObj =
             PostAdapter(
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
@@ -62,11 +62,11 @@ class ProfileFragment : Fragment() {
                         .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
-                auth = viewModel.auth
+                currentUser = viewModel.getCurrentUser()
             )
-        postAdapter = thisadapter
+        postAdapter = adapterObj
         binding.rvMyPosts.apply {
-            adapter = thisadapter
+            adapter = adapterObj
             layoutManager = LinearLayoutManager(context)
         }
     }
@@ -115,7 +115,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun handleLogout() {
-        MaterialAlertDialogBuilder(requireContext())
+        val appCtx = requireContext().applicationContext
+        MaterialAlertDialogBuilder(appCtx)
             .setTitle(getString(R.string.logout_title))
             .setMessage(getString(R.string.logout_message))
             .setNegativeButton(getString(R.string.action_cancel), null)
@@ -123,7 +124,7 @@ class ProfileFragment : Fragment() {
                 viewModel.logout()
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
-                        val credentialManager = CredentialManager.create(requireContext())
+                        val credentialManager = CredentialManager.create(appCtx)
                         val clearRequest = ClearCredentialStateRequest()
                         credentialManager.clearCredentialState(clearRequest)
                     } catch (e: ClearCredentialException) {
@@ -133,11 +134,11 @@ class ProfileFragment : Fragment() {
                         )
                     } finally {
                         val intent =
-                            Intent(requireContext(), AuthActivity::class.java).apply {
+                            Intent(appCtx, AuthActivity::class.java).apply {
                                 flags =
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             }
-                        startActivity(intent)
+                        appCtx.startActivity(intent)
                     }
                 }
             }

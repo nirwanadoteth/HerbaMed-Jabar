@@ -22,8 +22,8 @@ data class PlantData(
  *
  * ### Jenis Tanaman
  *
- * Returns a PlantData with fields: plantName, description, benefit, warning, isHerbal. If the
- * plant cannot be identified, returns a standard placeholder response.
+ * Returns a PlantData with fields: plantName, description, benefit, warning, isHerbal. If the plant
+ * cannot be identified, returns a standard placeholder response.
  */
 object PlantDataParser {
 
@@ -34,9 +34,7 @@ object PlantDataParser {
      * @return PlantData containing parsed fields.
      */
     fun parsePlantData(text: String): PlantData {
-        val originalText = text
-
-        if (isUnidentifiedPlant(originalText)) {
+        if (isUnidentifiedPlant(text)) {
             return PlantData(
                 plantName = "Tanaman tidak dapat di-identifikasi",
                 description = "Pastikan gambar jelas dan fokus pada satu jenis tanaman.",
@@ -46,11 +44,11 @@ object PlantDataParser {
             )
         }
 
-        val plantName = parsePlantName(originalText)
-        val description = parseSection(originalText, Section.DESCRIPTION).ifBlank { "" }
-        val benefit = parseSection(originalText, Section.BENEFIT).ifBlank { "" }
-        val warning = parseSection(originalText, Section.WARNING).ifBlank { "" }
-        val herbalStatus = parseSection(originalText, Section.HERBAL_STATUS).ifBlank { "" }
+        val plantName = parsePlantName(text)
+        val description = parseSection(text, Section.DESCRIPTION).ifBlank { "" }
+        val benefit = parseSection(text, Section.BENEFIT).ifBlank { "" }
+        val warning = parseSection(text, Section.WARNING).ifBlank { "" }
+        val herbalStatus = parseSection(text, Section.HERBAL_STATUS).ifBlank { "" }
         val isHerbal = parsePlantType(herbalStatus)
 
         return PlantData(
@@ -69,11 +67,50 @@ object PlantDataParser {
         HERBAL_STATUS,
     }
 
+    private val REGEX_OPTIONS =
+        setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
+
+    private val DESCRIPTION_REGEX =
+        Regex(
+            pattern =
+                """^#{1,6}\s*(?:📝\s*)?Deskripsi\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
+            options = REGEX_OPTIONS,
+        )
+
+    private val BENEFIT_REGEX =
+        Regex(
+            pattern =
+                """^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
+            options = REGEX_OPTIONS,
+        )
+
+    private val WARNING_REGEX =
+        Regex(
+            pattern =
+                """^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
+            options = REGEX_OPTIONS,
+        )
+
+    private val HERBAL_STATUS_REGEX =
+        Regex(
+            pattern =
+                """^#{1,6}\s*Jenis\s+Tanaman\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
+            options = REGEX_OPTIONS,
+        )
+
+    private val SECTION_REGEXES =
+        mapOf(
+            Section.DESCRIPTION to DESCRIPTION_REGEX,
+            Section.BENEFIT to BENEFIT_REGEX,
+            Section.WARNING to WARNING_REGEX,
+            Section.HERBAL_STATUS to HERBAL_STATUS_REGEX,
+        )
+
     private fun isUnidentifiedPlant(text: String): Boolean =
         Regex(
-            """tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""",
-            RegexOption.IGNORE_CASE
-        )
+                """tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""",
+                RegexOption.IGNORE_CASE,
+            )
             .containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
@@ -93,42 +130,12 @@ object PlantDataParser {
     }
 
     private fun parseSection(text: String, section: Section): String {
-        val opts =
-            setOf(RegexOption.DOT_MATCHES_ALL, RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
-        val (pattern, fallback) =
-            when (section) {
-                Section.DESCRIPTION ->
-                    Regex(
-                        pattern =
-                            """^#{1,6}\s*(?:📝\s*)?Deskripsi\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
-                        options = opts,
-                    ) to ""
-
-                Section.BENEFIT ->
-                    Regex(
-                        pattern =
-                            """^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
-                        options = opts,
-                    ) to ""
-
-                Section.WARNING ->
-                    Regex(
-                        pattern =
-                            """^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*Jenis\s+Tanaman\b|\z)""",
-                        options = opts,
-                    ) to ""
-
-                Section.HERBAL_STATUS ->
-                    Regex(
-                        pattern =
-                            """^#{1,6}\s*Jenis\s+Tanaman\b(?:\s*[:：])?(.*?)(?=^#{1,6}\s*(?:📝\s*)?Deskripsi\b|^#{1,6}\s*(?:🩺\s*)?Potensi\s+Manfaat(?:\s*&\s*Kegunaan)?\b|^#{1,6}\s*(?:⚠️\s*)?Peringatan(?:\s*&\s*Efek\s*Samping)?\b|\z)""",
-                        options = opts,
-                    ) to ""
-            }
-        return pattern.find(text)?.destructured?.let { (content) ->
-            content.replace(Regex("""(?m)^\s*---\s*$"""), "").trim()
-        } ?: fallback
+        val regex = SECTION_REGEXES[section] ?: return ""
+        return regex.find(text)?.destructured?.let { (content) ->
+            content.replace(Regex("""---+\s*$"""), "").trim()
+        } ?: ""
     }
 
-    private fun parsePlantType(text: String): Boolean = text.replace("-", " ").trim().equals("herbal", ignoreCase = true)
+    private fun parsePlantType(text: String): Boolean =
+        Regex("""\bherbal\b""", RegexOption.IGNORE_CASE).containsMatchIn(text.replace("-", " "))
 }

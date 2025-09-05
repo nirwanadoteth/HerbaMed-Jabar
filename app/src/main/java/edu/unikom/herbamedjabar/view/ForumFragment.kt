@@ -23,7 +23,7 @@ class ForumFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: ForumViewModel by viewModels()
-    private lateinit var postAdapter: PostAdapter
+    private var postAdapter: PostAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +48,7 @@ class ForumFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        postAdapter =
+        val adapterObj =
             PostAdapter(
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
@@ -59,17 +59,18 @@ class ForumFragment : Fragment() {
                         .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
-                auth = viewModel.auth
+                currentUser = viewModel.getCurrentUser(),
             )
+        postAdapter = adapterObj
 
         binding.rvPosts.apply {
-            adapter = postAdapter
+            adapter = adapterObj
             layoutManager = LinearLayoutManager(context)
         }
     }
 
     private fun observeViewModel() {
-        viewModel.posts.observe(viewLifecycleOwner) { posts -> postAdapter.submitList(posts) }
+        viewModel.posts.observe(viewLifecycleOwner) { posts -> postAdapter?.submitList(posts) }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -78,6 +79,7 @@ class ForumFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        postAdapter = null
         _binding = null
     }
 }

@@ -13,10 +13,26 @@ object MarkdownUtils {
 
     private const val SPANNED_CACHE_CHAR_BUDGET = 64_000
     // Cache parsed Spanned results keyed by "flag|markdown" to avoid reparsing during binds
-    private val htmlCache =
+    private val spannedCache =
         object : LruCache<String, Spanned>(SPANNED_CACHE_CHAR_BUDGET) {
             override fun sizeOf(key: String, value: Spanned): Int = value.length
         }
+
+    /**
+     * Clears all in-memory caches used by MarkdownUtils, including the Spanned LruCache.
+     *
+     * Call this method from Application.onTrimMemory() or onLowMemory() to proactively release
+     * memory under system pressure. Safe to call from any thread.
+     *
+     * Example usage: MarkdownUtils.clearCache()
+     */
+    @JvmStatic
+    fun clearCache() {
+        // Safe across threads due to coarse synchronization elsewhere
+        synchronized(spannedCache) { spannedCache.evictAll() }
+        // If additional caches are added in the future (e.g., parser/flavour/HtmlGenerator),
+        // clear them here as well.
+    }
 
     /**
      * Converts a Markdown string to HTML.
@@ -33,25 +49,32 @@ object MarkdownUtils {
     }
 
     /**
-     * Parse markdown and return an Android Spanned (already HTML->Spanned converted).
-     * Results are cached to reduce GC and CPU when RecyclerView binds rapidly.
+     * Parse markdown and return an Android Spanned (already HTML->Spanned converted). Results are
+     * cached to reduce GC and CPU when RecyclerView binds rapidly.
      *
      * Thread safety: htmlCache access is synchronized to allow safe use from any thread.
      */
-    fun parseMarkdownToSpanned(input: String?, key: String, formatList: Boolean = false): Spanned {
+    fun parseMarkdownToSpanned(
+        input: String?,
+        key: String,
+        formatList: Boolean = false,
+        htmlMode: Int = HtmlCompat.FROM_HTML_MODE_COMPACT,
+    ): Spanned {
         val compositeKey = buildString {
             append(key)
             append("|fmt:")
             append(if (formatList) 1 else 0)
             append("|md:")
             append(input?.hashCode() ?: 0)
+            append("|len:")
+            append(input?.length ?: 0)
         }
-        synchronized(htmlCache) {
-            val cached = htmlCache[compositeKey]
+        synchronized(spannedCache) {
+            val cached = spannedCache[compositeKey]
             if (cached != null) return cached
             val html = parseMarkdownToHtml(input, formatList)
-            val spanned = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
-            htmlCache.put(compositeKey, spanned)
+            val spanned = HtmlCompat.fromHtml(html, htmlMode)
+            spannedCache.put(compositeKey, spanned)
             return spanned
         }
     }

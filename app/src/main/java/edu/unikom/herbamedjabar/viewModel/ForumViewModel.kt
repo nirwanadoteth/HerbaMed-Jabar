@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
@@ -21,7 +22,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @HiltViewModel
 class ForumViewModel
 @Inject
-constructor(private val postRepository: PostRepository, internal val auth: FirebaseAuth) :
+constructor(private val postRepository: PostRepository, private val auth: FirebaseAuth) :
     ViewModel() {
 
     private val _posts = MutableLiveData<List<Post>>()
@@ -61,18 +62,19 @@ constructor(private val postRepository: PostRepository, internal val auth: Fireb
             val userId =
                 auth.currentUser?.uid
                     ?: run {
-                        _error.value = "Not authenticated"
+                        _error.value = AUTH_REQUIRED_ERROR /* expose a constant or sealed type */
                         return@launch
                     }
             if (!inFlightLikes.add(postId)) return@launch
-            runCatching {
-                    withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
-                }
-                .onFailure {
-                    _error.value = it.message
-                    inFlightLikes.remove(postId)
-                }
-                .onSuccess { inFlightLikes.remove(postId) }
+            try {
+                withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (t: Throwable) {
+                _error.value = t.message
+            } finally {
+                inFlightLikes.remove(postId)
+            }
         }
     }
 
@@ -87,4 +89,8 @@ constructor(private val postRepository: PostRepository, internal val auth: Fireb
                 }
         }
     }
+
+    fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
+    companion object { const val AUTH_REQUIRED_ERROR = "auth_required" }
 }
