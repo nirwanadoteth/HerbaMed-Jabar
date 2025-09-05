@@ -1,6 +1,8 @@
 package edu.unikom.herbamedjabar.useCase
 
 import android.graphics.Bitmap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.repository.PlantRepository
 import javax.inject.Inject
@@ -45,19 +47,22 @@ class AnalyzePlantUseCase @Inject constructor(private val plantRepository: Plant
                     ---
 
                     ### Jenis Tanaman
-                    *Tentukan apakah tanaman ini termasuk "Herbal" atau "Non-Herbal". Jawab dengan satu kata saja:
+                    *Jawab dengan tepat satu kata, tanpa tanda baca atau penjelasan tambahan.*
+                    Pilihan yang diizinkan (case-sensitive): Herbal, Non-Herbal
 
-                    [Jenis Tanaman]
+                    Herbal | Non-Herbal
 
                     ---
                 """
                     .trimIndent()
 
-            val response = plantRepository.analyzePlant(bitmap, prompt)
+            val response = withContext(Dispatchers.IO) {
+                plantRepository.analyzePlant(bitmap, prompt)
+            }
             Result.success(response)
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
-        } catch (e: android.database.sqlite.SQLiteException) {
+        } catch (e: androidx.sqlite.SQLiteException) {
             Result.failure(e)
         } catch (e: IllegalArgumentException) {
             Result.failure(e)

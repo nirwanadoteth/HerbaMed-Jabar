@@ -10,6 +10,8 @@ import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -33,16 +35,13 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
 
     private fun fetchPosts() {
         viewModelScope.launch {
-            _isLoading.value = true
             postRepository
                 .getPosts()
-                .catch { e ->
-                    _error.value = e.message
-                    _isLoading.value = false
-                }
+                .onStart { _isLoading.value = true }
+                .catch { e -> _error.value = e.message }
+                .onCompletion { _isLoading.value = false }
                 .collect { postList ->
                     _posts.value = postList
-                    _isLoading.value = false
                     _error.value = null
                 }
         }

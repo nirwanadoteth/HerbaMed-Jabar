@@ -9,6 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.useCase.AnalyzePlantUseCase
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 sealed class UiState {
@@ -25,6 +27,10 @@ sealed class UiState {
 class ScanViewModel @Inject constructor(private val analyzePlantUseCase: AnalyzePlantUseCase) :
     ViewModel() {
 
+    // Cancellable job for in-flight analyzeImage work. This lets callers cancel
+    // existing analysis without coupling concurrency to UI state.
+    private var analyzeJob: Job? = null
+
     private val _uiState = MutableLiveData<UiState>(UiState.Idle)
     val uiState: LiveData<UiState> = _uiState
 
@@ -37,9 +43,11 @@ class ScanViewModel @Inject constructor(private val analyzePlantUseCase: Analyze
     val scanStats: LiveData<ScanStats> = _scanStats
 
     fun analyzeImage(bitmap: Bitmap) {
-        if (_uiState.value is UiState.Loading) return
+        // Cancel any in-flight analysis before starting a new one.
+        analyzeJob?.cancel()
         _uiState.value = UiState.Loading
-        viewModelScope.launch {
+
+        analyzeJob = viewModelScope.launch {
             try {
                 val result = analyzePlantUseCase(bitmap)
                 result.onSuccess { analysisResult ->
@@ -54,11 +62,16 @@ class ScanViewModel @Inject constructor(private val analyzePlantUseCase: Analyze
                         }
                     _scanStats.value = newStats
                 }.onFailure { error ->
-                    _uiState.value =
-                        UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
+                    _uiState.value = UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
                 }
-            } catch (t: Throwable) {
-                _uiState.value = UiState.Error(t.message ?: "Terjadi kesalahan tidak diketahui")
+            } catch (_: CancellationException) {
+                // Job was cancelled — don't update UI state to error.
+                return@launch
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.message ?: "Terjadi kesalahan tidak diketahui")
+            } finally {
+                // Clear reference to allow GC and signal there's no active job.
+                analyzeJob = null
             }
         }
     }

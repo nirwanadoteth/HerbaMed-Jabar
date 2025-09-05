@@ -3,7 +3,6 @@ activity = "1.10.1"
 agp = "8.13.0"
 appcompat = "1.7.1"
 camerax = "1.4.2"
-circleimageview = "3.1.0"
 cloudinary = "3.1.1"
 coil = "2.7.0"
 constraintlayout = "2.2.1"
@@ -42,7 +41,6 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
-circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 cloudinary-android = { module = "com.cloudinary:cloudinary-android", version.ref = "cloudinary" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }

@@ -19,6 +19,7 @@ constructor(private val scanHistoryDao: ScanHistoryDao, private val db: AppDatab
     companion object {
         private const val PAGE_SIZE = 200
         private const val TAG = "ScanHistoryMigration"
+        private const val MIGRATED_KEY = "scan_history_migrated_v2"
     }
 
     private val scope = CoroutineScope(kotlinx.coroutines.SupervisorJob() + Dispatchers.IO)
@@ -26,7 +27,7 @@ constructor(private val scanHistoryDao: ScanHistoryDao, private val db: AppDatab
 
     fun runMigrationIfNeeded(context: Context) {
         val prefs = context.getSharedPreferences("migration_prefs", Context.MODE_PRIVATE)
-        val migrated = prefs.getBoolean("scan_history_migrated_v2", false)
+        val migrated = prefs.getBoolean(MIGRATED_KEY, false)
         if (migrated) return
         if (!started.compareAndSet(false, true)) return
 
@@ -55,12 +56,16 @@ constructor(private val scanHistoryDao: ScanHistoryDao, private val db: AppDatab
                     }
                     offset += page.size
                 }
-                prefs.edit { putBoolean("scan_history_migrated_v2", true) }
+                prefs.edit { putBoolean(MIGRATED_KEY, true) }
                 android.util.Log.i(TAG, "v2 migration completed")
-            } catch (e: android.database.sqlite.SQLiteException) {
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: androidx.sqlite.SQLiteException) {
                 android.util.Log.e(TAG, "v2 migration failed (sqlite)", e)
             } catch (e: IllegalArgumentException) {
                 android.util.Log.e(TAG, "v2 migration failed (illegal argument)", e)
+            } catch (e: Exception) {
+                android.util.Log.e(TAG, "v2 migration failed (unexpected)", e)
             } finally {
                 started.set(false)
             }

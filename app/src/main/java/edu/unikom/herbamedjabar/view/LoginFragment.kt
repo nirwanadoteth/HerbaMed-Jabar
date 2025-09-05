@@ -34,7 +34,8 @@ class LoginFragment : Fragment() {
 
     private val viewModel: AuthViewModel by viewModels()
 
-    private lateinit var credentialManager: CredentialManager
+    private val credentialManager: CredentialManager by
+        lazy(LazyThreadSafetyMode.NONE) { CredentialManager.create(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,8 +49,6 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        credentialManager = CredentialManager.create(requireContext())
-
         setupClickListeners()
 
         observeViewModel()
@@ -59,7 +58,16 @@ class LoginFragment : Fragment() {
         binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
-            viewModel.loginUser(email, password)
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(
+                        requireContext(),
+                        getString(R.string.login_empty_fields),
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
+            } else {
+                viewModel.loginUser(email, password)
+            }
         }
 
         binding.loginWithGoogleButton.setOnClickListener { launchGoogleSignIn() }
@@ -100,7 +108,7 @@ class LoginFragment : Fragment() {
             } catch (e: androidx.credentials.exceptions.NoCredentialException) {
                 Toast.makeText(
                         requireContext(),
-                        "Tidak ada kredensial yang tersedia.",
+                        getString(R.string.no_credentials_available),
                         Toast.LENGTH_SHORT,
                     )
                     .show()
@@ -128,7 +136,10 @@ class LoginFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
-            binding.progressBar.isVisible = state is AuthState.Loading
+            val loading = state is AuthState.Loading
+            binding.progressBar.isVisible = loading
+            binding.loginButton.isEnabled = !loading
+            binding.loginWithGoogleButton.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {

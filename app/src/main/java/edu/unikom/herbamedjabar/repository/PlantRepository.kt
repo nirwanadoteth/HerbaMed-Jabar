@@ -2,9 +2,9 @@ package edu.unikom.herbamedjabar.repository
 
 import android.app.Application
 import android.graphics.Bitmap
-import androidx.sqlite.SQLiteException
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.util.PlantDataParser
@@ -13,7 +13,6 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -50,6 +49,7 @@ constructor(
         private const val INITIAL_DELAY_MS = 2000L
         private const val AI_TIMEOUT_MS = 60_000L
         private const val COMPRESS_QUALITY = 90
+        private const val MAX_BACKOFF_MS = 60_000L
     }
 
     override suspend fun analyzePlant(bitmap: Bitmap, prompt: String): AnalysisResult {
@@ -64,7 +64,8 @@ constructor(
                 }
                 val response =
                     withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
-                val resultText = response.text ?: error("Hasil teks dari AI kosong.")
+                val resultText = response.text?.trim().orEmpty()
+                check(resultText.isNotBlank()) { "Hasil teks dari AI kosong." }
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
                 val isHerbal =
@@ -83,12 +84,15 @@ constructor(
                     )
                 try {
                     scanHistoryDao.insertHistory(history)
-                } catch (se: SQLiteException) {
+                } catch (e: androidx.sqlite.SQLiteException) {
                     savedImagePath?.let { runCatching { File(it).delete() } }
-                    throw se
-                } catch (iae: IllegalArgumentException) {
+                    throw e
+                } catch (e: IllegalArgumentException) {
                     savedImagePath?.let { runCatching { File(it).delete() } }
-                    throw iae
+                    throw e
+                } catch (e: Exception) {
+                    savedImagePath?.let { runCatching { File(it).delete() } }
+                    throw e
                 }
                 AnalysisResult(
                     resultText = resultText,
@@ -104,13 +108,13 @@ constructor(
                 return it
             }
             result.onFailure { e ->
-                if (e is kotlinx.coroutines.CancellationException && e !is TimeoutCancellationException) throw e
+                if (e is kotlinx.coroutines.CancellationException && e !is kotlinx.coroutines.TimeoutCancellationException) throw e
                 savedImagePath?.let { runCatching { File(it).delete() } }
                 lastError = e
             }
             if (attempt < MAX_RETRIES - 1) {
                 delay(delayTime)
-                delayTime = (delayTime * 2).coerceAtMost(AI_TIMEOUT_MS)
+                delayTime = (delayTime * 2).coerceAtMost(MAX_BACKOFF_MS)
             }
         }
         throw lastError ?: error("Gagal menganalisis tanaman setelah beberapa kali percobaan.")
@@ -129,11 +133,16 @@ constructor(
             val wrapper = application.applicationContext
             val directory = wrapper.getDir("images", android.content.Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
-            FileOutputStream(file).use { outputStream ->
-                check(bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)) {
-                    "Gagal menyimpan gambar: kompresi gagal."
+            try {
+                FileOutputStream(file).use { outputStream ->
+                    check(bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)) {
+                        application.getString(R.string.compression_failed)
+                    }
+                    outputStream.flush()
                 }
-                outputStream.flush()
+            } catch (e: Exception) {
+                runCatching { file.delete() }
+                throw e
             }
             file.absolutePath
         }

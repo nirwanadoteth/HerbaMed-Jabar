@@ -30,7 +30,7 @@ class ProfileFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: ProfileViewModel by viewModels()
-    private lateinit var postAdapter: PostAdapter
+    private var postAdapter: PostAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,21 +51,21 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        postAdapter =
+        val thisadapter =
             PostAdapter(
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Hapus Postingan")
-                        .setMessage("Apakah Anda yakin ingin menghapus postingan ini?")
-                        .setNegativeButton("Batal", null)
-                        .setPositiveButton("Hapus") { _, _ -> viewModel.deletePost(post) }
+                        .setTitle(getString(R.string.delete_post_title))
+                        .setMessage(getString(R.string.delete_post_message))
+                        .setNegativeButton(getString(R.string.action_cancel), null)
+                        .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
                         .show()
                 },
             )
-
+        postAdapter = thisadapter
         binding.rvMyPosts.apply {
-            adapter = postAdapter
+            adapter = thisadapter
             layoutManager = LinearLayoutManager(context)
         }
     }
@@ -84,7 +84,7 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.userPosts.observe(viewLifecycleOwner) { posts ->
-            postAdapter.submitList(posts)
+            postAdapter?.submitList(posts)
             val postCount = posts.size
 
             // Panggil fungsi untuk update lencana
@@ -111,10 +111,10 @@ class ProfileFragment : Fragment() {
 
     private fun handleLogout() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Konfirmasi Logout")
-            .setMessage("Apakah Anda yakin ingin logout?")
-            .setNegativeButton("Batal", null)
-            .setPositiveButton("Ya") { _, _ ->
+            .setTitle(getString(R.string.logout_title))
+            .setMessage(getString(R.string.logout_message))
+            .setNegativeButton(getString(R.string.action_cancel), null)
+            .setPositiveButton(getString(R.string.action_logout)) { _, _ ->
                 viewModel.logout()
                 viewLifecycleOwner.lifecycleScope.launch {
                     try {
@@ -141,6 +141,8 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvMyPosts.adapter = null
+        postAdapter = null
         _binding = null
     }
 

@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Izin untuk mengakses kamera -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <!-- Izin untuk mengakses internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -20,9 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.App"
-        tools:targetApi="31">
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="33">
 
-        <!-- SplashActivity adalah titik masuk -->
         <activity
             android:name=".view.SplashActivity"
             android:exported="true"

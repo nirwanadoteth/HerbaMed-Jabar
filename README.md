@@ -1,60 +1,134 @@
 # HerbaMed Jabar
 
-HerbaMed Jabar adalah aplikasi Android yang dirancang untuk membantu pengguna mengidentifikasi tanaman herbal melalui pemindaian gambar. Aplikasi ini juga menyediakan platform bagi pengguna untuk berbagi penemuan mereka dan berdiskusi di forum.
+> Android app for herbal plant identification, scan history, and community forum. MVVM architecture, Kotlin, Room, Firebase, Cloudinary, Gemini AI.
 
-## ✨ Fitur
+HerbaMed Jabar enables users to identify herbal plants via image scanning, maintain scan history, and participate in a community forum. Built with a modern Android stack, it integrates AI, cloud, and local DB.
 
-* **Pemindaian Tanaman**: Identifikasi tanaman herbal dengan memindai gambar menggunakan kamera ponsel.
-* **Forum Diskusi**: Bagikan hasil pindaian dan diskusikan tanaman herbal dengan pengguna lain.
-* **Profil Pengguna**: Lihat riwayat postingan dan lencana yang diperoleh.
-* **Riwayat Pemindaian**: Simpan dan lihat riwayat tanaman yang pernah Anda pindai.
-* **Autentikasi Pengguna**: Sistem pendaftaran dan login yang aman.
+---
 
-## 🛠️ Teknologi yang Digunakan
+## Technology Stack
 
-* **Bahasa**: [Kotlin](https://kotlinlang.org/)
-* **Arsitektur**: MVVM (Model-View-ViewModel)
-* **UI**: XML Layouts
-* **Asynchronous**: Coroutines
-* **Dependency Injection**: Hilt
-* **Jaringan**:
-  * [Firebase Firestore](https://firebase.google.com/docs/firestore) - untuk database forum
-  * [Firebase Storage](https://firebase.google.com/docs/storage) - untuk penyimpanan gambar
-  * [Cloudinary](https://cloudinary.com/) - untuk unggah gambar
-* **Database Lokal**: [Room](https://developer.android.com/training/data-storage/room)
-* **AI**: [Google Generative AI (Gemini)](https://ai.google.dev/)
-* **Lainnya**:
-  * [CameraX](https://developer.android.com/training/camerax) - untuk fungsionalitas kamera
-  * [Coil](https://coil-kt.github.io/coil/) - untuk memuat gambar
-  * [Lottie](https://lottiefiles.com/) - untuk animasi
+- **Language:** Kotlin 2.2.10
+- **Android SDK:** Compile SDK 36, minSdk 24, targetSdk 35
+- **Build System:** Gradle (Kotlin DSL, AGP 8.13.0)
+- **Dependency Injection:** Dagger Hilt (2.57.1)
+- **Database:** Room (2.7.2)
+- **Async/Background:** Kotlin Coroutines (1.10.2)
+- **UI:** AndroidX, Material, ConstraintLayout, ViewBinding, Lottie, Coil
+- **Cloud/Backend:** Firebase (Firestore, Auth, Storage, BOM 34.2.0), Cloudinary, Gemini API
+- **Other:** CameraX, Markdown rendering
 
-## ⚙️ Instalasi dan Penggunaan
+---
 
-1. **Clone repositori ini:**
+## Project Architecture
 
-    ```bash
-    git clone https://github.com/nirwanadoteth/herbamed-jabar.git
-    ```
+- **Layered + MVVM:** Presentation, ViewModel, Domain (UseCase), Data (Repository/DAO), DI, Utility
+- **Repository Pattern:** Abstracts local (Room) and remote (Firebase, Cloudinary) data sources
+- **Dependency Injection:** Dagger Hilt for constructor injection and singleton management
+- **Coroutines:** Async/background operations
+- **LiveData/Flow:** State and event propagation
 
-2. **Buka proyek di Android Studio.**
-3. **Tambahkan file `google-services.json` Anda:**
-    * Buat proyek Firebase baru di [Firebase Console](https://console.firebase.google.com/).
-    * Tambahkan aplikasi Android ke proyek Firebase Anda.
-    * Unduh file `google-services.json` dan letakkan di direktori `app/`.
-4. **Tambahkan kunci API Anda:**
-    * Buat file `local.properties` di direktori root proyek.
-    * Tambahkan kunci API Google Generative AI Anda ke dalam `local.properties`:
+### Architecture Diagram
 
-        ```properties
-        apiKey="KUNCI_API_ANDA"
-        ```
+```mermaid
+flowchart TD
+  User --> AndroidApp
+  AndroidApp --> FirebaseAuth
+  AndroidApp --> FirebaseFirestore
+  AndroidApp --> FirebaseStorage
+  AndroidApp --> Cloudinary
+  AndroidApp --> GeminiAPI
+```
 
-5. **Jalankan aplikasi.**
+---
 
-## 🤝 Kontribusi
+## Getting Started
 
-Kontribusi sangat diterima! Jika Anda ingin berkontribusi pada proyek ini, silakan fork repositori ini dan buat *pull request*.
+### Prerequisites
 
-## 📄 Lisensi
+- Android Studio (latest recommended)
+- JDK 17+
+- Android SDK 36+
 
-Proyek ini dilisensikan di bawah [Lisensi MIT](LICENSE).
+### Installation
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/nirwanadoteth/HerbaMed-Jabar.git
+   cd HerbaMed-Jabar
+   ```
+
+2. Add your Firebase config file to `app/google-services.json`.
+3. Add required secrets to `local.properties` (see project docs for details).
+4. Open in Android Studio and let Gradle sync.
+5. Build and run on an emulator or device.
+
+---
+
+## Project Structure
+
+```text
+/
+  app/
+    src/
+      main/
+        java/edu/unikom/herbamedjabar/
+          adapter/        # RecyclerView adapters
+          dao/            # Room DAOs
+          data/           # Entities (ScanHistory, Post)
+          db/             # Room database
+          di/             # Hilt DI modules
+          migration/      # Room migration manager
+          repository/     # Data access abstraction
+          useCase/        # Business logic (UseCases)
+          util/           # Utilities (Markdown, parsing)
+          view/           # Fragments/Activities (UI)
+          viewModel/      # ViewModels (UI state)
+        res/
+          layout/         # XML layouts
+          values/         # Strings, colors, themes
+  build.gradle.kts        # Root build config
+  settings.gradle.kts     # Gradle settings
+  gradle/                 # Gradle wrapper, versions
+```
+
+---
+
+## Key Features
+
+- **AI-powered plant identification** via image scan
+- **Scan history** with local storage and retrieval
+- **Community forum** for sharing plant info and discussions
+- **Cloud integration**: Firebase Auth, Firestore, Storage, Cloudinary
+- **Modern Android UI**: Material, Lottie, Markdown rendering
+- **Accessibility and security**: Follows best practices
+
+---
+
+## Development Workflow
+
+- **MVVM + Layered**: Start with Fragment, ViewModel, UseCase
+- **Repository pattern**: Abstracts data access
+- **Dependency injection**: Hilt modules for all layers
+- **Coroutines**: All async/background work
+- **Testing**: Unit, integration, UI tests (JUnit, Espresso)
+- **Branching**: Feature branches, PRs, code review
+- **CI/CD**: (Recommended) GitHub Actions
+
+---
+
+## Coding Standards
+
+- **Naming**: PascalCase for classes, camelCase for variables
+- **Organization**: By layer and feature
+- **Error handling**: try/catch in ViewModels, UseCases, Repositories
+- **Testing**: Unit, integration, UI; mocking via test doubles
+- **Documentation**: KDoc for classes/methods, usage examples
+- **Accessibility**: Follows WCAG 2.2 AA
+
+---
+
+## License
+
+This project is licensed under [MIT License](LICENSE.md).

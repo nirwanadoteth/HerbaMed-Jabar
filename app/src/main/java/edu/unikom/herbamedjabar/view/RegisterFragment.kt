@@ -53,7 +53,9 @@ class RegisterFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
-            binding.progressBar.isVisible = state is AuthState.Loading
+            val loading = state is AuthState.Loading
+            binding.progressBar.isVisible = loading
+            binding.registerButton.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {

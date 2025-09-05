@@ -141,9 +141,9 @@ class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) 
                 _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
-            } catch (t: Throwable) {
-                Log.w(TAG, "$opName: Error", t)
-                _authState.value = AuthState.Error(t.toUserMessage("$opName gagal"))
+            } catch (e: Exception) {
+                Log.w(TAG, "$opName: Error", e)
+                _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
             }
         }
 

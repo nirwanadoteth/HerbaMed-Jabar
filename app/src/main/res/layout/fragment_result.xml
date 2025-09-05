@@ -33,12 +33,13 @@
             layout="@layout/card_plant_result" />
     </androidx.core.widget.NestedScrollView>
 
-    <ProgressBar
+    <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:accessibilityLiveRegion="polite"
         android:contentDescription="@string/loading"
+        android:importantForAccessibility="yes"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -48,31 +48,29 @@ class PostAdapter(
                 error(R.drawable.bg_place_holder)
                 fallback(R.drawable.bg_place_holder)
             }
-            binding.tvPlantName.text = post.plantName
-            binding.tvContent.text =
+            binding.plantNameTextView.text = post.plantName
+            binding.contentTextView.text =
                 HtmlCompat.fromHtml(
                     MarkdownUtils.parseMarkdownToHtml(post.content),
                     HtmlCompat.FROM_HTML_MODE_COMPACT,
                 )
-            binding.tvManfaat.text =
+            binding.benefitTextView.text =
                 HtmlCompat.fromHtml(
                     MarkdownUtils.parseMarkdownToHtml(post.benefit, true),
                     HtmlCompat.FROM_HTML_MODE_COMPACT,
                 )
-            binding.tvEfek.text =
+            binding.warningTextView.text =
                 HtmlCompat.fromHtml(
                     MarkdownUtils.parseMarkdownToHtml(post.warning, true),
                     HtmlCompat.FROM_HTML_MODE_COMPACT,
                 )
-            binding.tvManfaat.visibility =
+            binding.benefitCard.visibility =
                 if (post.benefit.isNullOrBlank()) View.GONE else View.VISIBLE
-            binding.tvEfek.visibility =
+            binding.warningCard.visibility =
                 if (post.warning.isNullOrBlank()) View.GONE else View.VISIBLE
             binding.tvLikeCount.text = "${post.likes.size}"
             val likedByMe = currentUser?.uid?.let(post.likes::contains) == true
-            binding.ivLike.setImageResource(
-                if (likedByMe) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline
-            )
+            binding.ivLike.isChecked = likedByMe
             binding.ivLike.setOnClickListener {
                 it.isEnabled = false
                 onLikeClicked(post.id)

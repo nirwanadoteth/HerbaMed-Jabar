@@ -11,6 +11,7 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
@@ -110,9 +111,17 @@ class HistoryDetailFragment : Fragment() {
             setTextColor(
                 ContextCompat.getColor(requireContext(), R.color.md_theme_onErrorContainer)
             )
+
             setOnClickListener {
-                viewModel.deleteHistory(history)
-                parentFragmentManager.popBackStack()
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.delete_history_title)
+                    .setMessage(R.string.delete_history_message)
+                    .setPositiveButton(R.string.action_delete) { _, _ ->
+                        viewModel.deleteHistory(history)
+                        parentFragmentManager.popBackStack()
+                    }
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .show()
             }
         }
     }

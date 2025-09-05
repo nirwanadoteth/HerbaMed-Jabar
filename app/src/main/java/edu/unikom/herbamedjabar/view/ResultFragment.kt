@@ -72,7 +72,7 @@ class ResultFragment : Fragment() {
             benefitCard.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
             warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
             primaryButton.visibility =
-                if (benefit.isBlank() or warning.isBlank()) View.GONE else View.VISIBLE
+                if (benefit.isBlank() || warning.isBlank()) View.GONE else View.VISIBLE
             val imageFile = imagePath?.let(::File)
             if (imageFile?.exists() == true) {
                 resultImageView.setImageURI(Uri.fromFile(imageFile))
@@ -136,8 +136,7 @@ class ResultFragment : Fragment() {
                             Toast.LENGTH_SHORT,
                         )
                         .show()
-                    // Kembali ke halaman scan setelah berhasil
-                    activity?.supportFragmentManager?.popBackStack()
+                    parentFragmentManager.popBackStack()
                 }
                 .onFailure {
                     Toast.makeText(

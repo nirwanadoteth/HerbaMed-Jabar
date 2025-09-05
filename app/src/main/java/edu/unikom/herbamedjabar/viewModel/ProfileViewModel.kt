@@ -9,8 +9,10 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class ProfileViewModel
@@ -41,19 +43,29 @@ constructor(
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid ?: return@launch
-            runCatching { postRepository.toggleLike(postId, userId) }
-                .onFailure { /* TODO: report to UI/logger */ }
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    postRepository.toggleLike(postId, userId)
+                }
+            }.onFailure {
+                // TODO: report to UI/logger and/or emit a UI event
+            }
         }
     }
 
     fun deletePost(post: Post) {
         viewModelScope.launch {
-            runCatching { postRepository.deletePost(post) }
-                .onFailure { /* TODO: report to UI/logger */ }
+            runCatching {
+                withContext(Dispatchers.IO) { postRepository.deletePost(post) }
+            }.onFailure {
+                // TODO: report to UI/logger and/or emit a UI event
+            }
         }
     }
 
     fun logout() {
         auth.signOut()
+        _user.value = null
+        _userPosts.value = emptyList()
     }
 }

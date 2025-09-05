@@ -11,12 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentScanBinding
 import edu.unikom.herbamedjabar.viewModel.ScanViewModel
 import edu.unikom.herbamedjabar.viewModel.UiState
@@ -41,7 +43,11 @@ class ScanFragment : Fragment() {
                 if (isGranted) {
                     takePictureLauncher.launch(null)
                 } else {
-                    Toast.makeText(requireContext(), "Izin kamera ditolak", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                            requireContext(),
+                            getString(R.string.camera_permission_denied),
+                            Toast.LENGTH_SHORT,
+                        )
                         .show()
                 }
             }
@@ -58,64 +64,58 @@ class ScanFragment : Fragment() {
 
     // Gallery image picker launcher
     private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 try {
                     viewLifecycleOwner.lifecycleScope.launch {
-                        var bounds: BitmapFactory.Options
-                        val bitmap: Bitmap =
-                            withContext(kotlinx.coroutines.Dispatchers.IO) {
-                                (if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-                                    // Pre-P: decode with sampling
-                                    val resolver = requireContext().contentResolver
-                                    resolver.openInputStream(uri)!!.use { input ->
-                                        // bounds pass
-                                        bounds =
+                        val ctx = context ?: return@launch
+                        val resolver = ctx.contentResolver
+                        try {
+                            val bitmap: Bitmap =
+                                withContext(kotlinx.coroutines.Dispatchers.IO) {
+                                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                                        // Pre-P: 2-pass decode with sampling
+                                        val targetMaxDim = 2048
+                                        val bounds =
                                             BitmapFactory.Options().apply {
                                                 inJustDecodeBounds = true
                                             }
-                                        BitmapFactory.decodeStream(
-                                            input,
-                                            null,
-                                            bounds,
-                                        )
-                                    }
-                                    val targetMaxDim = 2048
-                                    val resolver2 = requireContext().contentResolver
-                                    resolver2.openInputStream(uri)!!.use { input ->
+                                        resolver.openInputStream(uri)?.use { input ->
+                                            BitmapFactory.decodeStream(input, null, bounds)
+                                        }
+                                            ?: throw IllegalStateException(
+                                                "Gagal membuka stream (bounds)."
+                                            )
+                                        val maxDim =
+                                            maxOf(bounds.outWidth, bounds.outHeight).takeIf {
+                                                it > 0
+                                            } ?: targetMaxDim
+                                        val sample = maxOf(1, maxDim / targetMaxDim)
                                         val opts =
-                                            BitmapFactory.Options().apply {
-                                                inSampleSize =
-                                                    maxOf(
-                                                        1,
-                                                        maxOf(bounds.outWidth, bounds.outHeight) /
-                                                                targetMaxDim,
-                                                    )
-                                            }
-                                        BitmapFactory.decodeStream(
-                                            input,
-                                            null,
-                                            opts,
-                                        )
+                                            BitmapFactory.Options().apply { inSampleSize = sample }
+                                        resolver.openInputStream(uri)?.use { input ->
+                                            BitmapFactory.decodeStream(input, null, opts)
+                                        }
+                                            ?: throw IllegalStateException(
+                                                "Gagal membuka stream (decode)."
+                                            )
+                                    } else {
+                                        val source = ImageDecoder.createSource(resolver, uri)
+                                        ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                                            val maxDim = 2048
+                                            val w = info.size.width
+                                            val h = info.size.height
+                                            val scale = maxOf(1, maxOf(w, h) / maxDim)
+                                            decoder.setTargetSize(w / scale, h / scale)
+                                            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                                        }
                                     }
-                                } else {
-                                    val source =
-                                        ImageDecoder.createSource(
-                                            requireContext().contentResolver,
-                                            uri,
-                                        )
-                                    ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
-                                        val maxDim = 2048
-                                        val w = info.size.width
-                                        val h = info.size.height
-                                        val scale = maxOf(1, maxOf(w, h) / maxDim)
-                                        decoder.setTargetSize(w / scale, h / scale)
-                                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                                    }
-                                })!!
-                            }
-                        binding.plantImageView.setImageBitmap(bitmap)
-                        viewModel.analyzeImage(bitmap)
+                                }
+                            binding.plantImageView.setImageBitmap(bitmap)
+                            viewModel.analyzeImage(bitmap)
+                        } catch (_: Exception) {
+                            Toast.makeText(ctx, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 } catch (_: Exception) {
                     Toast.makeText(context, "Gagal memuat gambar", Toast.LENGTH_SHORT).show()
@@ -136,37 +136,19 @@ class ScanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
 
-        val fullText = getString(edu.unikom.herbamedjabar.R.string.herbamed)
-        val medStart = fullText.indexOf("Med")
-        val medEnd = if (medStart >= 0) medStart + MED_SUBSTRING_LENGTH else medStart
-        val spannable = android.text.SpannableString(fullText)
-        if (medStart >= 0) {
-            val primaryColor =
-                ContextCompat.getColor(
-                    requireContext(),
-                    edu.unikom.herbamedjabar.R.color.md_theme_primary,
-                )
-            spannable.setSpan(
-                android.text.style.ForegroundColorSpan(primaryColor),
-                medStart,
-                medEnd,
-                android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-            )
-        }
-        binding.appTitleTextView.text = spannable
-
         parentFragmentManager.setFragmentResultListener("scan_again_request", this) { _, bundle ->
             if (bundle.getBoolean("open_camera")) {
                 checkCameraPermissionAndOpenCamera()
             }
         }
-
+        val pickVisualMediaRequest =
+            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
         binding.scanButton.setOnClickListener { checkCameraPermissionAndOpenCamera() }
-        binding.btnGallery.setOnClickListener { galleryLauncher.launch("image/*") }
+        binding.btnGallery.setOnClickListener { galleryLauncher.launch(pickVisualMediaRequest) }
     }
 
     private fun observeViewModel() {
-        // Observe navigation
+        // Observe navigations
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
                 (activity as? MainActivity)?.showResultFragment(it)
@@ -187,6 +169,7 @@ class ScanFragment : Fragment() {
                 is UiState.Success,
                 is UiState.Error -> {
                     processingDialog?.dismiss()
+                    processingDialog = null
                     if (state is UiState.Error) {
                         context?.let { ctx ->
                             Toast.makeText(ctx, state.message, Toast.LENGTH_LONG).show()
@@ -220,14 +203,13 @@ class ScanFragment : Fragment() {
                 PackageManager.PERMISSION_GRANTED -> {
                 takePictureLauncher.launch(null)
             }
-
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                Toast.makeText(requireContext(), getString(R.string.camera_permission_rationale), Toast.LENGTH_LONG).show()
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
             else -> {
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
-    }
-
-    companion object {
-        private const val MED_SUBSTRING_LENGTH = 3
     }
 }
