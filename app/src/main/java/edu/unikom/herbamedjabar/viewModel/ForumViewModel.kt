@@ -8,11 +8,14 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
 
 @HiltViewModel
 class ForumViewModel
@@ -28,6 +31,8 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
+
+    private val inFlightLikes = ConcurrentHashMap.newKeySet<String>()
 
     init {
         fetchPosts()
@@ -50,10 +55,15 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid ?: return@launch
-            try {
-                postRepository.toggleLike(postId, userId)
-            } catch (e: Exception) {
-                _error.value = e.message
+            if (!inFlightLikes.add(postId)) return@launch
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    postRepository.toggleLike(postId, userId)
+                }
+            }.onFailure {
+                // TODO: report to UI/logger and/or emit a UI event
+            }.onSuccess {
+                inFlightLikes.remove(postId)
             }
         }
     }

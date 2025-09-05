@@ -72,9 +72,7 @@ class PostAdapter(
             val likedByMe = currentUser?.uid?.let(post.likes::contains) == true
             binding.ivLike.isChecked = likedByMe
             binding.ivLike.setOnClickListener {
-                it.isEnabled = false
                 onLikeClicked(post.id)
-                it.postDelayed({ it.isEnabled = true }, 400)
             }
             binding.ivMenuOptions.visibility =
                 if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE

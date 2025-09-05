@@ -10,9 +10,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel
@@ -33,6 +34,8 @@ constructor(
         fetchUserPosts()
     }
 
+    private val inFlightLikes = ConcurrentHashMap.newKeySet<String>()
+
     private fun fetchUserPosts() {
         val userId = auth.currentUser?.uid ?: return
         viewModelScope.launch {
@@ -43,23 +46,23 @@ constructor(
     fun toggleLikeOnPost(postId: String) {
         viewModelScope.launch {
             val userId = auth.currentUser?.uid ?: return@launch
+            if (!inFlightLikes.add(postId)) return@launch
             runCatching {
-                withContext(Dispatchers.IO) {
-                    postRepository.toggleLike(postId, userId)
+                    withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
                 }
-            }.onFailure {
-                // TODO: report to UI/logger and/or emit a UI event
-            }
+                .onFailure {
+                    // TODO: report to UI/logger and/or emit a UI event
+                }
+                .onSuccess { inFlightLikes.remove(postId) }
         }
     }
 
     fun deletePost(post: Post) {
         viewModelScope.launch {
-            runCatching {
-                withContext(Dispatchers.IO) { postRepository.deletePost(post) }
-            }.onFailure {
-                // TODO: report to UI/logger and/or emit a UI event
-            }
+            runCatching { withContext(Dispatchers.IO) { postRepository.deletePost(post) } }
+                .onFailure {
+                    // TODO: report to UI/logger and/or emit a UI event
+                }
         }
     }
 
