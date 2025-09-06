@@ -122,24 +122,12 @@ class HistoryDetailFragment : Fragment() {
 
     companion object {
         const val EXTRA_HISTORY: String = "extra_history"
-        private const val ARG_IMAGE_PATH = "image_path"
-        private const val ARG_RESULT_TEXT = "result_text"
-        private const val ARG_PLANT_NAME = "plant_name"
-        private const val ARG_BENEFIT = "benefit"
-        private const val ARG_WARNING = "warning"
-        private const val ARG_CONTENT = "content"
 
         fun newInstance(history: ScanHistory): HistoryDetailFragment {
             val fragment = HistoryDetailFragment()
             val bundle =
                 Bundle().apply {
                     putParcelable(EXTRA_HISTORY, history)
-                    putString(ARG_IMAGE_PATH, history.imagePath)
-                    putString(ARG_RESULT_TEXT, history.resultText)
-                    putString(ARG_PLANT_NAME, history.plantName)
-                    putString(ARG_BENEFIT, history.benefit)
-                    putString(ARG_WARNING, history.warning)
-                    putString(ARG_CONTENT, history.content)
                 }
             fragment.arguments = bundle
             return fragment

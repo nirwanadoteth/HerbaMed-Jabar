@@ -70,7 +70,7 @@ class LoginFragment : Fragment() {
             }
         }
 
-        binding.loginWithGoogleButton.setOnClickListener { launchGoogleSignIn() }
+        binding.googleLoginButton.setOnClickListener { launchGoogleSignIn() }
 
         binding.registerTextView.setOnClickListener {
             // Navigasi ke RegisterFragment
@@ -137,9 +137,9 @@ class LoginFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
             val loading = state is AuthState.Loading
-            binding.progressBar.isVisible = loading
+            binding.loadingIndicator.isVisible = loading
             binding.loginButton.isEnabled = !loading
-            binding.loginWithGoogleButton.isEnabled = !loading
+            binding.googleLoginButton.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {

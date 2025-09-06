@@ -1,5 +1,6 @@
 package edu.unikom.herbamedjabar.adapter
 
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,9 +55,9 @@ class PostAdapter(
             val benefitText = post.benefit.orEmpty()
             val warningText = post.warning.orEmpty()
 
-            val contentKey = "post:content:${post.id}:fmt0:hash=${contentText.hashCode()}"
-            val benefitKey = "post:benefit:${post.id}:fmt0:hash=${benefitText.hashCode()}"
-            val warningKey = "post:warning:${post.id}:fmt0:hash=${warningText.hashCode()}"
+            val contentKey = "post:${post.id}:content:${contentText.hashCode()}"
+            val benefitKey = "post:${post.id}:benefit:${benefitText.hashCode()}"
+            val warningKey = "post:${post.id}:warning:${warningText.hashCode()}"
 
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(contentText, contentKey)
             val benefitSpanned =
@@ -84,17 +85,11 @@ class PostAdapter(
                 if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000
                 else post.timestamp
             binding.tvPostTimestamp.text =
-                if (tsMillis > 0) {
-                    android.text.format.DateUtils.formatDateTime(
-                        binding.root.context,
-                        tsMillis,
-                        android.text.format.DateUtils.FORMAT_SHOW_DATE or
-                            android.text.format.DateUtils.FORMAT_SHOW_YEAR or
-                            android.text.format.DateUtils.FORMAT_SHOW_TIME,
-                    )
-                } else {
-                    ""
-                }
+                if (tsMillis > 0)
+                    DateUtils.getRelativeTimeSpanString(
+                        tsMillis, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
+                    ).toString()
+                else ""
             binding.ivUserProfile.contentDescription =
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)
             binding.ivPostImage.contentDescription =

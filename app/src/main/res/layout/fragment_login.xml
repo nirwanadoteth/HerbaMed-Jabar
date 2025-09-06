@@ -13,32 +13,32 @@
         android:padding="24dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/logoImageView"
+            android:id="@+id/logo_image_view"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/logo"
             android:src="@drawable/ic_circle_welcome"
-            app:layout_constraintBottom_toTopOf="@id/titleTextView"
+            app:layout_constraintBottom_toTopOf="@id/title_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/login_title"
             style="@style/TextAppearance.Material3.TitleLarge.Emphasized"
-            app:layout_constraintBottom_toTopOf="@id/subtitleTextView"
+            app:layout_constraintBottom_toTopOf="@id/subtitle_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/logoImageView" />
+            app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/subtitleTextView"
+            android:id="@+id/subtitle_text_view"
             style="@style/TextAppearance.Material3.TitleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:text="@string/login_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleTextView" />
+            app:layout_constraintTop_toBottomOf="@id/title_text_view" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -57,7 +57,7 @@
             app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subtitleTextView">
+            app:layout_constraintTop_toBottomOf="@+id/subtitle_text_view">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,11 +70,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
-                    android:labelFor="@id/emailEditText"
+                    android:labelFor="@id/email_edit_text"
                     android:text="@string/email" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/emailInputLayout"
+                    android:id="@+id/email_input_layout"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                     app:startIconDrawable="@drawable/ic_mail">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/emailEditText"
+                        android:id="@+id/email_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints="emailAddress"
@@ -104,11 +104,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
                     style="@style/TextAppearance.Material3.LabelLarge"
-                    android:labelFor="@id/passwordEditText"
+                    android:labelFor="@id/password_edit_text"
                     android:text="@string/password" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/passwordInputLayout"
+                    android:id="@+id/password_input_layout"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
-                        android:id="@+id/passwordEditText"
+                        android:id="@+id/password_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints="password"
@@ -137,7 +137,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/loginButton"
+                    android:id="@+id/login_button"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     style="@style/Widget.Material3Expressive.Button"
@@ -145,7 +145,7 @@
                     android:text="@string/login_button" />
 
                 <LinearLayout
-                    android:id="@+id/orLayout"
+                    android:id="@+id/or_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -176,7 +176,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/loginWithGoogleButton"
+                    android:id="@+id/google_login_button"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     style="@style/Widget.Material3Expressive.Button.OutlinedButton"
@@ -187,7 +187,7 @@
                     app:iconTintMode="add" />
 
                 <LinearLayout
-                    android:id="@+id/registerLayout"
+                    android:id="@+id/register_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -202,7 +202,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
-                        android:id="@+id/registerTextView"
+                        android:id="@+id/register_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/register_here"
@@ -217,7 +217,7 @@
     </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.loadingindicator.LoadingIndicator
-            android:id="@+id/progressBar"
+            android:id="@+id/loading_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"

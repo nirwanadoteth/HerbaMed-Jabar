@@ -6,7 +6,7 @@
     tools:context=".view.ResultFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
+        android:id="@+id/top_app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
@@ -19,7 +19,7 @@
         app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/resultScrollView"
+        android:id="@+id/result_scroll_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/result_scroll_content_desc"
@@ -27,14 +27,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar">
+        app:layout_constraintTop_toBottomOf="@id/top_app_bar">
         <include
             android:id="@+id/plant_card_layout"
             layout="@layout/card_plant_result" />
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.loadingindicator.LoadingIndicator
-        android:id="@+id/progress_bar"
+        android:id="@+id/loading_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:accessibilityLiveRegion="polite"

@@ -95,6 +95,6 @@ object MarkdownUtils {
         return text.replace(numberedListPattern, "\n$1")
     }
 
-    // Preceded by a non-newline, then optional spaces before "n. "
-    private val numberedListPattern by lazy { Regex("(?<=[^\\n\\r])\\s*(\\d+\\.\\s)") }
+    // Only after a colon/semicolon/closing bracket to reduce false positives
+    private val numberedListPattern by lazy { Regex("(?<=[:;\\)\\]])\\s*(\\d+\\.\\s)") }
 }

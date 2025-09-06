@@ -106,12 +106,11 @@ object PlantDataParser {
             Section.HERBAL_STATUS to HERBAL_STATUS_REGEX,
         )
 
+    private val UNIDENTIFIED_REGEX =
+        Regex("""tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""", RegexOption.IGNORE_CASE)
+
     private fun isUnidentifiedPlant(text: String): Boolean =
-        Regex(
-                """tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""",
-                RegexOption.IGNORE_CASE,
-            )
-            .containsMatchIn(text)
+        UNIDENTIFIED_REGEX.containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
         val namePattern =
@@ -131,6 +130,10 @@ object PlantDataParser {
         } ?: ""
     }
 
-    private fun parsePlantType(text: String): Boolean =
-        Regex("""\bherbal\b""", RegexOption.IGNORE_CASE).containsMatchIn(text.replace("-", " "))
+    private fun parsePlantType(text: String): Boolean {
+        val normalized = text.replace("-", " ").lowercase()
+        val negative = Regex("""\b(?:non|bukan|tidak)\s+herbal\b""").containsMatchIn(normalized)
+        if (negative) return false
+        return Regex("""\bherbal\b""").containsMatchIn(normalized)
+    }
 }

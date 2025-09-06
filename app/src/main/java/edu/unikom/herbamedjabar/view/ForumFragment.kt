@@ -73,7 +73,7 @@ class ForumFragment : Fragment() {
         viewModel.posts.observe(viewLifecycleOwner) { posts -> postAdapter?.submitList(posts) }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+            binding.loadingIndicator.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
     }
 

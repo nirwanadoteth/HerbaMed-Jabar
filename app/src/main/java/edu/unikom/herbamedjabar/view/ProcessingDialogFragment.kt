@@ -38,7 +38,7 @@ class ProcessingDialogFragment : DialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             var progress = 0
             while (progress <= MAX_PROGRESS) {
-                binding.progressBar.progress = progress
+                binding.progressIndicator.progress = progress
                 binding.progressTextView.text = getString(R.string.progress_percent, progress)
                 progress++
 

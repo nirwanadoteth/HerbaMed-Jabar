@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/resultImageView"
+            android:id="@+id/result_image_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/image_height"
             android:contentDescription="@string/cd_plant_image"
@@ -31,7 +31,7 @@
             android:padding="16dp">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/plantNameTextView"
+                android:id="@+id/plant_name_text_view"
                 style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
 
             <!-- Description Section -->
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/contentTextView"
+                android:id="@+id/content_text_view"
                 style="@style/TextAppearance.Material3.BodyMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
 
             <!-- Benefit Section -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/benefitCard"
+                android:id="@+id/benefit_card"
                 style="@style/Widget.Material3.CardView.Elevated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/benefitTextView"
+                        android:id="@+id/benefit_text_view"
                         style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
 
             <!-- Warning Section -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/warningCard"
+                android:id="@+id/warning_card"
                 style="@style/Widget.Material3.CardView.Elevated"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/warningTextView"
+                        android:id="@+id/warning_text_view"
                         style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
         </LinearLayout>
         <!-- Button Section -->
         <LinearLayout
-            android:id="@+id/buttonContainer"
+            android:id="@+id/button_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
@@ -154,7 +154,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/secondaryButton"
+                android:id="@+id/secondary_button"
                 style="@style/Widget.Material3Expressive.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                 app:iconGravity="textStart" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/primaryButton"
+                android:id="@+id/primary_button"
                 style="@style/Widget.Material3Expressive.Button.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -122,7 +122,7 @@ class ResultFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.loadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.plantCardLayout.primaryButton.isEnabled = !isLoading // Post button
             binding.plantCardLayout.secondaryButton.isEnabled = !isLoading // Scan again button
         }

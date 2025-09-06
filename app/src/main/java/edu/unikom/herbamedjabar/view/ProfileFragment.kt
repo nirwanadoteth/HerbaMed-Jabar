@@ -101,7 +101,7 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+            binding.loadingIndicator.visibility = if (isLoading == true) View.VISIBLE else View.GONE
         }
     }
 
@@ -122,7 +122,7 @@ class ProfileFragment : Fragment() {
             .setNegativeButton(getString(R.string.action_cancel), null)
             .setPositiveButton(getString(R.string.action_logout)) { _, _ ->
                 viewModel.logout()
-                viewLifecycleOwner.lifecycleScope.launch {
+                lifecycleScope.launch {
                     try {
                         val credentialManager = CredentialManager.create(appCtx)
                         val clearRequest = ClearCredentialStateRequest()

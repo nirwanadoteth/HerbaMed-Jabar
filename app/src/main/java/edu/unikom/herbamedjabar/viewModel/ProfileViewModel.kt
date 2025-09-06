@@ -76,10 +76,10 @@ constructor(
             if (!inFlightLikes.add(postId)) return@launch
             try {
                 withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (t: Throwable) {
-                _error.value = t.message
+            } catch (ce: CancellationException) {
+                throw ce
+            }  catch (e: Exception) {
+                _error.value = e.message
             } finally {
                 inFlightLikes.remove(postId)
             }
@@ -92,8 +92,8 @@ constructor(
                 withContext(Dispatchers.IO) { postRepository.deletePost(post) }
             } catch (ce: CancellationException) {
                 throw ce
-            } catch (t: Throwable) {
-                _error.value = t.message
+            } catch (e: Exception) {
+                _error.value = e.message
             }
         }
     }

@@ -19,7 +19,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/historyImageView"
+            android:id="@+id/history_image_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:contentDescription="@string/cd_plant_image"
@@ -34,7 +34,7 @@
             android:padding="12dp">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/plantNameTextView"
+                android:id="@+id/plant_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:accessibilityHeading="true"
@@ -46,7 +46,7 @@
                 tools:text="Nama Tanaman" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/descriptionTextView"
+                android:id="@+id/description_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -57,7 +57,7 @@
                 tools:text="Ini adalah tempat deksripsi gambar dari hasil scan yang pernah anda lakukan sebelumnya, maksimal 2 baris" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/timeTextView"
+                android:id="@+id/time_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"

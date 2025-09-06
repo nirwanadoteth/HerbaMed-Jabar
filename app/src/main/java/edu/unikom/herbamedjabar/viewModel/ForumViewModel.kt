@@ -68,10 +68,10 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
             if (!inFlightLikes.add(postId)) return@launch
             try {
                 withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (t: Throwable) {
-                _error.value = t.message
+            } catch (ce: CancellationException) {
+                throw ce
+            }  catch (e: Exception) {
+                _error.value = e.message
             } finally {
                 inFlightLikes.remove(postId)
             }

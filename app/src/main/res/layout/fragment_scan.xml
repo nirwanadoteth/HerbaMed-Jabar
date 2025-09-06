@@ -102,7 +102,7 @@
                                 android:textColor="?attr/colorOnSurface" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/totalScanTextView"
+                                android:id="@+id/total_scan_text_view"
                                 style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
                                 android:textColor="?attr/colorOnSecondaryContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/herbalScanTextView"
+                                android:id="@+id/herbal_scan_text_view"
                                 style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                                 android:textColor="?attr/colorOnErrorContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/nonHerbalScanTextView"
+                                android:id="@+id/non_herbal_scan_text_view"
                                 style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                     app:strokeColor="?attr/colorOutline">
 
                     <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/plantImageView"
+                        android:id="@+id/plant_image_view"
                         android:layout_width="match_parent"
                         android:layout_height="240dp"
                         android:contentDescription="@null"
@@ -206,7 +206,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/scanButton"
+                    android:id="@+id/scan_button"
                     style="@style/Widget.Material3Expressive.Button.ElevatedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
