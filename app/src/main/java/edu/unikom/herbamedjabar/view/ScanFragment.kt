@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -106,12 +107,11 @@ class ScanFragment : Fragment() {
                                     val sample = maxOf(1, maxDim / targetMaxDim)
                                     val opts =
                                         BitmapFactory.Options().apply { inSampleSize = sample }
-                                    resolver.openInputStream(uri)?.use { input ->
+                                    val decoded = resolver.openInputStream(uri)?.use { input ->
                                         BitmapFactory.decodeStream(input, null, opts)
                                     }
-                                        ?: throw IllegalStateException(
-                                            "Gagal membuka stream (decode)."
-                                        )
+                                        ?: throw IllegalStateException("Gagal membuka stream (decode).")
+                                    applyExifRotation(resolver, uri, decoded)
                                 } else {
                                     val source = ImageDecoder.createSource(resolver, uri)
                                     ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
@@ -211,6 +211,35 @@ class ScanFragment : Fragment() {
         _binding = null
         processingDialog?.dismiss()
     }
+
+    private fun applyExifRotation(
+        resolver: android.content.ContentResolver,
+        uri: android.net.Uri,
+        bmp: Bitmap
+    ): Bitmap {
+        return try {
+            resolver.openInputStream(uri)?.use { input ->
+                val exif = ExifInterface(input)
+                when (exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> bmp.rotate(90f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> bmp.rotate(180f)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> bmp.rotate(270f)
+                    else -> bmp
+                }
+            } ?: bmp
+        } catch (_: Exception) {
+            bmp
+        }
+    }
+
+    private fun Bitmap.rotate(degrees: Float): Bitmap =
+        android.graphics.Matrix().let { m ->
+            m.postRotate(degrees)
+            Bitmap.createBitmap(this, 0, 0, width, height, m, true)
+        }
 
     private fun checkCameraPermissionAndOpenCamera() {
         when {

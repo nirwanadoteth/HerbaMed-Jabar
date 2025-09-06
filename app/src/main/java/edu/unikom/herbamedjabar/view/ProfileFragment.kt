@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.ClearCredentialException
@@ -91,17 +92,12 @@ class ProfileFragment : Fragment() {
             // Panggil fungsi untuk update lencana
             updateBadgesVisibility(postCount)
 
-            if (posts.isEmpty()) {
-                binding.tvNoPosts.visibility = View.VISIBLE
-                binding.rvMyPosts.visibility = View.GONE
-            } else {
-                binding.tvNoPosts.visibility = View.GONE
-                binding.rvMyPosts.visibility = View.VISIBLE
-            }
+            binding.tvNoPosts.isVisible = posts.isEmpty()
+            binding.rvMyPosts.isVisible = posts.isNotEmpty()
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loadingIndicator.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+            binding.loadingIndicator.isVisible = isLoading == true
         }
     }
 
@@ -110,7 +106,7 @@ class ProfileFragment : Fragment() {
         val thresholds =
             listOf(BADGE_THRESHOLD_1, BADGE_THRESHOLD_2, BADGE_THRESHOLD_3, BADGE_THRESHOLD_4)
         badges.forEachIndexed { i, badge ->
-            badge.visibility = if (postCount >= thresholds[i]) View.VISIBLE else View.GONE
+            badge.isVisible = postCount >= thresholds[i]
         }
     }
 

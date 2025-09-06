@@ -2,8 +2,8 @@ package edu.unikom.herbamedjabar.adapter
 
 import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -68,18 +68,15 @@ class PostAdapter(
             binding.contentTextView.text = contentSpanned
             binding.benefitTextView.text = benefitSpanned
             binding.warningTextView.text = warningSpanned
-            binding.benefitCard.visibility =
-                if (post.benefit.isNullOrBlank()) View.GONE else View.VISIBLE
-            binding.warningCard.visibility =
-                if (post.warning.isNullOrBlank()) View.GONE else View.VISIBLE
+            binding.benefitCard.isVisible = !post.benefit.isNullOrBlank()
+            binding.warningCard.isVisible = !post.warning.isNullOrBlank()
             binding.tvLikeCount.text = "${post.likes.size}"
             val likedByMe = user?.uid?.let(post.likes::contains) == true
             binding.btnLike.isChecked = likedByMe
             binding.btnLike.setOnClickListener {
                 onLikeClicked(post.id)
             }
-            binding.btnMenuOptions.visibility =
-                if (post.userId == user?.uid) View.VISIBLE else View.GONE
+            binding.btnMenuOptions.isVisible = post.userId == user?.uid
             binding.btnMenuOptions.setOnClickListener { onDeleteClicked(post) }
             val tsMillis =
                 if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000

@@ -82,19 +82,15 @@ object MarkdownUtils {
     }
 
     /**
-     * Adds line breaks before numbered list items (e.g., "1. ", "2. ") except at the start of the
-     * string. This helps Markdown parsers correctly identify list items.
-     *
-     * @param text The input string to format.
-     * @return The formatted string with line breaks before numbered list items.
+     * Heuristically inserts a newline before inline numbered list tokens (e.g., "1. ", "2. ")
+     * when they follow common list-introducing punctuation (':', ';', ')', ']').
+     * This reduces false positives in prose while helping the parser recognize lists.
      */
     private fun addLineBreaksToNumberedList(text: String): String {
-        // Insert a newline before inline "n. " that aren't already at line start.
-        // - Not at start-of-input, not already preceded by \n, and consume optional spaces before
-        // the number.
+        // Insert a newline only after [:;)]], consuming optional spaces before the number.
         return text.replace(numberedListPattern, "\n$1")
     }
 
-    // Only after a colon/semicolon/closing bracket to reduce false positives
+    // Only after colon/semicolon/closing bracket to reduce false positives
     private val numberedListPattern by lazy { Regex("(?<=[:;\\)\\]])\\s*(\\d+\\.\\s)") }
 }

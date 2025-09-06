@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
@@ -72,8 +73,8 @@ class HistoryDetailFragment : Fragment() {
             contentTextView.text = contentSpanned
             benefitTextView.text = benefitSpanned
             warningTextView.text = warningSpanned
-            benefitCard.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
-            warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
+            benefitCard.isVisible = benefit.isNotBlank()
+            warningCard.isVisible = warning.isNotBlank()
             resultImageView.load(File(imagePath)) {
                 placeholder(R.drawable.bg_place_holder)
                 error(R.drawable.bg_place_holder)

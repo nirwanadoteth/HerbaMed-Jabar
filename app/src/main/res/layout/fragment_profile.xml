@@ -153,11 +153,13 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
+            android:accessibilityHeading="true"
             android:text="@string/my_posts_title"
             style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/badge_container" />
+            app:layout_constraintTop_toBottomOf="@id/badge_container"
+            tools:targetApi="28" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_my_posts"

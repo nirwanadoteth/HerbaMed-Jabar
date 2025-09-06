@@ -51,6 +51,7 @@
                     android:layout_marginBottom="4dp"
                     android:drawablePadding="4dp"
                     app:drawableStartCompat="@drawable/ic_clock"
+                    app:drawableTint="?attr/colorOnSurfaceVariant"
                     tools:text="2 hours ago" />
             </LinearLayout>
 
@@ -59,7 +60,6 @@
                 style="@style/Widget.Material3Expressive.Button.IconButton.Outlined"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_gravity="end"
                 android:layout_marginStart="12dp"
                 android:contentDescription="@string/cd_post_options"
                 android:tooltipText="@string/cd_post_options"
@@ -230,7 +230,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="0dp"
+                android:layout_marginStart="8dp"
                 tools:text="123" />
         </LinearLayout>
     </LinearLayout>

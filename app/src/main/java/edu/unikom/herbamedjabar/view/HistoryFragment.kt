@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,7 @@ class HistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
+
         historyAdapter = HistoryAdapter {
             (activity as? MainActivity)?.showHistoryDetailFragment(it)
         }
@@ -48,8 +50,8 @@ class HistoryFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.allHistory.observe(viewLifecycleOwner) { historyList ->
             val isEmpty = historyList.isEmpty()
-            binding.historyRecyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
-            binding.emptyHistoryImageView.visibility = if (isEmpty) View.VISIBLE else View.GONE
+            binding.historyRecyclerView.isVisible = !isEmpty
+            binding.emptyHistoryImageView.isVisible = isEmpty
             if (!isEmpty) historyAdapter.submitList(historyList)
         }
     }

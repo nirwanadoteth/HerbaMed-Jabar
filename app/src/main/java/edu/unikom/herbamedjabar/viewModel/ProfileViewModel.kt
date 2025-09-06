@@ -60,8 +60,8 @@ constructor(
                     _isLoading.value = false
                 }
                 .collectLatest { postList ->
-                    _userPosts.value = postList
                     _error.value = null
+                    _userPosts.value = postList
                     _isLoading.value = false
                 }
         }

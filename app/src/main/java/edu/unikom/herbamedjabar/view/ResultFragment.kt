@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,10 +70,9 @@ class ResultFragment : Fragment() {
                     MarkdownUtils.parseMarkdownToHtml(warning),
                     HtmlCompat.FROM_HTML_MODE_COMPACT,
                 )
-            benefitCard.visibility = if (benefit.isBlank()) View.GONE else View.VISIBLE
-            warningCard.visibility = if (warning.isBlank()) View.GONE else View.VISIBLE
-            primaryButton.visibility =
-                if (benefit.isBlank() || warning.isBlank()) View.GONE else View.VISIBLE
+            benefitCard.isVisible = benefit.isNotBlank()
+            warningCard.isVisible = warning.isNotBlank()
+            primaryButton.isVisible = benefit.isNotBlank() || warning.isNotBlank()
             val imageFile = imagePath?.let(::File)
             if (imageFile?.exists() == true) {
                 resultImageView.setImageURI(Uri.fromFile(imageFile))
@@ -122,7 +122,7 @@ class ResultFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loadingIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.loadingIndicator.isVisible = isLoading
             binding.plantCardLayout.primaryButton.isEnabled = !isLoading // Post button
             binding.plantCardLayout.secondaryButton.isEnabled = !isLoading // Scan again button
         }

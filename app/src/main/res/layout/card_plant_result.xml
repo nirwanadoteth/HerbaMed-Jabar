@@ -165,11 +165,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/primary_button"
-                style="@style/Widget.Material3Expressive.Button.ElevatedButton"
+                style="@style/Widget.Material3Expressive.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/post_to_forum"
-                app:backgroundTint="?attr/colorPrimaryContainer"
                 app:icon="@drawable/ic_plus"
                 app:iconGravity="textStart" />
         </LinearLayout>

@@ -24,6 +24,7 @@ lottie = "6.6.7"
 markdown = "0.7.3"
 material = "1.14.0-alpha04"
 roomKtx = "2.7.2"
+exifinterface = "1.4.1"
 
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
@@ -59,6 +60,7 @@ kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-cor
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 markdown = { module = "org.jetbrains:markdown", version.ref = "markdown" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

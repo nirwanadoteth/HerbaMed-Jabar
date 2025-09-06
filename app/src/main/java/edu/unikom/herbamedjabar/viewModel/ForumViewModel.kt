@@ -50,8 +50,8 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
                     _isLoading.value = false
                 }
                 .collectLatest { postList ->
-                    _posts.value = postList
                     _error.value = null
+                    _posts.value = postList
                     _isLoading.value = false
                 }
         }

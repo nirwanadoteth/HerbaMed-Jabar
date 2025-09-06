@@ -2,15 +2,16 @@ package edu.unikom.herbamedjabar.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
+import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.ActivityMainBinding
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import javax.inject.Inject
@@ -58,11 +59,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                binding.navView.visibility = View.GONE
-            } else {
-                binding.navView.visibility = View.VISIBLE
-            }
+            binding.navView.isVisible = supportFragmentManager.backStackEntryCount <= 0
         }
     }
 
@@ -82,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         setCurrentFragment(resultFragment, true)
     }
 
-    fun showHistoryDetailFragment(history: edu.unikom.herbamedjabar.data.ScanHistory) {
+    fun showHistoryDetailFragment(history: ScanHistory) {
         val historyDetailFragment = HistoryDetailFragment.newInstance(history)
         setCurrentFragment(historyDetailFragment, true)
     }

@@ -109,6 +109,11 @@ object PlantDataParser {
     private val UNIDENTIFIED_REGEX =
         Regex("""tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""", RegexOption.IGNORE_CASE)
 
+    private val HR_LINE_REGEX = Regex("""(?m)^\s*(?:[-*_]{3,})\s*$""")
+
+    private val NEG_HERBAL_REGEX = Regex("""\b(?:non|bukan|tidak)\s*herbal\b""")
+    private val HERBAL_TOKEN_REGEX = Regex("""\bherbal\b""")
+
     private fun isUnidentifiedPlant(text: String): Boolean =
         UNIDENTIFIED_REGEX.containsMatchIn(text)
 
@@ -126,14 +131,13 @@ object PlantDataParser {
     private fun parseSection(text: String, section: Section): String {
         val regex = SECTION_REGEXES[section] ?: return ""
         return regex.find(text)?.destructured?.let { (content) ->
-            content.replace(Regex("""(?m)^\s*(?:[-*_]{3,})\s*$"""), "").trim()
+            content.replace(HR_LINE_REGEX, "").trim()
         } ?: ""
     }
 
     private fun parsePlantType(text: String): Boolean {
-        val normalized = text.replace("-", " ").lowercase()
-        val negative = Regex("""\b(?:non|bukan|tidak)\s+herbal\b""").containsMatchIn(normalized)
-        if (negative) return false
-        return Regex("""\bherbal\b""").containsMatchIn(normalized)
+        val normalized = text.lowercase().replace("-", "")
+        if (NEG_HERBAL_REGEX.containsMatchIn(normalized)) return false
+        return HERBAL_TOKEN_REGEX.containsMatchIn(normalized)
     }
 }

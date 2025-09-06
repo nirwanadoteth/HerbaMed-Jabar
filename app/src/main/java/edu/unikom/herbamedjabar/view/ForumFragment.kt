@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,7 +74,7 @@ class ForumFragment : Fragment() {
         viewModel.posts.observe(viewLifecycleOwner) { posts -> postAdapter?.submitList(posts) }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loadingIndicator.visibility = if (isLoading == true) View.VISIBLE else View.GONE
+            binding.loadingIndicator.isVisible = isLoading == true
         }
     }
 

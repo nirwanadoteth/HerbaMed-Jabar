@@ -78,15 +78,13 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:hintEnabled="false"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_mail">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:id="@+id/email_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -112,10 +110,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:endIconMode="password_toggle"
                     app:endIconContentDescription="@string/password_toggle"
                     app:hintEnabled="false"
@@ -153,11 +148,11 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <View
+                    <com.google.android.material.divider.MaterialDivider
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1"
-                        android:background="?attr/colorOutline" />
+                        app:dividerColor="?attr/colorOnPrimaryContainer" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
@@ -167,11 +162,11 @@
                         android:text="@string/or"
                         android:textColor="?attr/colorOnPrimaryContainer" />
 
-                    <View
+                    <com.google.android.material.divider.MaterialDivider
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1"
-                        android:background="?attr/colorOutline" />
+                        app:dividerColor="?attr/colorOnPrimaryContainer" />
 
                 </LinearLayout>
 

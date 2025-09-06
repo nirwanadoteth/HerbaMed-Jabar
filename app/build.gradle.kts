@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.exifinterface)
     debugImplementation(libs.firebase.appcheck.debug)
 
     // Gemini API (Generative AI)
