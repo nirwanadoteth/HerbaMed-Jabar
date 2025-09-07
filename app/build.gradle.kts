@@ -1,7 +1,16 @@
+import java.io.FileInputStream
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val localPropertiesFile = rootProject.file("local.properties")
-val properties = Properties()
+val localProperties = Properties()
+
+localProperties.load(FileInputStream(localPropertiesFile))
+
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties()
+
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 plugins {
     alias(libs.plugins.android.application)
@@ -11,6 +20,7 @@ plugins {
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ktfmt)
+    alias(libs.plugins.navigation.safeargs.kotlin)
     alias(libs.plugins.room)
 }
 
@@ -28,20 +38,34 @@ android {
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
 
-        if (localPropertiesFile.exists()) {
-            localPropertiesFile.inputStream().use(properties::load)
-        }
-
-        val apiKey = properties.getProperty("apiKey", "")
+        val apiKey = localProperties["apiKey"] as String
         buildConfigField("String", "API_KEY", apiKey)
     }
 
+    signingConfigs {
+        create("config") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("debug") {
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("config")
+        }
+
+        getByName("release") {
+            isDebuggable = false
+            // need to configure proguard properly
             isMinifyEnabled = false
+            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("config")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -57,9 +81,7 @@ android {
 
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
+    room { schemaDirectory("$projectDir/schemas") }
 }
 
 dependencies {
@@ -84,7 +106,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.exifinterface)
-    debugImplementation(libs.firebase.appcheck.debug)
+    implementation(libs.firebase.appcheck.debug)
 
     // Gemini API (Generative AI)
     implementation(libs.generativeai)
@@ -106,6 +128,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
@@ -120,8 +144,4 @@ dependencies {
     implementation(libs.markdown)
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
-}
+kotlin { compilerOptions.jvmTarget.set(JvmTarget.JVM_17) }

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.ActivityAuthBinding
 import javax.inject.Inject
 
@@ -26,11 +25,6 @@ class AuthActivity : AppCompatActivity() {
         if (firebaseAuth.currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-        } else if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_container, LoginFragment())
-                .commit()
         }
     }
 }

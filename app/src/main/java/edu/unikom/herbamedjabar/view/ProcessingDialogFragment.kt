@@ -19,8 +19,6 @@ class ProcessingDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Set dialog agar fullscreen
-        setStyle(STYLE_NORMAL, android.R.style.Theme_Material_Light_NoActionBar)
     }
 
     override fun onCreateView(

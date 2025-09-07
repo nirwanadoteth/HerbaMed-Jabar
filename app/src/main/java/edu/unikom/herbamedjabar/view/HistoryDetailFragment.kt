@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import coil.load
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -40,21 +41,10 @@ class HistoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val history =
-            arguments?.let {
-                androidx.core.os.BundleCompat.getParcelable(
-                    it,
-                    EXTRA_HISTORY,
-                    ScanHistory::class.java,
-                )
-            }
-
-        if (history != null) {
-            setupView(history)
-            setupAction(history)
-        } else {
-            parentFragmentManager.popBackStack()
-        }
+        val args: HistoryDetailFragmentArgs by navArgs()
+        val history = args.history
+        setupView(history)
+        setupAction(history)
     }
 
     private fun setupView(history: ScanHistory) {
@@ -132,14 +122,5 @@ class HistoryDetailFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
-        const val EXTRA_HISTORY: String = "extra_history"
-
-        fun newInstance(history: ScanHistory): HistoryDetailFragment {
-            val fragment = HistoryDetailFragment()
-            val bundle = Bundle().apply { putParcelable(EXTRA_HISTORY, history) }
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
+    // SafeArgs handles argument passing; no need for companion object
 }

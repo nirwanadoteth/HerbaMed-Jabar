@@ -10,11 +10,11 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
-import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.util.MarkdownUtils
 import edu.unikom.herbamedjabar.viewModel.ResultViewModel
 import java.io.File
@@ -47,11 +47,12 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupUI() {
-        val imagePath = arguments?.getString(ARG_IMAGE_PATH)
-        val plantName = arguments?.getString(ARG_PLANT_NAME).orEmpty()
-        val content = arguments?.getString(ARG_CONTENT).orEmpty()
-        val benefit = arguments?.getString(ARG_BENEFIT).orEmpty()
-        val warning = arguments?.getString(ARG_WARNING).orEmpty()
+        val args: ResultFragmentArgs by navArgs()
+        val imagePath = args.imagePath
+        val plantName = args.plantName
+        val content = args.content
+        val benefit = args.benefit
+        val warning = args.warning
         val card = binding.plantCardLayout
 
         card.apply {
@@ -74,8 +75,8 @@ class ResultFragment : Fragment() {
             benefitCard.isVisible = benefit.isNotBlank()
             warningCard.isVisible = warning.isNotBlank()
             primaryButton.isVisible = benefit.isNotBlank() || warning.isNotBlank()
-            val imageFile = imagePath?.let(::File)
-            if (imageFile?.exists() == true) {
+            val imageFile = imagePath.let(::File)
+            if (imageFile.exists()) {
                 resultImageView.load(imageFile) {
                     placeholder(R.drawable.bg_place_holder)
                     error(R.drawable.bg_place_holder)
@@ -90,6 +91,7 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        val args: ResultFragmentArgs by navArgs()
         binding.topAppBar.setNavigationOnClickListener { parentFragmentManager.popBackStack() }
         binding.plantCardLayout.secondaryButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
@@ -99,12 +101,12 @@ class ResultFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
         binding.plantCardLayout.primaryButton.setOnClickListener {
-            val imagePath = arguments?.getString(ARG_IMAGE_PATH)
-            val resultText = arguments?.getString(ARG_RESULT_TEXT)?.trim()
-            val plantName = arguments?.getString(ARG_PLANT_NAME)?.trim().orEmpty()
+            val imagePath = args.imagePath
+            val resultText = args.resultText.trim()
+            val plantName = args.plantName.trim()
 
-            val imageFile = imagePath?.let(::File)
-            if (imageFile?.exists() != true || resultText.isNullOrBlank() || plantName.isBlank()) {
+            val imageFile = imagePath.let(::File)
+            if (!imageFile.exists() || resultText.isBlank() || plantName.isBlank()) {
                 Toast.makeText(
                         requireContext(),
                         getString(R.string.error_incomplete_post_data),
@@ -161,27 +163,5 @@ class ResultFragment : Fragment() {
         _binding = null
     }
 
-    companion object {
-        private const val ARG_IMAGE_PATH = "image_path"
-        private const val ARG_RESULT_TEXT = "result_text"
-        private const val ARG_PLANT_NAME = "plant_name"
-        private const val ARG_BENEFIT = "benefit"
-        private const val ARG_WARNING = "warning"
-        private const val ARG_CONTENT = "content"
-
-        fun newInstance(args: AnalysisResult): ResultFragment {
-            val fragment = ResultFragment()
-            val bundle =
-                Bundle().apply {
-                    putString(ARG_IMAGE_PATH, args.imagePath)
-                    putString(ARG_RESULT_TEXT, args.resultText)
-                    putString(ARG_PLANT_NAME, args.plantName)
-                    putString(ARG_BENEFIT, args.benefit)
-                    putString(ARG_WARNING, args.warning)
-                    putString(ARG_CONTENT, args.content)
-                }
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
+    // SafeArgs handles argument passing; no need for companion object
 }

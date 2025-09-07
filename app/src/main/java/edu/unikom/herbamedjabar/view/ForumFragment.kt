@@ -44,7 +44,7 @@ class ForumFragment : Fragment() {
 
         binding.scanButton.setOnClickListener {
             val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.nav_view)
-            bottomNav?.selectedItemId = R.id.navigation_scan
+            bottomNav?.selectedItemId = R.id.scanFragment
         }
     }
 

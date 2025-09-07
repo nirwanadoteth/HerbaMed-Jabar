@@ -6,8 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import com.google.android.material.navigation.NavigationBarView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -41,40 +42,13 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-        binding.navView.setOnItemSelectedListener { item ->
-            val fragment =
-                when (item.itemId) {
-                    R.id.navigation_scan -> ScanFragment()
-                    R.id.navigation_forum -> ForumFragment()
-                    R.id.navigation_history -> HistoryFragment()
-                    R.id.navigation_profile -> ProfileFragment()
-                    else -> null
-                }
-            fragment?.let {
-                setCurrentFragment(it, false)
-                true
-            } ?: false
-        }
-        if (savedInstanceState == null) {
-            binding.navView.selectedItemId = R.id.navigation_forum
-        }
 
-        supportFragmentManager.addOnBackStackChangedListener {
-            binding.navView.isVisible = supportFragmentManager.backStackEntryCount <= 0
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        NavigationBarView.OnItemSelectedListener { item ->
+            false // handled by NavigationUI
         }
-    }
-
-    private fun setCurrentFragment(fragment: Fragment, addToBackStack: Boolean) {
-        val transaction =
-            supportFragmentManager
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(R.id.nav_host_fragment, fragment)
-
-        if (addToBackStack) {
-            transaction.addToBackStack(null)
-        }
-
-        transaction.commit()
+        NavigationUI.setupWithNavController(binding.navView, navController)
     }
 }

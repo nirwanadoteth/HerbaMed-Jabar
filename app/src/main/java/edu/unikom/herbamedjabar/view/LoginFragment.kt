@@ -15,6 +15,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -60,8 +61,10 @@ class LoginFragment : Fragment() {
                 binding.emailEditText.text.toString().trim().lowercase(java.util.Locale.ROOT)
             val password = binding.passwordEditText.text.toString()
             if (email.isEmpty() || password.isEmpty()) {
-                binding.emailInputLayout.error = if (email.isEmpty()) getString(R.string.error_email_required) else null
-                binding.passwordInputLayout.error = if (password.isEmpty()) getString(R.string.error_password_required) else null
+                binding.emailInputLayout.error =
+                    if (email.isEmpty()) getString(R.string.error_email_required) else null
+                binding.passwordInputLayout.error =
+                    if (password.isEmpty()) getString(R.string.error_password_required) else null
             } else {
                 binding.emailInputLayout.error = null
                 binding.passwordInputLayout.error = null
@@ -72,12 +75,7 @@ class LoginFragment : Fragment() {
         binding.googleLoginButton.setOnClickListener { launchGoogleSignIn() }
 
         binding.registerTextView.setOnClickListener {
-            // Navigasi ke RegisterFragment
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.fragment_container, RegisterFragment())
-                .addToBackStack(null) // Agar bisa kembali ke login
-                .commit()
+            findNavController(this).navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 
@@ -115,10 +113,11 @@ class LoginFragment : Fragment() {
             } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")
                 Toast.makeText(
-                    requireContext(),
-                    getString(R.string.credential_error_generic),
-                    Toast.LENGTH_LONG
-                ).show()
+                        requireContext(),
+                        getString(R.string.credential_error_generic),
+                        Toast.LENGTH_LONG,
+                    )
+                    .show()
             }
         }
     }

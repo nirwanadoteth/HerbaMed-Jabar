@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/forumFragment">
+
+    <fragment
+        android:id="@+id/scanFragment"
+        android:name="edu.unikom.herbamedjabar.view.ScanFragment"
+        android:label="Scan">
+        <action
+            android:id="@+id/action_scanFragment_to_resultFragment"
+            app:destination="@id/resultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/forumFragment"
+        android:name="edu.unikom.herbamedjabar.view.ForumFragment"
+        android:label="Forum" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="edu.unikom.herbamedjabar.view.HistoryFragment"
+        android:label="History">
+        <action
+            android:id="@+id/action_historyFragment_to_historyDetailFragment"
+            app:destination="@id/historyDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="edu.unikom.herbamedjabar.view.ResultFragment"
+        android:label="Result">
+        <argument
+            android:name="imagePath"
+            app:argType="string" />
+        <argument
+            android:name="resultText"
+            app:argType="string" />
+        <argument
+            android:name="plantName"
+            app:argType="string" />
+        <argument
+            android:name="benefit"
+            app:argType="string" />
+        <argument
+            android:name="warning"
+            app:argType="string" />
+        <argument
+            android:name="content"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyDetailFragment"
+        android:name="edu.unikom.herbamedjabar.view.HistoryDetailFragment"
+        android:label="History Detail">
+        <argument
+            android:name="history"
+            app:argType="edu.unikom.herbamedjabar.data.ScanHistory" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="edu.unikom.herbamedjabar.view.ProfileFragment"
+        android:label="Profile" />
+</navigation>

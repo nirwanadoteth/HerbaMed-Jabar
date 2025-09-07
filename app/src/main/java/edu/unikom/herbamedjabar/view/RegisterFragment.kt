@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentRegisterBinding
@@ -49,7 +50,9 @@ class RegisterFragment : Fragment() {
             val confirmPassword = binding.confirmPasswordEditText.text.toString()
             viewModel.registerUser(name, email, password, confirmPassword)
         }
-        binding.loginTextView.setOnClickListener { parentFragmentManager.popBackStack() }
+        binding.loginTextView.setOnClickListener {
+            findNavController(this).navigate(R.id.action_registerFragment_to_loginFragment)
+        }
     }
 
     private fun observeViewModel() {

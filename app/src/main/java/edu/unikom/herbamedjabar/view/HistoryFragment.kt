@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.HistoryAdapter
 import edu.unikom.herbamedjabar.databinding.FragmentHistoryBinding
 import edu.unikom.herbamedjabar.viewModel.HistoryViewModel
@@ -40,13 +40,10 @@ class HistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        historyAdapter = HistoryAdapter {
-            val historyDetailFragment = HistoryDetailFragment.newInstance(it)
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.nav_host_fragment, historyDetailFragment)
-                .addToBackStack(null)
-                .commit()
+        historyAdapter = HistoryAdapter { history ->
+            val directions =
+                HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment(history)
+            findNavController().navigate(directions)
         }
         binding.historyRecyclerView.adapter = historyAdapter
         binding.historyRecyclerView.setHasFixedSize(true)

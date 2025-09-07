@@ -18,6 +18,7 @@ import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentScanBinding
@@ -180,13 +181,16 @@ class ScanFragment : Fragment() {
         // Observe navigations
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
-                val resultFragment = ResultFragment.newInstance(it)
-                activity
-                    ?.supportFragmentManager
-                    ?.beginTransaction()
-                    ?.replace(R.id.nav_host_fragment, resultFragment)
-                    ?.addToBackStack(null)
-                    ?.commit()
+                val directions =
+                    ScanFragmentDirections.actionScanFragmentToResultFragment(
+                        imagePath = it.imagePath,
+                        resultText = it.resultText,
+                        plantName = it.plantName,
+                        benefit = it.benefit,
+                        warning = it.warning,
+                        content = it.content,
+                    )
+                findNavController().navigate(directions)
                 viewModel.onNavigationComplete()
             }
         }
