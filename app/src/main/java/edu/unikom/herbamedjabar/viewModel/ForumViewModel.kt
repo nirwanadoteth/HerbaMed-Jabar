@@ -85,7 +85,7 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
-                _error.value = e.message
+                _error.value = e.message ?: "Unexpected error"
             }
         }
     }

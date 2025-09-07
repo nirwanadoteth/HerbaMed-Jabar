@@ -42,6 +42,7 @@ class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) 
 
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState> = _authState
+    private val opInProgress = java.util.concurrent.atomic.AtomicBoolean(false)
 
     fun loginUser(email: String, password: String) {
         val emailT = email.trim()
@@ -127,7 +128,7 @@ class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) 
 
     private inline fun runAuthOp(opName: String, crossinline block: suspend () -> Unit) =
         viewModelScope.launch {
-            if (_authState.value == AuthState.Loading) {
+            if (!opInProgress.compareAndSet(false, true)) {
                 Log.d(TAG, "$opName: Ignored because another auth op is in progress")
                 return@launch
             }
@@ -144,6 +145,8 @@ class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) 
             } catch (e: Exception) {
                 Log.w(TAG, "$opName: Error", e)
                 _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
+            } finally {
+                opInProgress.set(false)
             }
         }
 

@@ -94,12 +94,11 @@ constructor(
                 return it
             }
             result.onFailure { e ->
+                savedImagePath?.let { runCatching { File(it).delete() } }
                 if (
                     e is kotlinx.coroutines.CancellationException &&
-                        e !is kotlinx.coroutines.TimeoutCancellationException
-                )
-                    throw e
-                savedImagePath?.let { runCatching { File(it).delete() } }
+                    e !is kotlinx.coroutines.TimeoutCancellationException
+                ) throw e
                 lastError = e
             }
             if (attempt < MAX_RETRIES - 1) {
@@ -121,8 +120,11 @@ constructor(
 
     private fun Bitmap.downscaled(maxDim: Int = 1280): Bitmap {
         val scale = maxOf(width, height).toFloat() / maxDim
-        return if (scale > 1f) this.scale((width / scale).toInt(), (height / scale).toInt())
-        else this
+        return if (scale > 1f) {
+            val newW = maxOf(1, kotlin.math.round(width / scale).toInt())
+            val newH = maxOf(1, kotlin.math.round(height / scale).toInt())
+            this.scale(newW, newH, /* filter = */ true)
+        } else this
     }
 
     private suspend fun saveBitmapToFile(bitmap: Bitmap): String {

@@ -97,7 +97,7 @@ constructor(
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
-                _error.value = e.message
+                _error.value = e.message ?: "Unexpected error"
             }
         }
     }

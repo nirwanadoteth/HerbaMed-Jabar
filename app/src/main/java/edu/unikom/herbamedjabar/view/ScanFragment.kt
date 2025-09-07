@@ -232,6 +232,7 @@ class ScanFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         processingDialog?.dismiss()
+        processingDialog = null
     }
 
     private fun applyExifRotation(

@@ -29,8 +29,8 @@ import kotlinx.coroutines.launch
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
-    private val binding
-        get() = _binding!!
+    private val binding: FragmentLoginBinding
+        get() = _binding ?: error("Binding is only valid between onCreateView and onDestroyView")
 
     private val viewModel: AuthViewModel by viewModels()
 
@@ -60,13 +60,11 @@ class LoginFragment : Fragment() {
                 binding.emailEditText.text.toString().trim().lowercase(java.util.Locale.ROOT)
             val password = binding.passwordEditText.text.toString()
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(
-                        requireContext(),
-                        getString(R.string.login_empty_fields),
-                        Toast.LENGTH_SHORT,
-                    )
-                    .show()
+                binding.emailInputLayout.error = if (email.isEmpty()) getString(R.string.error_email_required) else null
+                binding.passwordInputLayout.error = if (password.isEmpty()) getString(R.string.error_password_required) else null
             } else {
+                binding.emailInputLayout.error = null
+                binding.passwordInputLayout.error = null
                 viewModel.loginUser(email, password)
             }
         }
@@ -116,6 +114,11 @@ class LoginFragment : Fragment() {
                 Log.w(TAG, "NoCredentialException: ${e.localizedMessage}")
             } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.credential_error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -148,6 +151,8 @@ class LoginFragment : Fragment() {
             binding.emailEditText.isEnabled = !loading
             binding.passwordEditText.isEnabled = !loading
             binding.registerTextView.isEnabled = !loading
+            binding.emailInputLayout.isEnabled = !loading
+            binding.passwordInputLayout.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {

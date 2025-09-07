@@ -46,7 +46,7 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
             binding.apply {
                 plantNameTextView.text = history.plantName
 
-                val key = "history:content:${history.id}:fmt0:hash=${history.content.hashCode()}"
+                val key = "history:${history.id}:content:${history.content.hashCode()}"
                 val spanned = MarkdownUtils.parseMarkdownToSpanned(history.content, key)
                 descriptionTextView.text = spanned
 
@@ -70,8 +70,15 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
                     error(R.drawable.bg_place_holder)
                     fallback(R.drawable.bg_place_holder)
                 }
+                val ctx = binding.root.context
+                val cdText = history.plantName.ifBlank {
+                    ctx.getString(R.string.cd_plant_image)
+                }
                 historyImageView.contentDescription =
-                    binding.root.context.getString(R.string.cd_plant_image_of, history.plantName)
+                    if (history.plantName.isBlank())
+                        cdText
+                    else
+                        ctx.getString(R.string.cd_plant_image_of, history.plantName)
             }
         }
     }

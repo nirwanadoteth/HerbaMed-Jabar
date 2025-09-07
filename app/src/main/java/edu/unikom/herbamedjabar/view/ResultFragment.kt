@@ -103,7 +103,8 @@ class ResultFragment : Fragment() {
             val resultText = arguments?.getString(ARG_RESULT_TEXT)?.trim()
             val plantName = arguments?.getString(ARG_PLANT_NAME)?.trim().orEmpty()
 
-            if (imagePath == null || resultText.isNullOrBlank() || plantName.isBlank()) {
+            val imageFile = imagePath?.let(::File)
+            if (imageFile?.exists() != true || resultText.isNullOrBlank() || plantName.isBlank()) {
                 Toast.makeText(
                         requireContext(),
                         getString(R.string.error_incomplete_post_data),
@@ -113,7 +114,7 @@ class ResultFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            val imageUri = Uri.fromFile(File(imagePath))
+            val imageUri = Uri.fromFile(imageFile)
 
             viewModel.createPostFromScan(
                 imageUri = imageUri,

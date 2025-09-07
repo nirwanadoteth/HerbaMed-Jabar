@@ -33,11 +33,15 @@ object PlantDataParser {
      * @param text The Markdown text to parse.
      * @return PlantData containing parsed fields.
      */
-    fun parsePlantData(text: String): PlantData {
+    fun parsePlantData(
+        text: String,
+        unidentifiedTitle: String = "Tanaman tidak dapat di-identifikasi",
+        unidentifiedDesc: String = "Pastikan gambar jelas dan fokus pada satu jenis tanaman."
+    ): PlantData {
         if (isUnidentifiedPlant(text)) {
             return PlantData(
-                plantName = "Tanaman tidak dapat di-identifikasi",
-                description = "Pastikan gambar jelas dan fokus pada satu jenis tanaman.",
+                plantName = unidentifiedTitle,
+                description = unidentifiedDesc,
                 benefit = "",
                 warning = "",
                 isHerbal = false,
@@ -124,12 +128,14 @@ object PlantDataParser {
             options = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE),
         )
 
+    private val LEADING_MARKERS_REGEX = Regex("""^[#*\s🌿]+""")
+
     private fun isUnidentifiedPlant(text: String): Boolean =
         UNIDENTIFIED_REGEX.containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
         return NAME_PATTERN.find(text)?.destructured?.let { (name) -> name.trim() }
-            ?: text.lineSequence().firstOrNull()?.replace(Regex("""^[#*\s🌿]+"""), "")?.trim()
+            ?: text.lineSequence().firstOrNull()?.replace(LEADING_MARKERS_REGEX, "")?.trim()
             ?: ""
     }
 

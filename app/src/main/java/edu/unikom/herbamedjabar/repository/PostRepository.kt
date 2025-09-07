@@ -23,13 +23,15 @@ import kotlinx.coroutines.withTimeout
 @Singleton
 class PostRepository @Inject constructor(private val firestore: FirebaseFirestore) {
 
-    data class UploadResult(val url: String, val publicId: String?)
+    private data class UploadResult(val url: String, val publicId: String?)
 
-    class UploadException(val code: Int?, message: String) : Exception(message)
+    private class UploadException(val code: Int?, message: String) : Exception(message)
 
     fun getPosts(): Flow<List<Post>> = callbackFlow {
         val collection =
-            firestore.collection("posts").orderBy("timestamp", Query.Direction.DESCENDING)
+            firestore.collection("posts")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(QUERY_LIMIT)
 
         val listener =
             collection.addSnapshotListener { snapshot, error ->

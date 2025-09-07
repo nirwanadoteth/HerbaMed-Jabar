@@ -62,6 +62,10 @@ class RegisterFragment : Fragment() {
             binding.passwordEditText.isEnabled = !loading
             binding.confirmPasswordEditText.isEnabled = !loading
             binding.loginTextView.isEnabled = !loading
+            binding.nameInputLayout.isEnabled = !loading
+            binding.emailInputLayout.isEnabled = !loading
+            binding.passwordInputLayout.isEnabled = !loading
+            binding.confirmPasswordInputLayout.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {

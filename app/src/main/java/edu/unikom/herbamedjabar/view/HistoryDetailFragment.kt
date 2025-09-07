@@ -69,9 +69,9 @@ class HistoryDetailFragment : Fragment() {
         card.apply {
             plantNameTextView.text = plantName
 
-            val key = "history:content:${historyId}:fmt0:hash=${content.hashCode()}"
-            val benefitKey = "history:benefit:${historyId}:fmt0:hash=${benefit.hashCode()}"
-            val warningKey = "history:warning:${historyId}:fmt0:hash=${warning.hashCode()}"
+            val key = "history:${historyId}:content:${content.hashCode()}"
+            val benefitKey = "history:${historyId}:benefit:${benefit.hashCode()}"
+            val warningKey = "history:${historyId}:warning:${warning.hashCode()}"
 
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(content, key)
             val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(benefit, benefitKey, true)
@@ -82,7 +82,7 @@ class HistoryDetailFragment : Fragment() {
             warningTextView.text = warningSpanned
             benefitCard.isVisible = benefit.isNotBlank()
             warningCard.isVisible = warning.isNotBlank()
-            resultImageView.load(File(imagePath)) {
+            resultImageView.load(imagePath.let(::File)) {
                 placeholder(R.drawable.bg_place_holder)
                 error(R.drawable.bg_place_holder)
                 fallback(R.drawable.bg_place_holder)
