@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 class AnalyzePlantUseCase @Inject constructor(private val plantRepository: PlantRepository) {
     suspend operator fun invoke(bitmap: Bitmap): Result<AnalysisResult> {
         return try {
-            val prompt = prompt.trimIndent()
+            val prompt = PLANT_ANALYSIS_PROMPT
 
             val response =
                 withContext(Dispatchers.IO) { plantRepository.analyzePlant(bitmap, prompt) }
@@ -26,8 +26,10 @@ class AnalyzePlantUseCase @Inject constructor(private val plantRepository: Plant
         }
     }
 
-    private val prompt =
-        """
+    companion object {
+
+        private val PLANT_ANALYSIS_PROMPT: String =
+            """
             Anda adalah seorang ahli botani dan herbalis berpengalaman. Tugas Anda adalah menganalisis gambar tanaman yang diberikan dan memberikan informasi yang akurat, terstruktur, dan mudah dipahami dalam format Markdown.
 
             **PENTING:**
@@ -69,5 +71,6 @@ class AnalyzePlantUseCase @Inject constructor(private val plantRepository: Plant
             Herbal | Non-Herbal
 
             ---
-        """
+        """.trimIndent()
+    }
 }

@@ -69,14 +69,18 @@ object MarkdownUtils {
             append("|mode:")
             append(htmlMode)
         }
+        // Fast path: check under lock, then compute outside the lock
         synchronized(spannedCache) {
-            val cached = spannedCache[compositeKey]
-            if (cached != null) return cached
-            val html = parseMarkdownToHtml(input, formatList)
-            val spanned = HtmlCompat.fromHtml(html, htmlMode)
+            spannedCache[compositeKey]
+        }?.let { return it }
+        val html = parseMarkdownToHtml(input, formatList)
+        val spanned = HtmlCompat.fromHtml(html, htmlMode)
+        // Second check before inserting to avoid duplicate work
+        synchronized(spannedCache) {
+            spannedCache[compositeKey]?.let { return it }
             spannedCache.put(compositeKey, spanned)
-            return spanned
         }
+        return spanned
     }
 
     /**

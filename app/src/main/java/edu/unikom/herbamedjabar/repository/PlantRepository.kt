@@ -1,7 +1,8 @@
 package edu.unikom.herbamedjabar.repository
 
-import android.app.Application
+import android.content.Context
 import android.graphics.Bitmap
+import androidx.core.content.ContextCompat.getString
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import edu.unikom.herbamedjabar.R
@@ -41,7 +42,7 @@ class PlantRepositoryImpl
 constructor(
     private val generativeModel: GenerativeModel,
     private val scanHistoryDao: ScanHistoryDao,
-    private val application: Application,
+    private val context: Context,
 ) : PlantRepository {
 
     companion object {
@@ -65,7 +66,7 @@ constructor(
                 val response =
                     withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
                 val resultText = response.text?.trim().orEmpty()
-                check(resultText.isNotBlank()) { application.getString(R.string.ai_text_empty) }
+                check(resultText.isNotBlank()) { getString(context, R.string.ai_text_empty) }
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
                 val isHerbal = parsedData.isHerbal
@@ -103,7 +104,7 @@ constructor(
                 delayTime = (delayTime * 2).coerceAtMost(MAX_BACKOFF_MS)
             }
         }
-        throw lastError ?: error(application.getString(R.string.analysis_failed_after_retries))
+        throw lastError ?: error(getString(context, R.string.analysis_failed_after_retries))
     }
 
     override fun getAllHistory(): Flow<List<ScanHistory>> {
@@ -116,15 +117,15 @@ constructor(
 
     private suspend fun saveBitmapToFile(bitmap: Bitmap): String {
         return withContext(Dispatchers.IO) {
-            val wrapper = application.applicationContext
-            val directory = wrapper.getDir("images", android.content.Context.MODE_PRIVATE)
+            val wrapper = context
+            val directory = wrapper.getDir("images", Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
             try {
                 FileOutputStream(file).buffered().use { outputStream ->
                     check(
                         bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)
                     ) {
-                        application.getString(R.string.compression_failed)
+                        getString(context, R.string.compression_failed)
                     }
                     outputStream.flush()
                 }

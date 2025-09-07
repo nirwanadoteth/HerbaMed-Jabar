@@ -75,6 +75,12 @@ class PostAdapter(
             binding.btnLike.isChecked = likedByMe
             binding.btnLike.setOnClickListener {
                 onLikeClicked(post.id)
+                // Immediate a11y feedback; state will be reconciled on next bind.
+                binding.btnLike.contentDescription =
+                    if (binding.btnLike.isChecked)
+                        binding.root.context.getString(R.string.cd_liked)
+                    else
+                        binding.root.context.getString(R.string.cd_like)
             }
             binding.btnMenuOptions.isVisible = post.userId == user?.uid
             binding.btnMenuOptions.setOnClickListener { onDeleteClicked(post) }
@@ -91,19 +97,6 @@ class PostAdapter(
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)
             binding.ivPostImage.contentDescription =
                 binding.root.context.getString(R.string.cd_plant_image_of, post.plantName)
-            binding.btnLike.contentDescription =
-                if (likedByMe) {
-                    binding.root.context.getString(R.string.cd_liked)
-                } else {
-                    binding.root.context.getString(R.string.cd_like)
-                }
-            binding.btnLike.addOnCheckedChangeListener { _, isChecked ->
-                binding.btnLike.contentDescription =
-                    if (isChecked)
-                        binding.root.context.getString(R.string.cd_liked)
-                    else
-                        binding.root.context.getString(R.string.cd_like)
-            }
         }
     }
 

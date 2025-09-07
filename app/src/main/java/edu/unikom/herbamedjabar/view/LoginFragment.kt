@@ -125,7 +125,7 @@ class LoginFragment : Fragment() {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
             } catch (e: IllegalArgumentException) {
-                Toast.makeText(requireContext(), "Token Google tidak valid.", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), getString(R.string.google_token_invalid), Toast.LENGTH_SHORT)
                     .show()
                 Log.w(TAG, "Invalid Google ID token credential", e)
             }

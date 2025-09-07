@@ -115,5 +115,10 @@ constructor(
         signOut()
     }
 
+    override fun onCleared() {
+        userPostsJob?.cancel()
+        super.onCleared()
+    }
+
     companion object { const val AUTH_REQUIRED_ERROR = "auth_required" }
 }

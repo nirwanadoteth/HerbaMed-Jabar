@@ -11,6 +11,7 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import edu.unikom.herbamedjabar.BuildConfig
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
@@ -61,8 +62,8 @@ object AppModule {
     fun providePlantRepository(
         generativeModel: GenerativeModel,
         scanHistoryDao: ScanHistoryDao,
-        app: Application,
+        @ApplicationContext context: android.content.Context,
     ): PlantRepository {
-        return PlantRepositoryImpl(generativeModel, scanHistoryDao, app)
+        return PlantRepositoryImpl(generativeModel, scanHistoryDao, context)
     }
 }

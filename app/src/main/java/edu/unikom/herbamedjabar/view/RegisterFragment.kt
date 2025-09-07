@@ -14,6 +14,7 @@ import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentRegisterBinding
 import edu.unikom.herbamedjabar.viewModel.AuthState
 import edu.unikom.herbamedjabar.viewModel.AuthViewModel
+import java.util.Locale
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -43,7 +44,7 @@ class RegisterFragment : Fragment() {
     private fun setupClickListeners() {
         binding.registerButton.setOnClickListener {
             val name = binding.nameEditText.text.toString().trim()
-            val email = binding.emailEditText.text.toString().trim().lowercase()
+            val email = binding.emailEditText.text.toString().trim().lowercase(Locale.ROOT)
             val password = binding.passwordEditText.text.toString()
             val confirmPassword = binding.confirmPasswordEditText.text.toString()
             viewModel.registerUser(name, email, password, confirmPassword)
