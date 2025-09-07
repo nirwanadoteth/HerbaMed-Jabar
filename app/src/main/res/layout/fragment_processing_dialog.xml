@@ -23,11 +23,11 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/title_text_view"
-        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/processing_dialog_title"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
         app:layout_constraintBottom_toTopOf="@id/subtitle_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,11 +35,11 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/subtitle_text_view"
-        style="@style/TextAppearance.Material3.BodySmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/processing_dialog_subtitle"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
         app:layout_constraintBottom_toTopOf="@id/progress_indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,11 +65,11 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/progress_text_view"
-        style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:accessibilityLiveRegion="polite"
+        android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/progress_indicator"
         app:layout_constraintStart_toStartOf="@id/progress_indicator"

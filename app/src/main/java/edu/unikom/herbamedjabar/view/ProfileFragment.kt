@@ -60,10 +60,12 @@ class ProfileFragment : Fragment() {
                         .setTitle(getString(R.string.delete_post_title))
                         .setMessage(getString(R.string.delete_post_message))
                         .setNegativeButton(getString(R.string.action_cancel), null)
-                        .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
+                        .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
+                            viewModel.deletePost(post)
+                        }
                         .show()
                 },
-                currentUser = viewModel.getCurrentUser()
+                currentUser = viewModel.getCurrentUser(),
             )
         postAdapter = adapterObj
         binding.rvMyPosts.apply {
@@ -81,6 +83,7 @@ class ProfileFragment : Fragment() {
                     crossfade(true)
                     placeholder(R.drawable.avatar)
                     error(R.drawable.avatar)
+                    fallback(R.drawable.avatar)
                 }
             }
         }
@@ -105,9 +108,7 @@ class ProfileFragment : Fragment() {
         val badges = listOf(binding.badge1, binding.badge2, binding.badge3, binding.badge4)
         val thresholds =
             listOf(BADGE_THRESHOLD_1, BADGE_THRESHOLD_2, BADGE_THRESHOLD_3, BADGE_THRESHOLD_4)
-        badges.forEachIndexed { i, badge ->
-            badge.isVisible = postCount >= thresholds[i]
-        }
+        badges.forEachIndexed { i, badge -> badge.isVisible = postCount >= thresholds[i] }
     }
 
     private fun handleLogout() {

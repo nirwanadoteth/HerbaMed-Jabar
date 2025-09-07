@@ -3,7 +3,6 @@ package edu.unikom.herbamedjabar.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -36,8 +34,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (auth.currentUser == null) {
-            val intent = Intent(this, AuthActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            val intent =
+                Intent(this, AuthActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
             finish()
             return
@@ -67,7 +66,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCurrentFragment(fragment: Fragment, addToBackStack: Boolean) {
         val transaction =
-            supportFragmentManager.beginTransaction().setReorderingAllowed(true).replace(R.id.nav_host_fragment, fragment)
+            supportFragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.nav_host_fragment, fragment)
 
         if (addToBackStack) {
             transaction.addToBackStack(null)
@@ -75,5 +77,4 @@ class MainActivity : AppCompatActivity() {
 
         transaction.commit()
     }
-
 }

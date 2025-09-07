@@ -27,11 +27,11 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title_text_view"
-            style="@style/TextAppearance.Material3.TitleLarge.Emphasized"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/login_title"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge.Emphasized"
             app:layout_constraintBottom_toTopOf="@id/subtitle_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,11 +39,11 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/subtitle_text_view"
-            style="@style/TextAppearance.Material3.TitleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/login_subtitle"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_text_view" />
@@ -66,12 +66,12 @@
                 android:padding="16dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/TextAppearance.Material3.LabelLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
                     android:labelFor="@id/email_edit_text"
-                    android:text="@string/email" />
+                    android:text="@string/email"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/email_input_layout"
@@ -98,12 +98,12 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/TextAppearance.Material3.LabelLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
                     android:labelFor="@id/password_edit_text"
-                    android:text="@string/password" />
+                    android:text="@string/password"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/password_input_layout"
@@ -160,7 +160,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:text="@string/or"
-                        android:textColor="?attr/colorOnPrimaryContainer" />
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <com.google.android.material.divider.MaterialDivider
                         android:layout_width="0dp"
@@ -190,14 +190,13 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.BodyMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/no_account" />
+                        android:text="@string/no_account"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/register_text_view"
-                        style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="true"
@@ -207,6 +206,7 @@
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="12dp"
                         android:text="@string/register_here"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                         android:textColor="?attr/colorPrimary" />
                 </LinearLayout>
 

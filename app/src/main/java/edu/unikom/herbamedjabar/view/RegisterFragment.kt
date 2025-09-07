@@ -57,14 +57,20 @@ class RegisterFragment : Fragment() {
             val loading = state is AuthState.Loading
             binding.loadingIndicator.isVisible = loading
             binding.registerButton.isEnabled = !loading
+            binding.nameEditText.isEnabled = !loading
+            binding.emailEditText.isEnabled = !loading
+            binding.passwordEditText.isEnabled = !loading
+            binding.confirmPasswordEditText.isEnabled = !loading
+            binding.loginTextView.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {
                     Toast.makeText(
-                        requireContext(),
-                        getString(R.string.registration_success),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                            requireContext(),
+                            getString(R.string.registration_success),
+                            Toast.LENGTH_SHORT,
+                        )
+                        .show()
                     // Pindah ke MainActivity dan bersihkan back stack
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

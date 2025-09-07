@@ -47,22 +47,31 @@ class ScanFragment : Fragment() {
                     if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                         // Permanently denied: guide user to Settings
                         Toast.makeText(
-                            requireContext(),
-                            getString(R.string.camera_permission_denied_permanent),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        val intent = android.content.Intent(
-                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            android.net.Uri.fromParts("package", requireContext().packageName, null)
-                        ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                requireContext(),
+                                getString(R.string.camera_permission_denied_permanent),
+                                Toast.LENGTH_LONG,
+                            )
+                            .show()
+                        val intent =
+                            android.content
+                                .Intent(
+                                    android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    android.net.Uri.fromParts(
+                                        "package",
+                                        requireContext().packageName,
+                                        null,
+                                    ),
+                                )
+                                .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
                     } else {
                         // Temporarily denied: just inform
                         Toast.makeText(
-                            requireContext(),
-                            getString(R.string.camera_permission_denied),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                                requireContext(),
+                                getString(R.string.camera_permission_denied),
+                                Toast.LENGTH_SHORT,
+                            )
+                            .show()
                     }
                 }
             }
@@ -104,13 +113,17 @@ class ScanFragment : Fragment() {
                                     val maxDim =
                                         maxOf(bounds.outWidth, bounds.outHeight).takeIf { it > 0 }
                                             ?: targetMaxDim
-                                    val sample = maxOf(1, (maxDim + targetMaxDim - 1) / targetMaxDim)
+                                    val sample =
+                                        maxOf(1, (maxDim + targetMaxDim - 1) / targetMaxDim)
                                     val opts =
                                         BitmapFactory.Options().apply { inSampleSize = sample }
-                                    val decoded = resolver.openInputStream(uri)?.use { input ->
-                                        BitmapFactory.decodeStream(input, null, opts)
-                                    }
-                                        ?: throw IllegalStateException("Gagal membuka stream (decode).")
+                                    val decoded =
+                                        resolver.openInputStream(uri)?.use { input ->
+                                            BitmapFactory.decodeStream(input, null, opts)
+                                        }
+                                            ?: throw IllegalStateException(
+                                                "Gagal membuka stream (decode)."
+                                            )
                                     applyExifRotation(resolver, uri, decoded)
                                 } else {
                                     val source = ImageDecoder.createSource(resolver, uri)
@@ -129,10 +142,11 @@ class ScanFragment : Fragment() {
                         viewModel.analyzeImage(bitmap)
                     } catch (_: Exception) {
                         Toast.makeText(
-                            ctx,
-                            getString(R.string.error_image_load_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                                ctx,
+                                getString(R.string.error_image_load_failed),
+                                Toast.LENGTH_SHORT,
+                            )
+                            .show()
                     }
                 }
             }
@@ -167,7 +181,9 @@ class ScanFragment : Fragment() {
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
                 val resultFragment = ResultFragment.newInstance(it)
-                activity?.supportFragmentManager?.beginTransaction()
+                activity
+                    ?.supportFragmentManager
+                    ?.beginTransaction()
                     ?.replace(R.id.nav_host_fragment, resultFragment)
                     ?.addToBackStack(null)
                     ?.commit()
@@ -221,15 +237,17 @@ class ScanFragment : Fragment() {
     private fun applyExifRotation(
         resolver: android.content.ContentResolver,
         uri: android.net.Uri,
-        bmp: Bitmap
+        bmp: Bitmap,
     ): Bitmap {
         return try {
             resolver.openInputStream(uri)?.use { input ->
                 val exif = ExifInterface(input)
-                when (exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL
-                )) {
+                when (
+                    exif.getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL,
+                    )
+                ) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> bmp.rotate(90f)
                     ExifInterface.ORIENTATION_ROTATE_180 -> bmp.rotate(180f)
                     ExifInterface.ORIENTATION_ROTATE_270 -> bmp.rotate(270f)

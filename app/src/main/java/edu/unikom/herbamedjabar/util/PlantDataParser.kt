@@ -107,17 +107,22 @@ object PlantDataParser {
         )
 
     private val UNIDENTIFIED_REGEX =
-        Regex("""tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""", RegexOption.IGNORE_CASE)
+        Regex(
+            """tanaman\s+tidak\s+(?:dapat\s+)?(?:di-?|ter)identifikasi""",
+            RegexOption.IGNORE_CASE,
+        )
 
     private val HR_LINE_REGEX = Regex("""(?m)^\s*(?:[-*_]{3,})\s*$""")
 
     private val NEG_HERBAL_REGEX = Regex("""\b(?:non|bukan|tidak)\s*herbal\b""")
     private val HERBAL_TOKEN_REGEX = Regex("""\bherbal\b""")
 
-    private val NAME_PATTERN = Regex(
-        pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?([^\r\n#*]+?)\s*\*?\s*Nama\s+Ilmiah(?:\s*[:：])?\b""",
-        options = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
-    )
+    private val NAME_PATTERN =
+        Regex(
+            pattern =
+                """^(?:#{1,6}\s*)?(?:🌿\s*)?([^\r\n#*]+?)\s*\*?\s*Nama\s+Ilmiah(?:\s*[:：])?\b""",
+            options = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE),
+        )
 
     private fun isUnidentifiedPlant(text: String): Boolean =
         UNIDENTIFIED_REGEX.containsMatchIn(text)

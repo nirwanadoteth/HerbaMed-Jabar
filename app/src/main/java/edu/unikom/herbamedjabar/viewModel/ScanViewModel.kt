@@ -47,33 +47,40 @@ class ScanViewModel @Inject constructor(private val analyzePlantUseCase: Analyze
         analyzeJob?.cancel()
         _uiState.value = UiState.Loading
 
-        analyzeJob = viewModelScope.launch {
-            try {
-                val result = analyzePlantUseCase(bitmap)
-                result.onSuccess { analysisResult ->
-                    _uiState.value = UiState.Success
-                    _navigateToResult.value = analysisResult
-                    val stats = _scanStats.value ?: ScanStats()
-                    val newStats =
-                        if (analysisResult.isHerbal) {
-                            stats.copy(total = stats.total + 1, herbal = stats.herbal + 1)
-                        } else {
-                            stats.copy(total = stats.total + 1, nonHerbal = stats.nonHerbal + 1)
+        analyzeJob =
+            viewModelScope.launch {
+                try {
+                    val result = analyzePlantUseCase(bitmap)
+                    result
+                        .onSuccess { analysisResult ->
+                            _uiState.value = UiState.Success
+                            _navigateToResult.value = analysisResult
+                            val stats = _scanStats.value ?: ScanStats()
+                            val newStats =
+                                if (analysisResult.isHerbal) {
+                                    stats.copy(total = stats.total + 1, herbal = stats.herbal + 1)
+                                } else {
+                                    stats.copy(
+                                        total = stats.total + 1,
+                                        nonHerbal = stats.nonHerbal + 1,
+                                    )
+                                }
+                            _scanStats.value = newStats
                         }
-                    _scanStats.value = newStats
-                }.onFailure { error ->
-                    _uiState.value = UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
+                        .onFailure { error ->
+                            _uiState.value =
+                                UiState.Error(error.message ?: "Terjadi kesalahan tidak diketahui")
+                        }
+                } catch (_: CancellationException) {
+                    // Job was cancelled — don't update UI state to error.
+                    return@launch
+                } catch (e: Exception) {
+                    _uiState.value = UiState.Error(e.message ?: "Terjadi kesalahan tidak diketahui")
+                } finally {
+                    // Clear reference to allow GC and signal there's no active job.
+                    analyzeJob = null
                 }
-            } catch (_: CancellationException) {
-                // Job was cancelled — don't update UI state to error.
-                return@launch
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error(e.message ?: "Terjadi kesalahan tidak diketahui")
-            } finally {
-                // Clear reference to allow GC and signal there's no active job.
-                analyzeJob = null
             }
-        }
     }
 
     fun onNavigationComplete() {

@@ -42,9 +42,9 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="24dp"
-            android:src="@drawable/avatar"
             android:contentDescription="@null"
             android:importantForAccessibility="no"
+            android:src="@drawable/avatar"
             app:layout_constraintBottom_toBottomOf="@id/iv_banner"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_banner"
@@ -52,7 +52,6 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_username"
-            style="@style/TextAppearance.Material3.TitleSmall.Emphasized"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -61,6 +60,7 @@
             android:layout_marginBottom="4dp"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall.Emphasized"
             android:textColor="?attr/colorOnPrimaryFixed"
             app:layout_constraintBottom_toBottomOf="@id/iv_banner"
             app:layout_constraintEnd_toEndOf="parent"
@@ -154,13 +154,13 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_my_posts_title"
-            style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
             android:accessibilityHeading="true"
             android:text="@string/my_posts_title"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/badge_container"

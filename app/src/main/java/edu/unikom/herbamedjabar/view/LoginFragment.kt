@@ -56,8 +56,9 @@ class LoginFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.loginButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
+            val email =
+                binding.emailEditText.text.toString().trim().lowercase(java.util.Locale.ROOT)
+            val password = binding.passwordEditText.text.toString()
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(
                         requireContext(),
@@ -125,7 +126,11 @@ class LoginFragment : Fragment() {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
             } catch (e: IllegalArgumentException) {
-                Toast.makeText(requireContext(), getString(R.string.google_token_invalid), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                        requireContext(),
+                        getString(R.string.google_token_invalid),
+                        Toast.LENGTH_SHORT,
+                    )
                     .show()
                 Log.w(TAG, "Invalid Google ID token credential", e)
             }
@@ -140,10 +145,18 @@ class LoginFragment : Fragment() {
             binding.loadingIndicator.isVisible = loading
             binding.loginButton.isEnabled = !loading
             binding.googleLoginButton.isEnabled = !loading
+            binding.emailEditText.isEnabled = !loading
+            binding.passwordEditText.isEnabled = !loading
+            binding.registerTextView.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {
-                    Toast.makeText(requireContext(), "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                            requireContext(),
+                            getString(R.string.login_success),
+                            Toast.LENGTH_SHORT,
+                        )
+                        .show()
                     // Pindah ke MainActivity dan bersihkan back stack
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

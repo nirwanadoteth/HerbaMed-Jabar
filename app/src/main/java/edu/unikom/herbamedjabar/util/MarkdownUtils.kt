@@ -9,7 +9,7 @@ import org.intellij.markdown.parser.MarkdownParser
 
 object MarkdownUtils {
     private val flavour by lazy { CommonMarkFlavourDescriptor() }
-    private val parser by lazy { MarkdownParser(flavour) }
+    private val parserTL by lazy { ThreadLocal.withInitial { MarkdownParser(flavour) } }
 
     private const val SPANNED_CACHE_CHAR_BUDGET = 64_000
     // Cache parsed Spanned results keyed by "flag|markdown" to avoid reparsing during binds
@@ -44,7 +44,7 @@ object MarkdownUtils {
     fun parseMarkdownToHtml(input: String?, formatList: Boolean = false): String {
         val raw = input ?: ""
         val formatted = if (formatList) addLineBreaksToNumberedList(raw) else raw
-        val parsedTree = parser.buildMarkdownTreeFromString(formatted)
+        val parsedTree = parserTL.get()!!.buildMarkdownTreeFromString(formatted)
         return HtmlGenerator(formatted, parsedTree, flavour).generateHtml()
     }
 
@@ -70,23 +70,26 @@ object MarkdownUtils {
             append(htmlMode)
         }
         // Fast path: check under lock, then compute outside the lock
-        synchronized(spannedCache) {
-            spannedCache[compositeKey]
-        }?.let { return it }
+        synchronized(spannedCache) { spannedCache[compositeKey] }
+            ?.let {
+                return it
+            }
         val html = parseMarkdownToHtml(input, formatList)
         val spanned = HtmlCompat.fromHtml(html, htmlMode)
         // Second check before inserting to avoid duplicate work
         synchronized(spannedCache) {
-            spannedCache[compositeKey]?.let { return it }
+            spannedCache[compositeKey]?.let {
+                return it
+            }
             spannedCache.put(compositeKey, spanned)
         }
         return spanned
     }
 
     /**
-     * Heuristically inserts a newline before inline numbered list tokens (e.g., "1. ", "2. ")
-     * when they follow common list-introducing punctuation (':', ';', ')', ']').
-     * This reduces false positives in prose while helping the parser recognize lists.
+     * Heuristically inserts a newline before inline numbered list tokens (e.g., "1. ", "2. ") when
+     * they follow common list-introducing punctuation (':', ';', ')', ']'). This reduces false
+     * positives in prose while helping the parser recognize lists.
      */
     private fun addLineBreaksToNumberedList(text: String): String {
         // Insert a newline only after [:;)]], consuming optional spaces before the number.

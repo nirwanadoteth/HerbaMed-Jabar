@@ -41,6 +41,7 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
                 }
             }
         }
+
         fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
@@ -58,10 +59,11 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
                             android.text.format.DateUtils.FORMAT_SHOW_TIME,
                     )
 
-                val data = history.imagePath
-                    .takeIf { it.isNotBlank() }
-                    ?.let { path -> File(path).takeIf { it.exists() } }
-                    ?: R.drawable.bg_place_holder
+                val data =
+                    history.imagePath
+                        .takeIf { it.isNotBlank() }
+                        ?.let { path -> File(path).takeIf { it.exists() } }
+                        ?: R.drawable.bg_place_holder
                 historyImageView.load(data) {
                     crossfade(true)
                     placeholder(R.drawable.bg_place_holder)

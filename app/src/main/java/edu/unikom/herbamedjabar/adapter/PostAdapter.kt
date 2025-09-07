@@ -1,5 +1,6 @@
 package edu.unikom.herbamedjabar.adapter
 
+import android.os.Build
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +18,7 @@ import edu.unikom.herbamedjabar.util.MarkdownUtils
 class PostAdapter(
     private val onLikeClicked: (String) -> Unit,
     private val onDeleteClicked: (Post) -> Unit,
-    private val currentUser: FirebaseUser?
+    private val currentUser: FirebaseUser?,
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -34,9 +35,11 @@ class PostAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post) {
-            val user = this@PostAdapter.currentUser
+            val user = currentUser
             binding.tvUsername.text = post.username
-            binding.ivUserProfile.load(post.userProfilePictureUrl) {
+            val userProfile =
+                post.userProfilePictureUrl.takeIf { !it.isNullOrBlank() } ?: R.drawable.avatar
+            binding.ivUserProfile.load(userProfile) {
                 crossfade(true)
                 placeholder(R.drawable.avatar)
                 error(R.drawable.avatar)
@@ -60,10 +63,8 @@ class PostAdapter(
             val warningKey = "post:${post.id}:warning:${warningText.hashCode()}"
 
             val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(contentText, contentKey)
-            val benefitSpanned =
-                MarkdownUtils.parseMarkdownToSpanned(benefitText, benefitKey, true)
-            val warningSpanned =
-                MarkdownUtils.parseMarkdownToSpanned(warningText, warningKey, true)
+            val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(benefitText, benefitKey, true)
+            val warningSpanned = MarkdownUtils.parseMarkdownToSpanned(warningText, warningKey, true)
 
             binding.contentTextView.text = contentSpanned
             binding.benefitTextView.text = benefitSpanned
@@ -74,13 +75,18 @@ class PostAdapter(
             val likedByMe = user?.uid?.let(post.likes::contains) == true
             binding.btnLike.isChecked = likedByMe
             binding.btnLike.setOnClickListener {
-                onLikeClicked(post.id)
-                // Immediate a11y feedback; state will be reconciled on next bind.
+                val newChecked = !binding.btnLike.isChecked
+                binding.btnLike.isChecked = newChecked
+                binding.btnLike.isEnabled = false
                 binding.btnLike.contentDescription =
-                    if (binding.btnLike.isChecked)
-                        binding.root.context.getString(R.string.cd_liked)
-                    else
-                        binding.root.context.getString(R.string.cd_like)
+                    if (newChecked) binding.root.context.getString(R.string.action_unlike)
+                    else binding.root.context.getString(R.string.action_like)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    binding.btnLike.tooltipText =
+                        if (newChecked) binding.root.context.getString(R.string.action_unlike)
+                        else binding.root.context.getString(R.string.action_like)
+                }
+                onLikeClicked(post.id)
             }
             binding.btnMenuOptions.isVisible = post.userId == user?.uid
             binding.btnMenuOptions.setOnClickListener { onDeleteClicked(post) }
@@ -90,8 +96,11 @@ class PostAdapter(
             binding.tvPostTimestamp.text =
                 if (tsMillis > 0)
                     DateUtils.getRelativeTimeSpanString(
-                        tsMillis, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
-                    ).toString()
+                            tsMillis,
+                            System.currentTimeMillis(),
+                            DateUtils.MINUTE_IN_MILLIS,
+                        )
+                        .toString()
                 else ""
             binding.ivUserProfile.contentDescription =
                 binding.root.context.getString(R.string.cd_user_profile_of, post.username)

@@ -46,24 +46,24 @@
                             android:orientation="horizontal">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/forum_title_herba" />
+                                android:text="@string/forum_title_herba"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/forum_title_med"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                                 android:textColor="?attr/colorPrimary" />
                         </LinearLayout>
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.App.BodyMedium.Secondary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/scan_subtitle" />
+                            android:text="@string/scan_subtitle"
+                            android:textAppearance="@style/TextAppearance.App.BodyMedium.Secondary" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -93,17 +93,17 @@
                             android:padding="8dp">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_total"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:textColor="?attr/colorOnSurface" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/total_scan_text_view"
-                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:textColor="?attr/colorOnSurface"
                                 tools:text="0" />
 
@@ -130,18 +130,18 @@
                             android:padding="8dp">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_herbal"
                                 android:textAlignment="center"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:textColor="?attr/colorOnSecondaryContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/herbal_scan_text_view"
-                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:textColor="?attr/colorOnSecondaryContainer"
                                 tools:text="0" />
 
@@ -167,18 +167,18 @@
                             android:padding="8dp">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_nonherbal"
                                 android:textAlignment="center"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall.Emphasized"
                                 android:textColor="?attr/colorOnErrorContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:id="@+id/non_herbal_scan_text_view"
-                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:textColor="?attr/colorOnErrorContainer"
                                 tools:text="0" />
 
@@ -250,34 +250,34 @@
                             android:orientation="vertical">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
                                 android:text="@string/scan_tips_title"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                                 android:textColor="?attr/colorOnSecondaryContainer" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_tips_1"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                                 android:textColor="?attr/colorOnSecondaryContainer"
                                 android:textStyle="italic" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_tips_2"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                                 android:textColor="?attr/colorOnSecondaryContainer"
                                 android:textStyle="italic" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/TextAppearance.Material3.BodySmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/scan_tips_3"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                                 android:textColor="?attr/colorOnSecondaryContainer"
                                 android:textStyle="italic" />
                         </LinearLayout>

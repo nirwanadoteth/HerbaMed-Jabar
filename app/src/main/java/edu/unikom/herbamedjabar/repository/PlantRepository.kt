@@ -2,22 +2,22 @@ package edu.unikom.herbamedjabar.repository
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.core.content.ContextCompat.getString
+import androidx.core.graphics.scale
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.util.PlantDataParser
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import java.io.File
-import java.io.FileOutputStream
-import java.util.UUID
-import javax.inject.Inject
 
 data class AnalysisResult(
     val resultText: String,
@@ -60,13 +60,13 @@ constructor(
             var savedImagePath: String? = null
             val result = runCatching {
                 val inputContent = content {
-                    image(bitmap)
+                    image(bitmap.downscaled())
                     text(prompt)
                 }
                 val response =
                     withTimeout(AI_TIMEOUT_MS) { generativeModel.generateContent(inputContent) }
                 val resultText = response.text?.trim().orEmpty()
-                check(resultText.isNotBlank()) { getString(context, R.string.ai_text_empty) }
+                check(resultText.isNotBlank()) { context.getString(R.string.ai_text_empty) }
                 val parsedData = PlantDataParser.parsePlantData(resultText)
                 val imagePath = saveBitmapToFile(bitmap).also { savedImagePath = it }
                 val isHerbal = parsedData.isHerbal
@@ -94,7 +94,11 @@ constructor(
                 return it
             }
             result.onFailure { e ->
-                if (e is kotlinx.coroutines.CancellationException && e !is kotlinx.coroutines.TimeoutCancellationException) throw e
+                if (
+                    e is kotlinx.coroutines.CancellationException &&
+                        e !is kotlinx.coroutines.TimeoutCancellationException
+                )
+                    throw e
                 savedImagePath?.let { runCatching { File(it).delete() } }
                 lastError = e
             }
@@ -104,7 +108,7 @@ constructor(
                 delayTime = (delayTime * 2).coerceAtMost(MAX_BACKOFF_MS)
             }
         }
-        throw lastError ?: error(getString(context, R.string.analysis_failed_after_retries))
+        throw lastError ?: error(context.getString(R.string.analysis_failed_after_retries))
     }
 
     override fun getAllHistory(): Flow<List<ScanHistory>> {
@@ -112,20 +116,25 @@ constructor(
     }
 
     override suspend fun deleteHistory(history: ScanHistory) {
-        return scanHistoryDao.deleteHistory(history)
+        scanHistoryDao.deleteHistory(history)
+    }
+
+    private fun Bitmap.downscaled(maxDim: Int = 1280): Bitmap {
+        val scale = maxOf(width, height).toFloat() / maxDim
+        return if (scale > 1f) this.scale((width / scale).toInt(), (height / scale).toInt())
+        else this
     }
 
     private suspend fun saveBitmapToFile(bitmap: Bitmap): String {
         return withContext(Dispatchers.IO) {
-            val wrapper = context
-            val directory = wrapper.getDir("images", Context.MODE_PRIVATE)
+            val directory = context.getDir("images", Context.MODE_PRIVATE)
             val file = File(directory, "${UUID.randomUUID()}.jpg")
             try {
                 FileOutputStream(file).buffered().use { outputStream ->
                     check(
                         bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY, outputStream)
                     ) {
-                        getString(context, R.string.compression_failed)
+                        context.getString(R.string.compression_failed)
                     }
                     outputStream.flush()
                 }

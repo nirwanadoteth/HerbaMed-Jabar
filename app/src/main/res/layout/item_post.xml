@@ -23,9 +23,9 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="12dp"
-                android:src="@drawable/avatar"
                 android:contentDescription="@null"
                 android:importantForAccessibility="no"
+                android:src="@drawable/avatar"
                 app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full" />
 
             <LinearLayout
@@ -36,22 +36,22 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_username"
-                    style="@style/TextAppearance.Material3.TitleSmall.Emphasized"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall.Emphasized"
                     tools:text="Username" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_post_timestamp"
-                    style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:drawablePadding="4dp"
+                    android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                     app:drawableStartCompat="@drawable/ic_clock"
                     app:drawableTint="?attr/colorOnSurfaceVariant"
                     tools:text="2 hours ago" />
@@ -90,18 +90,20 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/plant_name_text_view"
-                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:accessibilityHeading="true"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
+                tools:targetApi="28"
                 tools:text="Nama Tanaman" />
 
             <!-- Description Section -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/content_text_view"
-                style="@style/TextAppearance.Material3.BodyMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 tools:text="Deskripsi singkat" />
 
             <!-- Benefit Section -->
@@ -136,21 +138,21 @@
                             app:tint="?attr/colorOnSecondaryContainer" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:accessibilityHeading="true"
                             android:text="@string/section_benefit_label"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                             android:textColor="?attr/colorOnSecondaryContainer"
                             tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/benefit_text_view"
-                        style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:textColor="?attr/colorOnSecondaryContainer"
                         tools:text="Manfaat" />
                 </LinearLayout>
@@ -188,21 +190,21 @@
                             app:tint="?attr/colorOnTertiaryContainer" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:accessibilityHeading="true"
                             android:text="@string/section_warning_label"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                             android:textColor="?attr/colorOnTertiaryContainer"
                             tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/warning_text_view"
-                        style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:textColor="?attr/colorOnTertiaryContainer"
                         tools:text="Peringatan" />
                 </LinearLayout>
@@ -224,11 +226,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:checkable="true"
-                android:contentDescription="@string/cd_like"
-                android:tooltipText="@string/cd_like"
+                android:contentDescription="@string/action_like"
+                android:tooltipText="@string/action_like"
                 app:backgroundTint="?attr/colorSurface"
                 app:icon="@drawable/toggle_like_selector"
-                app:iconTint="@android:color/holo_red_dark"
+                app:iconTint="@color/like_icon_tint"
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
                 tools:checked="true"
                 tools:targetApi="26" />

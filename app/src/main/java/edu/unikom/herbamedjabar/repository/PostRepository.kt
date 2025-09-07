@@ -94,6 +94,7 @@ class PostRepository @Inject constructor(private val firestore: FirebaseFirestor
         firestore.collection("posts").document(postId).set(newPost).await()
     }
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun toggleLike(postId: String, userId: String) {
         val postRef = firestore.collection("posts").document(postId)
         firestore

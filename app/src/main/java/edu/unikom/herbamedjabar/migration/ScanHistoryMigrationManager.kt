@@ -6,11 +6,11 @@ import androidx.room.withTransaction
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.db.AppDatabase
 import edu.unikom.herbamedjabar.util.PlantDataParser
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class ScanHistoryMigrationManager
@@ -40,18 +40,23 @@ constructor(private val scanHistoryDao: ScanHistoryDao, private val db: AppDatab
                     db.withTransaction {
                         for (history in page) {
                             runCatching {
-                                val parsed = PlantDataParser.parsePlantData(history.resultText)
-                                scanHistoryDao.updateHistory(
-                                    history.copy(
-                                        plantName = parsed.plantName,
-                                        content = parsed.description,
-                                        benefit = parsed.benefit,
-                                        warning = parsed.warning,
+                                    val parsed = PlantDataParser.parsePlantData(history.resultText)
+                                    scanHistoryDao.updateHistory(
+                                        history.copy(
+                                            plantName = parsed.plantName,
+                                            content = parsed.description,
+                                            benefit = parsed.benefit,
+                                            warning = parsed.warning,
+                                        )
                                     )
-                                )
-                            }.onFailure {
-                                android.util.Log.w(TAG, "Skipping a history row due to parse/update error", it)
-                            }
+                                }
+                                .onFailure {
+                                    android.util.Log.w(
+                                        TAG,
+                                        "Skipping a history row due to parse/update error",
+                                        it,
+                                    )
+                                }
                         }
                     }
                     offset += page.size

@@ -32,20 +32,20 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/plant_name_text_view"
-                style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:accessibilityHeading="true"
-                tools:text="Nama Tanaman"
-                tools:targetApi="28" />
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
+                tools:targetApi="28"
+                tools:text="Nama Tanaman" />
 
             <!-- Description Section -->
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/content_text_view"
-                style="@style/TextAppearance.Material3.BodyMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                 tools:text="Deskripsi singkat" />
 
             <!-- Benefit Section -->
@@ -80,21 +80,21 @@
                             app:tint="?attr/colorOnSecondaryContainer" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:accessibilityHeading="true"
                             android:text="@string/section_benefit_label"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                             android:textColor="?attr/colorOnSecondaryContainer"
                             tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/benefit_text_view"
-                        style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:textColor="?attr/colorOnSecondaryContainer"
                         tools:text="Manfaat" />
                 </LinearLayout>
@@ -132,21 +132,21 @@
                             app:tint="?attr/colorOnTertiaryContainer" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:accessibilityHeading="true"
                             android:text="@string/section_warning_label"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                             android:textColor="?attr/colorOnTertiaryContainer"
                             tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/warning_text_view"
-                        style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:textColor="?attr/colorOnTertiaryContainer"
                         tools:text="Peringatan" />
                 </LinearLayout>

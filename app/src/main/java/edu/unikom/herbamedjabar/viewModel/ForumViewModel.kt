@@ -9,15 +9,15 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class ForumViewModel
@@ -46,7 +46,7 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
                 .getPosts()
                 .onStart { _isLoading.value = true }
                 .catch { e ->
-                    _error.value = e.message
+                    _error.value = e.message ?: "Unexpected error"
                     _isLoading.value = false
                 }
                 .collectLatest { postList ->
@@ -70,8 +70,8 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
                 withContext(Dispatchers.IO) { postRepository.toggleLike(postId, userId) }
             } catch (ce: CancellationException) {
                 throw ce
-            }  catch (e: Exception) {
-                _error.value = e.message
+            } catch (e: Exception) {
+                _error.value = e.message ?: "Unexpected error"
             } finally {
                 inFlightLikes.remove(postId)
             }
@@ -81,9 +81,7 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
     fun deletePost(post: Post) {
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    postRepository.deletePost(post)
-                }
+                withContext(Dispatchers.IO) { postRepository.deletePost(post) }
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
@@ -94,5 +92,7 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
 
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
 
-    companion object { const val AUTH_REQUIRED_ERROR = "auth_required" }
+    companion object {
+        const val AUTH_REQUIRED_ERROR = "auth_required"
+    }
 }

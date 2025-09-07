@@ -90,9 +90,7 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        binding.topAppBar.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
+        binding.topAppBar.setNavigationOnClickListener { parentFragmentManager.popBackStack() }
         binding.plantCardLayout.secondaryButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
                 "scan_again_request",
@@ -137,7 +135,7 @@ class ResultFragment : Fragment() {
                 .onSuccess {
                     Toast.makeText(
                             requireContext(),
-                        getString(R.string.post_success),
+                            getString(R.string.post_success),
                             Toast.LENGTH_SHORT,
                         )
                         .show()
@@ -146,7 +144,10 @@ class ResultFragment : Fragment() {
                 .onFailure {
                     Toast.makeText(
                             requireContext(),
-                        getString(R.string.post_failed_with_reason, it.message ?: getString(R.string.unknown_error)),
+                            getString(
+                                R.string.post_failed_with_reason,
+                                it.message ?: getString(R.string.unknown_error),
+                            ),
                             Toast.LENGTH_LONG,
                         )
                         .show()

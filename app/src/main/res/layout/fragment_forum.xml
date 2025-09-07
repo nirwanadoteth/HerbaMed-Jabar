@@ -26,6 +26,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="16dp"
                 android:contentDescription="@null"
+                android:importantForAccessibility="no"
                 android:src="@drawable/ic_herbamed" />
 
             <LinearLayout
@@ -39,24 +40,24 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/forum_title_herba" />
+                        android:text="@string/forum_title_herba"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/forum_title_med"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                         android:textColor="?attr/colorPrimary" />
                 </LinearLayout>
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/TextAppearance.Material3.TitleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/scan_subtitle" />
+                    android:text="@string/scan_subtitle"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
             </LinearLayout>
         </LinearLayout>
 
@@ -64,9 +65,10 @@
             android:id="@+id/info_wrapper_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
             app:cardBackgroundColor="?attr/colorSecondaryContainer"
-            app:cardUseCompatPadding="true"
             app:contentPadding="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/welcome_wrapper">
@@ -84,18 +86,18 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.TitleSmall.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:accessibilityHeading="true"
                         android:text="@string/forum_share_title"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall.Emphasized"
                         tools:targetApi="28" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.BodySmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/forum_share_subtitle" />
+                        android:text="@string/forum_share_subtitle"
+                        android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton

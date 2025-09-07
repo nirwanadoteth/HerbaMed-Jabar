@@ -1,8 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="post_success">Berhasil diposting ke forum!</string>
     <string name="post_failed_with_reason">Gagal memposting: %1$s</string>
     <string name="unknown_error">Terjadi kesalahan yang tidak diketahui</string>
     <string name="registration_success">Registrasi Berhasil!</string>
+    <string name="login_success">Login Berhasil!</string>
     <!-- Accessibility descriptions for history fragment -->
     <string name="history_list_content_desc">Daftar riwayat pemindaian tanaman</string>
     <string name="history_empty_image_desc">Tidak ada riwayat pemindaian tanaman</string>
@@ -17,6 +18,8 @@
     <string name="forum_share_title">Mulai Berbagi!</string>
     <string name="forum_share_subtitle">Bagikan penemuan herbal Anda</string>
     <string name="cd_post_options">Opsi Posting</string>
+    <string name="action_like">Sukai</string>
+    <string name="action_unlike">Batalkan suka</string>
     <string name="cd_like">Suka</string>
     <string name="cd_liked">Disukai</string>
     <string name="scan_subtitle">Scan tanaman untuk identifikasi herbal.</string>

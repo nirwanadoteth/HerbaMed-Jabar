@@ -40,9 +40,14 @@ class HistoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val history = arguments?.let {
-            androidx.core.os.BundleCompat.getParcelable(it, EXTRA_HISTORY, ScanHistory::class.java)
-        }
+        val history =
+            arguments?.let {
+                androidx.core.os.BundleCompat.getParcelable(
+                    it,
+                    EXTRA_HISTORY,
+                    ScanHistory::class.java,
+                )
+            }
 
         if (history != null) {
             setupView(history)
@@ -56,9 +61,9 @@ class HistoryDetailFragment : Fragment() {
         val historyId = history.id
         val imagePath = history.imagePath
         val plantName = history.plantName
-        val content   = history.content
-        val benefit   = history.benefit
-        val warning   = history.warning
+        val content = history.content
+        val benefit = history.benefit
+        val warning = history.warning
         val card = binding.plantCardLayout
 
         card.apply {
@@ -94,12 +99,16 @@ class HistoryDetailFragment : Fragment() {
         deleteButton.apply {
             text = getString(R.string.action_delete)
             icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
-            val errorContainer = MaterialColors.getColor(
-                this, com.google.android.material.R.attr.colorErrorContainer
-            )
-            val onErrorContainer = MaterialColors.getColor(
-                this, com.google.android.material.R.attr.colorOnErrorContainer
-            )
+            val errorContainer =
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorErrorContainer,
+                )
+            val onErrorContainer =
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnErrorContainer,
+                )
             iconTint = ColorStateList.valueOf(onErrorContainer)
             backgroundTintList = ColorStateList.valueOf(errorContainer)
             setTextColor(onErrorContainer)
@@ -128,10 +137,7 @@ class HistoryDetailFragment : Fragment() {
 
         fun newInstance(history: ScanHistory): HistoryDetailFragment {
             val fragment = HistoryDetailFragment()
-            val bundle =
-                Bundle().apply {
-                    putParcelable(EXTRA_HISTORY, history)
-                }
+            val bundle = Bundle().apply { putParcelable(EXTRA_HISTORY, history) }
             fragment.arguments = bundle
             return fragment
         }

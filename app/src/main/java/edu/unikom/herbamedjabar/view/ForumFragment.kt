@@ -57,7 +57,9 @@ class ForumFragment : Fragment() {
                         .setTitle(getString(R.string.delete_post_title))
                         .setMessage(getString(R.string.delete_post_message))
                         .setNegativeButton(getString(R.string.action_cancel), null)
-                        .setPositiveButton(getString(R.string.action_delete)) { _, _ -> viewModel.deletePost(post) }
+                        .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
+                            viewModel.deletePost(post)
+                        }
                         .show()
                 },
                 currentUser = viewModel.getCurrentUser(),
@@ -65,7 +67,7 @@ class ForumFragment : Fragment() {
         postAdapter = adapterObj
 
         binding.rvPosts.apply {
-            adapter = adapterObj
+            adapter = postAdapter
             layoutManager = LinearLayoutManager(context)
         }
     }

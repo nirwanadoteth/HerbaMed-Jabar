@@ -48,6 +48,7 @@ object AppModule {
     fun provideAppDatabase(app: Application): AppDatabase {
         return Room.databaseBuilder(app, AppDatabase::class.java, "herb_app_db")
             .addMigrations(AppDatabase.MIGRATION_1_2)
+            .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration(true) }
             .build()
     }
 
