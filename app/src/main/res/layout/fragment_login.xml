@@ -92,8 +92,7 @@
                         android:hint="@string/email_hint"
                         android:imeOptions="actionNext"
                         android:importantForAutofill="yes"
-                        android:inputType="textEmailAddress"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:inputType="textEmailAddress" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,8 +125,7 @@
                         android:hint="@string/password_hint"
                         android:imeOptions="actionDone"
                         android:importantForAutofill="yes"
-                        android:inputType="textPassword"
-                        android:textColor="?attr/colorOnSurface" />
+                        android:inputType="textPassword" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -219,7 +217,6 @@
             android:layout_height="wrap_content"
             android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/loading"
-            android:importantForAccessibility="yes"
             android:indeterminate="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"

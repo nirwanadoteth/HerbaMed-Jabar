@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="post_success">Berhasil diposting ke forum!</string>
     <string name="post_failed_with_reason">Gagal memposting: %1$s</string>
     <string name="unknown_error">Terjadi kesalahan yang tidak diketahui</string>
@@ -125,4 +125,7 @@
     <string name="ai_text_empty">Hasil teks dari AI kosong.</string>
     <string name="analysis_failed_after_retries">Gagal menganalisis tanaman setelah beberapa kali percobaan.</string>
     <string name="google_token_invalid">Token Google tidak valid.</string>
+    <string name="error_email_required">Email tidak boleh kosong!</string>
+    <string name="error_password_required">Kata sandi tidak boleh kosong!</string>
+    <string name="credential_error_generic">Gagal mendapatkan kredensial. Coba lagi nanti.</string>
 </resources>

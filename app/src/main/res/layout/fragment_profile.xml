@@ -195,7 +195,6 @@
             android:layout_height="wrap_content"
             android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/loading"
-            android:importantForAccessibility="yes"
             android:indeterminate="true"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
