@@ -1,9 +1,7 @@
 package edu.unikom.herbamedjabar.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,57 +9,76 @@ import coil.load
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.ItemHistoryBinding
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-class HistoryAdapter(
-    private val onClick: (ScanHistory) -> Unit
-) :
+class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
 
+    init {
+        setHasStableIds(true)
+    }
+
+    override fun getItemId(position: Int): Long = getItem(position).id.toLong()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        val binding =
-            ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemHistoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return HistoryViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val historyItem = getItem(position)
-        holder.bind(historyItem, position)
+        holder.bind(historyItem)
     }
 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(history: ScanHistory, position: Int) { // Terima posisi di sini
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onClick(getItem(pos))
+                }
+            }
+        }
+
+        fun bind(history: ScanHistory) {
             binding.apply {
-                // Menggunakan ID dari layout baru Anda dan data class yang sudah diperbarui
-                val flavour = CommonMarkFlavourDescriptor()
-                val parsedTree =
-                    MarkdownParser(flavour).buildMarkdownTreeFromString(history.resultText)
-                val html = HtmlGenerator(history.resultText, parsedTree, flavour).generateHtml()
-                historyTextView.text =
-                    HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                plantNameTextView.text = history.plantName
 
-                val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-                val date = Date(history.timestamp)
-                time.text = sdf.format(date)
+                val key = "history:${history.id}:content:${history.content.hashCode()}"
+                val spanned = MarkdownUtils.parseMarkdownToSpanned(history.content, key)
+                descriptionTextView.text = spanned
 
-                val imageFile = File(history.imagePath)
-                if (imageFile.exists()) {
-                    historyImageView.load(Uri.fromFile(imageFile)) {
-                        crossfade(true)
-                        placeholder(R.drawable.bg_place_holder)
-                    }
+                timeTextView.text =
+                    android.text.format.DateUtils.formatDateTime(
+                        binding.root.context,
+                        history.timestamp,
+                        android.text.format.DateUtils.FORMAT_SHOW_DATE or
+                            android.text.format.DateUtils.FORMAT_SHOW_YEAR or
+                            android.text.format.DateUtils.FORMAT_SHOW_TIME,
+                    )
+
+                val data =
+                    history.imagePath
+                        .takeIf { it.isNotBlank() }
+                        ?.let { path -> File(path).takeIf { it.exists() } }
+                        ?: R.drawable.bg_place_holder
+                historyImageView.load(data) {
+                    crossfade(true)
+                    placeholder(R.drawable.bg_place_holder)
+                    error(R.drawable.bg_place_holder)
+                    fallback(R.drawable.bg_place_holder)
                 }
-
-                itemView.setOnClickListener {
-                    onClick(history)
+                val ctx = binding.root.context
+                val cdText = history.plantName.ifBlank {
+                    ctx.getString(R.string.cd_plant_image)
                 }
+                historyImageView.contentDescription =
+                    if (history.plantName.isBlank())
+                        cdText
+                    else
+                        ctx.getString(R.string.cd_plant_image_of, history.plantName)
             }
         }
     }

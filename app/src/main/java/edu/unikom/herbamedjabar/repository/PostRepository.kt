@@ -8,59 +8,65 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import edu.unikom.herbamedjabar.data.Post
-import kotlinx.coroutines.Dispatchers
+import edu.unikom.herbamedjabar.util.PlantData
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.util.*
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.withTimeout
 
 @Singleton
-class PostRepository @Inject constructor(
-    private val firestore: FirebaseFirestore
-) {
+class PostRepository @Inject constructor(private val firestore: FirebaseFirestore) {
+
+    private data class UploadResult(val url: String, val publicId: String?)
+
+    private class UploadException(val code: Int?, message: String) : Exception(message)
 
     fun getPosts(): Flow<List<Post>> = callbackFlow {
-        val collection = firestore.collection("posts")
-            .orderBy("timestamp", Query.Direction.DESCENDING)
+        val collection =
+            firestore.collection("posts")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(QUERY_LIMIT)
 
-        val listener = collection.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                close(error)
-                return@addSnapshotListener
+        val listener =
+            collection.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    val posts = snapshot.toObjects(Post::class.java)
+                    trySend(posts).isSuccess
+                }
             }
-            if (snapshot != null) {
-                val posts = snapshot.toObjects(Post::class.java)
-                trySend(posts).isSuccess
-            }
-        }
         awaitClose { listener.remove() }
     }
 
     fun getPostsByUserId(userId: String): Flow<List<Post>> = callbackFlow {
-        val collection = firestore.collection("posts")
-            .whereEqualTo("userId", userId)
+        val collection =
+            firestore
+                .collection("posts")
+                .whereEqualTo("userId", userId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(QUERY_LIMIT)
 
-        val listener = collection.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                close(error)
-                return@addSnapshotListener
+        val listener =
+            collection.addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    trySend(snapshot.toObjects(Post::class.java)).isSuccess
+                }
             }
-            if (snapshot != null) {
-                val posts = snapshot.toObjects(Post::class.java)
-                val sortedPosts = posts.sortedByDescending { it.timestamp }
-                trySend(sortedPosts).isSuccess
-            }
-        }
         awaitClose { listener.remove() }
     }
-
 
     suspend fun createPost(
         userId: String,
@@ -69,69 +75,108 @@ class PostRepository @Inject constructor(
         imageUri: Uri,
         plantName: String,
         description: String,
-        parsedData: Map<String, String>,
+        parsedData: PlantData,
     ) {
-        val imageUrl = uploadImageToCloudinary(imageUri)
+        val upload = uploadImageToCloudinary(imageUri)
         val postId = firestore.collection("posts").document().id
-        val newPost = Post(
-            id = postId,
-            userId = userId,
-            username = username,
-            userProfilePictureUrl = userProfilePictureUrl,
-            imageUrl = imageUrl,
-            plantName = plantName,
-            description = description,
-            timestamp = System.currentTimeMillis(),
-            benefit = parsedData["benefit"],
-            warning = parsedData["warning"],
-            content = parsedData["description"]
-        )
+        val newPost =
+            Post(
+                id = postId,
+                userId = userId,
+                username = username,
+                userProfilePictureUrl = userProfilePictureUrl,
+                imageUrl = upload.url,
+                plantName = plantName,
+                description = description,
+                timestamp = System.currentTimeMillis(),
+                benefit = parsedData.benefit,
+                warning = parsedData.warning,
+                content = parsedData.description,
+            )
         firestore.collection("posts").document(postId).set(newPost).await()
     }
 
+    @Suppress("UNCHECKED_CAST")
     suspend fun toggleLike(postId: String, userId: String) {
         val postRef = firestore.collection("posts").document(postId)
-        firestore.runTransaction { transaction ->
-            val snapshot = transaction.get(postRef)
-            val likes = snapshot.get("likes") as? List<String> ?: emptyList()
-            if (likes.contains(userId)) {
-                transaction.update(postRef, "likes", FieldValue.arrayRemove(userId))
-            } else {
-                transaction.update(postRef, "likes", FieldValue.arrayUnion(userId))
+        firestore
+            .runTransaction { transaction ->
+                val snapshot = transaction.get(postRef)
+                val likes = snapshot.get("likes") as? List<String> ?: emptyList()
+                if (likes.contains(userId)) {
+                    transaction.update(postRef, "likes", FieldValue.arrayRemove(userId))
+                } else {
+                    transaction.update(postRef, "likes", FieldValue.arrayUnion(userId))
+                }
             }
-        }.await()
+            .await()
     }
 
-    private suspend fun uploadImageToCloudinary(imageUri: Uri): String = suspendCancellableCoroutine { continuation ->
-        val requestId = MediaManager.get().upload(imageUri)
-            .callback(object : UploadCallback {
-                override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                    val url = resultData["secure_url"] as? String
-                    if (url != null && continuation.isActive) {
-                        continuation.resume(url)
-                    } else if (continuation.isActive) {
-                        continuation.resumeWithException(Exception("Cloudinary upload failed: URL is null"))
-                    }
-                }
+    companion object {
+        private const val CLOUDINARY_UPLOAD_TIMEOUT_MS = 60_000L
+        private const val QUERY_LIMIT = 50L
+    }
 
-                override fun onError(requestId: String, error: ErrorInfo) {
-                    if (continuation.isActive) {
-                        continuation.resumeWithException(Exception("Cloudinary Error: ${error.description}"))
-                    }
-                }
-                override fun onStart(requestId: String) {}
-                override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {}
-                override fun onReschedule(requestId: String, error: ErrorInfo) {}
-            }).dispatch()
+    private suspend fun uploadImageToCloudinary(imageUri: Uri): UploadResult =
+        withTimeout(CLOUDINARY_UPLOAD_TIMEOUT_MS) {
+            suspendCancellableCoroutine { continuation ->
+                var reqId: String? = null
+                val uploader =
+                    MediaManager.get()
+                        .upload(imageUri)
+                        .callback(
+                            object : UploadCallback {
+                                @Suppress("EmptyFunctionBlock")
+                                override fun onStart(requestId: String) {
+                                    reqId = requestId
+                                }
 
-        continuation.invokeOnCancellation {
-            MediaManager.get().cancelRequest(requestId)
+                                override fun onSuccess(requestId: String, resultData: Map<*, *>) {
+                                    val url =
+                                        (resultData["secure_url"] ?: resultData["url"]) as? String
+                                    val publicId = resultData["public_id"] as? String
+                                    if (url != null && continuation.isActive) {
+                                        continuation.resume(UploadResult(url, publicId))
+                                    } else if (continuation.isActive) {
+                                        continuation.resumeWithException(
+                                            UploadException(
+                                                null,
+                                                "Cloudinary upload failed: URL is null (requestId=$requestId)",
+                                            )
+                                        )
+                                    }
+                                }
+
+                                override fun onError(requestId: String, error: ErrorInfo) {
+                                    if (continuation.isActive) {
+                                        continuation.resumeWithException(
+                                            UploadException(
+                                                error.code,
+                                                "Cloudinary: ${error.description} (requestId=$requestId)",
+                                            )
+                                        )
+                                    }
+                                }
+
+                                @Suppress("EmptyFunctionBlock")
+                                override fun onProgress(
+                                    requestId: String,
+                                    bytes: Long,
+                                    totalBytes: Long,
+                                ) {}
+
+                                @Suppress("EmptyFunctionBlock")
+                                override fun onReschedule(requestId: String, error: ErrorInfo) {}
+                            }
+                        )
+                continuation.invokeOnCancellation {
+                    reqId?.let { MediaManager.get().cancelRequest(it) }
+                }
+                uploader.dispatch()
+            }
         }
-    }
 
     suspend fun deletePost(post: Post) {
-        // Hanya hapus dokumen dari Firestore
         firestore.collection("posts").document(post.id).delete().await()
     }
-
 }

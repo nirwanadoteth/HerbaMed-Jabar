@@ -1,22 +1,23 @@
 package edu.unikom.herbamedjabar.view
 
-import android.net.Uri
-import android.os.Build
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.FragmentHistoryDetailBinding
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 import edu.unikom.herbamedjabar.viewModel.HistoryDetailViewModel
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
 import java.io.File
 
 @AndroidEntryPoint
@@ -24,7 +25,8 @@ class HistoryDetailFragment : Fragment() {
 
     private val viewModel: HistoryDetailViewModel by viewModels()
     private var _binding: FragmentHistoryDetailBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,11 +40,14 @@ class HistoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val history = if (Build.VERSION.SDK_INT < 33) {
-            arguments?.getParcelable(EXTRA_HISTORY)
-        } else {
-            arguments?.getParcelable(EXTRA_HISTORY, ScanHistory::class.java)
-        }
+        val history =
+            arguments?.let {
+                androidx.core.os.BundleCompat.getParcelable(
+                    it,
+                    EXTRA_HISTORY,
+                    ScanHistory::class.java,
+                )
+            }
 
         if (history != null) {
             setupView(history)
@@ -53,27 +58,72 @@ class HistoryDetailFragment : Fragment() {
     }
 
     private fun setupView(history: ScanHistory) {
-        val flavour = CommonMarkFlavourDescriptor()
-        val parsedTree = MarkdownParser(flavour).buildMarkdownTreeFromString(history.resultText)
-        val html = HtmlGenerator(history.resultText, parsedTree, flavour).generateHtml()
-        binding.resultTextView.text =
-            HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        val historyId = history.id
+        val imagePath = history.imagePath
+        val plantName = history.plantName
+        val content = history.content
+        val benefit = history.benefit
+        val warning = history.warning
+        val card = binding.plantCardLayout
 
-        val imageFile = File(history.imagePath)
-        if (imageFile.exists()) {
-            binding.resultImageView.load(Uri.fromFile(imageFile)) {
+        card.apply {
+            plantNameTextView.text = plantName
+
+            val key = "history:${historyId}:content:${content.hashCode()}"
+            val benefitKey = "history:${historyId}:benefit:${benefit.hashCode()}"
+            val warningKey = "history:${historyId}:warning:${warning.hashCode()}"
+
+            val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(content, key)
+            val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(benefit, benefitKey, true)
+            val warningSpanned = MarkdownUtils.parseMarkdownToSpanned(warning, warningKey, true)
+
+            contentTextView.text = contentSpanned
+            benefitTextView.text = benefitSpanned
+            warningTextView.text = warningSpanned
+            benefitCard.isVisible = benefit.isNotBlank()
+            warningCard.isVisible = warning.isNotBlank()
+            resultImageView.load(imagePath.let(::File)) {
+                placeholder(R.drawable.bg_place_holder)
+                error(R.drawable.bg_place_holder)
+                fallback(R.drawable.bg_place_holder)
                 crossfade(true)
             }
+            resultImageView.contentDescription =
+                root.context.getString(R.string.cd_plant_image_of, plantName)
         }
     }
 
     private fun setupAction(history: ScanHistory) {
-        binding.backButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-        binding.deleteButton.setOnClickListener {
-            viewModel.deleteHistory(history)
-            parentFragmentManager.popBackStack()
+        binding.topAppBar.setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        val deleteButton = binding.plantCardLayout.secondaryButton
+        deleteButton.apply {
+            text = getString(R.string.action_delete)
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
+            val errorContainer =
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorErrorContainer,
+                )
+            val onErrorContainer =
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnErrorContainer,
+                )
+            iconTint = ColorStateList.valueOf(onErrorContainer)
+            backgroundTintList = ColorStateList.valueOf(errorContainer)
+            setTextColor(onErrorContainer)
+
+            setOnClickListener {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.delete_history_title)
+                    .setMessage(R.string.delete_history_message)
+                    .setPositiveButton(R.string.action_delete) { _, _ ->
+                        viewModel.deleteHistory(history)
+                        parentFragmentManager.popBackStack()
+                    }
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .show()
+            }
         }
     }
 
@@ -85,11 +135,11 @@ class HistoryDetailFragment : Fragment() {
     companion object {
         const val EXTRA_HISTORY: String = "extra_history"
 
-        fun newInstance(history: ScanHistory): HistoryDetailFragment =
-            HistoryDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_HISTORY, history)
-                }
-            }
+        fun newInstance(history: ScanHistory): HistoryDetailFragment {
+            val fragment = HistoryDetailFragment()
+            val bundle = Bundle().apply { putParcelable(EXTRA_HISTORY, history) }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

@@ -11,8 +11,9 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import edu.unikom.herbamedjabar.R // Import R class
+import edu.unikom.herbamedjabar.BuildConfig
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.db.AppDatabase
 import edu.unikom.herbamedjabar.repository.PlantRepository
@@ -23,9 +24,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Provides
-    @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+    @Provides @Singleton fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
@@ -39,22 +38,18 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGenerativeModel(app: Application): GenerativeModel {
-        val apiKey = app.getString(R.string.api_key)
-        return GenerativeModel(
-            modelName = "gemini-1.5-flash",
-            apiKey = apiKey
-        )
+    fun provideGenerativeModel(): GenerativeModel {
+        val apiKey = BuildConfig.API_KEY
+        return GenerativeModel(modelName = "gemini-1.5-flash", apiKey = apiKey)
     }
 
     @Provides
     @Singleton
     fun provideAppDatabase(app: Application): AppDatabase {
-        return Room.databaseBuilder(
-            app,
-            AppDatabase::class.java,
-            "herb_app_db"
-        ).build()
+        return Room.databaseBuilder(app, AppDatabase::class.java, "herb_app_db")
+            .addMigrations(AppDatabase.MIGRATION_1_2)
+            .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration(true) }
+            .build()
     }
 
     @Provides
@@ -68,8 +63,8 @@ object AppModule {
     fun providePlantRepository(
         generativeModel: GenerativeModel,
         scanHistoryDao: ScanHistoryDao,
-        app: Application
+        @ApplicationContext context: android.content.Context,
     ): PlantRepository {
-        return PlantRepositoryImpl(generativeModel, scanHistoryDao, app)
+        return PlantRepositoryImpl(generativeModel, scanHistoryDao, context)
     }
 }

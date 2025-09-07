@@ -1,26 +1,24 @@
 package edu.unikom.herbamedjabar.adapter
 
+import android.os.Build
+import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.databinding.ItemPostBinding
-import org.intellij.markdown.flavours.commonmark.CommonMarkFlavourDescriptor
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.parser.MarkdownParser
-import java.text.SimpleDateFormat
-import java.util.*
+import edu.unikom.herbamedjabar.util.MarkdownUtils
 
 class PostAdapter(
     private val onLikeClicked: (String) -> Unit,
-    private val onDeleteClicked: (Post) -> Unit
+    private val onDeleteClicked: (Post) -> Unit,
+    private val currentUser: FirebaseUser?,
 ) : ListAdapter<Post, PostAdapter.PostViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -37,59 +35,77 @@ class PostAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post) {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            binding.apply {
-                tvUsername.text = post.username
-                ivUserProfile.load(post.userProfilePictureUrl) {
-                    placeholder(R.drawable.ic_user_image)
-                    error(R.drawable.ic_user_image)
-                }
-                ivPostImage.load(post.imageUrl) {
-                    placeholder(R.drawable.bg_place_holder)
-                }
-
-                fun formatMarkdownLists(input: String): String {
-                    return input.replace(
-                        Regex("""(\d+\.\s*)""")
-                    ) { match ->
-                        if (match.range.first == 0) match.value else "\n${match.value}"
-                    }
-                }
-
-                val formattedContent = post.content ?: ""
-                val formattedBenefit = formatMarkdownLists(post.benefit ?: "")
-                val formattedWarning = formatMarkdownLists(post.warning ?: "")
-
-                val flavour = CommonMarkFlavourDescriptor()
-
-                val parsedTreeContent = MarkdownParser(flavour).buildMarkdownTreeFromString(formattedContent)
-                val htmlContent = HtmlGenerator(formattedContent, parsedTreeContent, flavour).generateHtml()
-
-                val parsedTreeBenefit = MarkdownParser(flavour).buildMarkdownTreeFromString(formattedBenefit)
-                val htmlBenefit = HtmlGenerator(formattedBenefit, parsedTreeBenefit, flavour).generateHtml()
-
-                val parsedTreeWarning = MarkdownParser(flavour).buildMarkdownTreeFromString(formattedWarning)
-                val htmlWarning = HtmlGenerator(formattedWarning, parsedTreeWarning, flavour).generateHtml()
-
-                tvPlantName.text = post.plantName
-                tvContent.text = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvManfaat.text = HtmlCompat.fromHtml(htmlBenefit, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvEfek.text = HtmlCompat.fromHtml(htmlWarning, HtmlCompat.FROM_HTML_MODE_LEGACY)
-                tvLikeCount.text = "${post.likes.size}"
-
-                ivLike.setImageResource(
-                    if (post.likes.contains(currentUser?.uid)) R.drawable.ic_heart_filled
-                    else R.drawable.ic_hearth_outline
-                )
-
-                ivLike.setOnClickListener { onLikeClicked(post.id) }
-
-                ivMenuOptions.visibility = if (post.userId == currentUser?.uid) View.VISIBLE else View.GONE
-                ivMenuOptions.setOnClickListener { onDeleteClicked(post) }
-
-                val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
-                tvPostTimestamp.text = sdf.format(Date(post.timestamp))
+            val user = currentUser
+            binding.tvUsername.text = post.username
+            val userProfile =
+                post.userProfilePictureUrl.takeIf { !it.isNullOrBlank() } ?: R.drawable.avatar
+            binding.ivUserProfile.load(userProfile) {
+                crossfade(true)
+                placeholder(R.drawable.avatar)
+                error(R.drawable.avatar)
+                fallback(R.drawable.avatar)
             }
+            binding.ivPostImage.load(post.imageUrl) {
+                crossfade(true)
+                placeholder(R.drawable.bg_place_holder)
+                error(R.drawable.bg_place_holder)
+                fallback(R.drawable.bg_place_holder)
+            }
+            binding.plantNameTextView.text = post.plantName
+
+            // Use content-aware cache keys to avoid stale parses across updates.
+            val contentText = post.content
+            val benefitText = post.benefit.orEmpty()
+            val warningText = post.warning.orEmpty()
+
+            val contentKey = "post:${post.id}:content:${contentText.hashCode()}"
+            val benefitKey = "post:${post.id}:benefit:${benefitText.hashCode()}"
+            val warningKey = "post:${post.id}:warning:${warningText.hashCode()}"
+
+            val contentSpanned = MarkdownUtils.parseMarkdownToSpanned(contentText, contentKey)
+            val benefitSpanned = MarkdownUtils.parseMarkdownToSpanned(benefitText, benefitKey, true)
+            val warningSpanned = MarkdownUtils.parseMarkdownToSpanned(warningText, warningKey, true)
+
+            binding.contentTextView.text = contentSpanned
+            binding.benefitTextView.text = benefitSpanned
+            binding.warningTextView.text = warningSpanned
+            binding.benefitCard.isVisible = !post.benefit.isNullOrBlank()
+            binding.warningCard.isVisible = !post.warning.isNullOrBlank()
+            binding.tvLikeCount.text = "${post.likes.size}"
+            val likedByMe = user?.uid?.let(post.likes::contains) == true
+            binding.btnLike.isChecked = likedByMe
+            binding.btnLike.setOnClickListener {
+                val newChecked = !binding.btnLike.isChecked
+                binding.btnLike.isChecked = newChecked
+                binding.btnLike.isEnabled = false
+                binding.btnLike.contentDescription =
+                    if (newChecked) binding.root.context.getString(R.string.action_unlike)
+                    else binding.root.context.getString(R.string.action_like)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    binding.btnLike.tooltipText =
+                        if (newChecked) binding.root.context.getString(R.string.action_unlike)
+                        else binding.root.context.getString(R.string.action_like)
+                }
+                onLikeClicked(post.id)
+            }
+            binding.btnMenuOptions.isVisible = post.userId == user?.uid
+            binding.btnMenuOptions.setOnClickListener { onDeleteClicked(post) }
+            val tsMillis =
+                if (post.timestamp in 1 until 1_000_000_000_000L) post.timestamp * 1000
+                else post.timestamp
+            binding.tvPostTimestamp.text =
+                if (tsMillis > 0)
+                    DateUtils.getRelativeTimeSpanString(
+                            tsMillis,
+                            System.currentTimeMillis(),
+                            DateUtils.MINUTE_IN_MILLIS,
+                        )
+                        .toString()
+                else ""
+            binding.ivUserProfile.contentDescription =
+                binding.root.context.getString(R.string.cd_user_profile_of, post.username)
+            binding.ivPostImage.contentDescription =
+                binding.root.context.getString(R.string.cd_plant_image_of, post.plantName)
         }
     }
 

@@ -1,16 +1,42 @@
 package edu.unikom.herbamedjabar.useCase
 
 import android.graphics.Bitmap
+import edu.unikom.herbamedjabar.di.IoDispatcher
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.repository.PlantRepository
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class AnalyzePlantUseCase @Inject constructor(
-    private val plantRepository: PlantRepository
+class AnalyzePlantUseCase
+@Inject
+constructor(
+    private val plantRepository: PlantRepository,
+    @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     suspend operator fun invoke(bitmap: Bitmap): Result<AnalysisResult> {
         return try {
-            val prompt = """
+            val response =
+                withContext(ioDispatcher) {
+                    plantRepository.analyzePlant(bitmap, PLANT_ANALYSIS_PROMPT)
+                }
+            Result.success(response)
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
+        } catch (e: androidx.sqlite.SQLiteException) {
+            Result.failure(e)
+        } catch (e: IllegalArgumentException) {
+            Result.failure(e)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    companion object {
+
+        private val PLANT_ANALYSIS_PROMPT: String =
+            """
                 Anda adalah seorang ahli botani dan herbalis berpengalaman. Tugas Anda adalah menganalisis gambar tanaman yang diberikan dan memberikan informasi yang akurat, terstruktur, dan mudah dipahami dalam format Markdown.
 
                 **PENTING:**
@@ -44,12 +70,15 @@ class AnalyzePlantUseCase @Inject constructor(
                 - [Peringatan 2]
 
                 ---
-            """.trimIndent()
 
-            val response = plantRepository.analyzePlant(bitmap, prompt)
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+                ### Jenis Tanaman
+                *Jawab dengan tepat satu kata, tanpa tanda baca atau penjelasan tambahan.*
+                Pilihan yang diizinkan (case-sensitive): Herbal, Non-Herbal
+
+                Herbal | Non-Herbal
+
+                ---
+            """
+                .trimIndent()
     }
 }

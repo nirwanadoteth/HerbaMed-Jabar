@@ -3,25 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.ScanFragment">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_color"
         tools:context=".view.MainActivity">
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/bg_color"
-                android:padding="18dp">
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -29,11 +27,13 @@
                     android:gravity="center"
                     android:orientation="horizontal">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginEnd="16dp"
-                        android:src="@drawable/ic_circle_welcome" />
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_herbamed" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -45,29 +45,25 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Herba"
-                                android:textColor="@color/black"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:text="@string/forum_title_herba"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Med"
-                                android:textColor="@color/primary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:text="@string/forum_title_med"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium.Emphasized"
+                                android:textColor="?attr/colorPrimary" />
                         </LinearLayout>
 
-                        <TextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Scan tanaman untuk identifikasi herbal."
-                            android:textColor="@color/text_muted_foreground"
-                            android:textSize="12sp" />
+                            android:text="@string/scan_subtitle"
+                            android:textAppearance="@style/TextAppearance.App.BodyMedium.Secondary" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -75,52 +71,52 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card1"
+                        style="@style/Widget.Material3.CardView.Filled"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/card2"
                         app:layout_constraintStart_toStartOf="parent"
-
                         app:layout_constraintTop_toTopOf="parent">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:background="#DBEAFE"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:padding="8dp">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Total Scan"
-                                android:textSize="10sp" />
+                                android:text="@string/scan_total"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall.Emphasized"
+                                android:textColor="?attr/colorOnSurface" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/total_scan_text_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="@color/text_blue"
-                                android:textStyle="bold" />
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
+                                android:textColor="?attr/colorOnSurface"
+                                tools:text="0" />
 
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card2"
+                        style="@style/Widget.Material3.CardView.Filled"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginHorizontal="10dp"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        app:cardBackgroundColor="?attr/colorSecondaryContainer"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/card3"
                         app:layout_constraintStart_toEndOf="@+id/card1"
@@ -131,32 +127,33 @@
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:background="#DCFCE7"
-                            android:padding="10dp">
+                            android:padding="8dp">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tanaman Herbal"
+                                android:text="@string/scan_herbal"
                                 android:textAlignment="center"
-                                android:textSize="10sp" />
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall.Emphasized"
+                                android:textColor="?attr/colorOnSecondaryContainer" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/herbal_scan_text_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="@color/text_primary"
-                                android:textStyle="bold" />
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
+                                android:textColor="?attr/colorOnSecondaryContainer"
+                                tools:text="0" />
 
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/card3"
+                        style="@style/Widget.Material3.CardView.Filled"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="10dp"
-                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="?attr/colorErrorContainer"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/card2"
@@ -166,138 +163,126 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:background="#FEDBDB"
                             android:orientation="vertical"
-                            android:padding="10dp">
+                            android:padding="8dp">
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tanaman Biasa"
+                                android:text="@string/scan_nonherbal"
                                 android:textAlignment="center"
-                                android:textSize="10sp" />
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall.Emphasized"
+                                android:textColor="?attr/colorOnErrorContainer" />
 
-                            <TextView
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/non_herbal_scan_text_view"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="@color/text_desctructive"
-                                android:textStyle="bold" />
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
+                                android:textColor="?attr/colorOnErrorContainer"
+                                tools:text="0" />
 
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.cardview.widget.CardView
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Outlined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:contentPadding="17dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="1dp"
-                        android:background="@drawable/custom_place_holder_img"
-                        >
-                        <ImageView
-                            android:id="@+id/plantImageView"
-                            android:layout_width="match_parent"
-                            android:layout_height="226dp"
-                            android:clipToOutline="true"
-                            android:background="@color/white"
-                            android:contentDescription="Gambar tanaman yang akan di-scan"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/picture_placeholder" />
-                    </LinearLayout>
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Large"
+                    app:strokeColor="?attr/colorOutline">
 
-                </androidx.cardview.widget.CardView>
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/plant_image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/picture_placeholder" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/scanButton"
+                    android:id="@+id/scan_button"
+                    style="@style/Widget.Material3Expressive.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/primary"
-                    android:text="Ambil Gambar &amp; Scan"
-                    android:textSize="12sp"
-                    app:cornerRadius="12dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/scan_take_picture"
                     app:icon="@drawable/ic_camera"
-                    app:iconGravity="textStart"
-                    app:iconTint="@color/white" />
+                    app:iconGravity="textStart" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_gallery"
-                    style="@style/Widget.Material3.Button.IconButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:text="Upload dari Galeri"
-                    android:textColor="@color/primary"
-                    app:cornerRadius="10dp"
-                    app:iconPadding="10dp"
-                    app:icon="@drawable/ic_upload"
-                    app:iconTint="@color/primary"
-                    app:iconGravity="textStart" />
-
-                <LinearLayout
+                    style="@style/Widget.Material3Expressive.Button.ElevatedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/tips_card"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
+                    android:text="@string/scan_upload_gallery"
+                    app:icon="@drawable/ic_upload"
+                    app:iconGravity="textStart" />
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_info_circle" />
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:cardBackgroundColor="?attr/colorSecondaryContainer">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="💡 Tips Scan Terbaik"
-                            android:textColor="@color/text_blue"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@null"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_info"
+                            app:tint="?attr/colorOnSecondaryContainer" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="1. Gunakan pencahayaan alami"
-                            android:textSize="10sp"
-                            android:textStyle="italic"
-                            android:textColor="@color/text_blue"
-                            />
+                            android:layout_marginStart="8dp"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="2. Fokus pada satu daun utuh"
-                            android:textSize="10sp"
-                            android:textStyle="italic"
-                            android:textColor="@color/text_blue"
-                            />
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/scan_tips_title"
+                                android:textAppearance="@style/TextAppearance.Material3.BodyMedium.Emphasized"
+                                android:textColor="?attr/colorOnSecondaryContainer" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3. Hindari bayangan dan blur"
-                            android:textSize="10sp"
-                            android:textStyle="italic"
-                            android:textColor="@color/text_blue"
-                            />
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_tips_1"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                android:textColor="?attr/colorOnSecondaryContainer"
+                                android:textStyle="italic" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_tips_2"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                android:textColor="?attr/colorOnSecondaryContainer"
+                                android:textStyle="italic" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/scan_tips_3"
+                                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                                android:textColor="?attr/colorOnSecondaryContainer"
+                                android:textStyle="italic" />
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </ScrollView>
 

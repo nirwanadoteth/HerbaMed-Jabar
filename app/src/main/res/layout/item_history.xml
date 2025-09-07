@@ -1,81 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
-    android:background="@drawable/custom_card_info"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:padding="12dp"
-    android:layout_marginVertical="4dp">
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/containerImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            >
-            <ImageView
-                android:id="@+id/historyImageView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/backgrounds/scenic" />
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/historyTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:textColor="@android:color/black"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/containerImage"
-            app:layout_constraintBottom_toTopOf="@id/time_wrapper"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="🌿 **NAMA TANAMAN**\n   - Umum: Jahe\n   - Ilmiah: Zingiber officinale" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/history_image_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="@string/cd_plant_image"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.SmallComponent"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <LinearLayout
-            android:id="@+id/time_wrapper"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/historyTextView"
-            app:layout_constraintStart_toEndOf="@id/containerImage"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="14dp"
-            android:gravity="center_vertical"
-            >
-            <ImageView
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/plant_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_clock"
-                />
-            <TextView
-                android:id="@+id/time"
-                android:layout_marginStart="4dp"
+                android:accessibilityHeading="true"
+                android:ellipsize="end"
+                android:gravity="top"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                tools:targetApi="28"
+                tools:text="Nama Tanaman" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/description_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
-                android:text="test"
-                />
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                tools:text="Ini adalah tempat deksripsi gambar dari hasil scan yang pernah anda lakukan sebelumnya, maksimal 2 baris" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="4dp"
+                android:gravity="bottom"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                app:drawableStartCompat="@drawable/ic_clock"
+                app:drawableTint="?attr/colorOnSurfaceVariant"
+                tools:text="17 Aug 2025, 09:45" />
         </LinearLayout>
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

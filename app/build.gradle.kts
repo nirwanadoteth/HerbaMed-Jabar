@@ -1,18 +1,24 @@
 import java.util.Properties
-import java.io.FileInputStream
+
+val localPropertiesFile = rootProject.file("local.properties")
+val properties = Properties()
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.gms)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ktfmt)
+    alias(libs.plugins.room)
 }
+
+ktfmt { kotlinLangStyle() }
 
 android {
     namespace = "edu.unikom.herbamedjabar"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "edu.unikom.herbamedjabar"
@@ -20,19 +26,14 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables.useSupportLibrary = true
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        // Membaca API key dari local.properties
-        val properties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
         if (localPropertiesFile.exists()) {
-            properties.load(FileInputStream(localPropertiesFile))
+            localPropertiesFile.inputStream().use(properties::load)
         }
 
         val apiKey = properties.getProperty("apiKey", "")
-        // Menyediakan API key sebagai string resource
-        resValue("string", "api_key", apiKey)
+        buildConfigField("String", "API_KEY", apiKey)
     }
 
     buildTypes {
@@ -45,23 +46,25 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
-        // buildConfig tidak lagi diperlukan untuk ini
     }
 
+    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
 
-//    cloudinary
+    // Cloudinary
     implementation(libs.cloudinary.android)
     implementation(libs.androidx.core.splashscreen)
 
@@ -80,9 +83,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.exifinterface)
+    debugImplementation(libs.firebase.appcheck.debug)
 
     // Gemini API (Generative AI)
     implementation(libs.generativeai)
@@ -95,6 +97,7 @@ dependencies {
 
     // Coroutines untuk menangani proses background (seperti panggilan API)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Coil untuk memuat gambar dengan mudah
     implementation(libs.coil)
@@ -106,18 +109,19 @@ dependencies {
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     // Dukungan Room untuk Coroutines
     implementation(libs.androidx.room.ktx)
 
     // Markdown rendering
     implementation(libs.markdown)
-    implementation(libs.circleimageview)
 }
-// Tambahkan ini di bagian paling bawah file
-kapt {
-    correctErrorTypes = true
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }

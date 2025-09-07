@@ -6,17 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.ActivityAuthBinding
 import javax.inject.Inject
-import edu.unikom.herbamedjabar.R
 
 @AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthBinding
 
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +23,12 @@ class AuthActivity : AppCompatActivity() {
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        Mentrigger halaman utama
         if (firebaseAuth.currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-            return
-        }
-
-//        Mentrigger halaman login
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
+        } else if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.fragment_container, LoginFragment())
                 .commit()
         }

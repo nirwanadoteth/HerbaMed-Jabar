@@ -2,12 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Izin untuk mengakses kamera -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <!-- Izin untuk mengakses internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -19,14 +17,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.HerbaMedJabar"
-        tools:targetApi="31">
+        android:theme="@style/Theme.App"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="33">
 
-        <!-- SplashActivity adalah titik masuk -->
         <activity
-            android:name=".view.SplashActivity"
+            android:name=".view.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.App.Starting">
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.App.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,9 +34,6 @@
 
         <activity
             android:name=".view.AuthActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.MainActivity"
             android:exported="false" />
 
         <provider

@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "HerbaMed Jabar"
 include(":app")
- 

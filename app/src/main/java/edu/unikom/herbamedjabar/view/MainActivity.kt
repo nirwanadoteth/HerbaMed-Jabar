@@ -2,11 +2,11 @@ package edu.unikom.herbamedjabar.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,83 +19,62 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    @Inject
-    lateinit var auth: FirebaseAuth
+    @Inject lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, v.paddingBottom)
+            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, systemBars.bottom)
             insets
         }
 
         if (auth.currentUser == null) {
-            startActivity(Intent(this, AuthActivity::class.java))
+            val intent =
+                Intent(this, AuthActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
             finish()
             return
         }
-
-        if (savedInstanceState == null) {
-            // Tampilkan fragment awal (ScanFragment)
-            setCurrentFragment(ForumFragment(), false)
-        }
-
         binding.navView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_scan -> {
-                    setCurrentFragment(ScanFragment(), false)
-                    true
+            val fragment =
+                when (item.itemId) {
+                    R.id.navigation_scan -> ScanFragment()
+                    R.id.navigation_forum -> ForumFragment()
+                    R.id.navigation_history -> HistoryFragment()
+                    R.id.navigation_profile -> ProfileFragment()
+                    else -> null
                 }
-                R.id.navigation_forum -> {
-                    setCurrentFragment(ForumFragment(), false)
-                    true
-                }
-                R.id.navigation_history -> {
-                    setCurrentFragment(HistoryFragment(), false)
-                    true
-                }
-                R.id.navigation_profile -> {
-                    setCurrentFragment(ProfileFragment(), false)
-                    true
-                }
-                else -> false
-            }
+            fragment?.let {
+                setCurrentFragment(it, false)
+                true
+            } ?: false
+        }
+        if (savedInstanceState == null) {
+            binding.navView.selectedItemId = R.id.navigation_forum
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                binding.navView.visibility = View.GONE
-            } else {
-                binding.navView.visibility = View.VISIBLE
-            }
+            binding.navView.isVisible = supportFragmentManager.backStackEntryCount <= 0
         }
     }
 
     private fun setCurrentFragment(fragment: Fragment, addToBackStack: Boolean) {
         val transaction =
-            supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, fragment)
+            supportFragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.nav_host_fragment, fragment)
 
         if (addToBackStack) {
             transaction.addToBackStack(null)
         }
 
         transaction.commit()
-    }
-
-    // Fungsi publik untuk dipanggil dari ScanFragment
-    fun showResultFragment(imagePath: String, resultText: String) {
-        val resultFragment = ResultFragment.newInstance(imagePath, resultText)
-        // Ganti fragment dan tambahkan ke back stack agar bisa kembali
-        setCurrentFragment(resultFragment, true)
-    }
-
-    fun showHistoryDetailFragment(history: edu.unikom.herbamedjabar.data.ScanHistory) {
-        val historyDetailFragment = HistoryDetailFragment.newInstance(history)
-        setCurrentFragment(historyDetailFragment, true)
     }
 }

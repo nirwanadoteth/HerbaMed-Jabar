@@ -1,7 +1,5 @@
 package edu.unikom.herbamedjabar.data
 
-import com.google.firebase.firestore.FieldValue
-
 data class Post(
     val id: String = "",
     val userId: String = "",
@@ -12,9 +10,7 @@ data class Post(
     val description: String = "",
     val timestamp: Long = System.currentTimeMillis(),
     val likes: List<String> = emptyList(),
-
     val content: String? = null,
     val benefit: String? = null,
-    val warning: String? = null
-
+    val warning: String? = null,
 )

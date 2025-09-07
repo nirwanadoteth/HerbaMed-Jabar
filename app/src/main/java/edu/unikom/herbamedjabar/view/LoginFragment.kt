@@ -8,13 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.ClearCredentialException
-import androidx.credentials.exceptions.GetCredentialException
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -32,15 +29,18 @@ import kotlinx.coroutines.launch
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentLoginBinding
+        get() = _binding ?: error("Binding is only valid between onCreateView and onDestroyView")
 
     private val viewModel: AuthViewModel by viewModels()
 
-    private lateinit var credentialManager: CredentialManager
+    private val credentialManager: CredentialManager by
+        lazy(LazyThreadSafetyMode.NONE) { CredentialManager.create(requireContext()) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
@@ -49,8 +49,6 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        credentialManager = CredentialManager.create(requireContext())
-
         setupClickListeners()
 
         observeViewModel()
@@ -58,18 +56,25 @@ class LoginFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.loginButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
-            viewModel.loginUser(email, password)
+            val email =
+                binding.emailEditText.text.toString().trim().lowercase(java.util.Locale.ROOT)
+            val password = binding.passwordEditText.text.toString()
+            if (email.isEmpty() || password.isEmpty()) {
+                binding.emailInputLayout.error = if (email.isEmpty()) getString(R.string.error_email_required) else null
+                binding.passwordInputLayout.error = if (password.isEmpty()) getString(R.string.error_password_required) else null
+            } else {
+                binding.emailInputLayout.error = null
+                binding.passwordInputLayout.error = null
+                viewModel.loginUser(email, password)
+            }
         }
 
-        binding.loginWithGoogleButton.setOnClickListener {
-            launchGoogleSignIn()
-        }
+        binding.googleLoginButton.setOnClickListener { launchGoogleSignIn() }
 
         binding.registerTextView.setOnClickListener {
             // Navigasi ke RegisterFragment
-            parentFragmentManager.beginTransaction()
+            parentFragmentManager
+                .beginTransaction()
                 .replace(R.id.fragment_container, RegisterFragment())
                 .addToBackStack(null) // Agar bisa kembali ke login
                 .commit()
@@ -78,14 +83,15 @@ class LoginFragment : Fragment() {
 
     private fun launchGoogleSignIn() {
         // Create the dialog configuration for the Credential Manager request
-        val signInWithGoogleOption = GetSignInWithGoogleOption
-            .Builder(serverClientId = requireContext().getString(R.string.default_web_client_id))
-            .build()
+        val signInWithGoogleOption =
+            GetSignInWithGoogleOption.Builder(
+                    serverClientId = requireContext().getString(R.string.default_web_client_id)
+                )
+                .build()
 
         // Create the Credential Manager request using the configuration created above
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(signInWithGoogleOption)
-            .build()
+        val request =
+            GetCredentialRequest.Builder().addCredentialOption(signInWithGoogleOption).build()
 
         launchCredentialManager(request)
     }
@@ -93,28 +99,44 @@ class LoginFragment : Fragment() {
     private fun launchCredentialManager(request: GetCredentialRequest) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                // Launch Credential Manager UI
-                val result = credentialManager.getCredential(
-                    context = requireContext(),
-                    request = request
-                )
-
-                // Extract credential from the result returned by Credential Manager
-                createGoogleIdToken(result.credential)
-            } catch (e: GetCredentialException) {
+                val credential =
+                    credentialManager
+                        .getCredential(context = requireContext(), request = request)
+                        .credential
+                createGoogleIdToken(credential)
+            } catch (e: androidx.credentials.exceptions.NoCredentialException) {
+                Toast.makeText(
+                        requireContext(),
+                        getString(R.string.no_credentials_available),
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
+                Log.w(TAG, "NoCredentialException: ${e.localizedMessage}")
+            } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.credential_error_generic),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
 
     private fun createGoogleIdToken(credential: Credential) {
-        // Check if credential is of type Google ID
         if (credential is CustomCredential && credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            // Create Google ID Token
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-
-            // Sign in to Firebase with using the token
-            viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
+            try {
+                val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(
+                        requireContext(),
+                        getString(R.string.google_token_invalid),
+                        Toast.LENGTH_SHORT,
+                    )
+                    .show()
+                Log.w(TAG, "Invalid Google ID token credential", e)
+            }
         } else {
             Log.w(TAG, "Kredensial tidak sesuai dengan Google ID Token")
         }
@@ -122,11 +144,24 @@ class LoginFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.authState.observe(viewLifecycleOwner) { state ->
-            binding.progressBar.isVisible = state is AuthState.Loading
+            val loading = state is AuthState.Loading
+            binding.loadingIndicator.isVisible = loading
+            binding.loginButton.isEnabled = !loading
+            binding.googleLoginButton.isEnabled = !loading
+            binding.emailEditText.isEnabled = !loading
+            binding.passwordEditText.isEnabled = !loading
+            binding.registerTextView.isEnabled = !loading
+            binding.emailInputLayout.isEnabled = !loading
+            binding.passwordInputLayout.isEnabled = !loading
 
             when (state) {
                 is AuthState.Authenticated -> {
-                    Toast.makeText(requireContext(), "Login Berhasil!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                            requireContext(),
+                            getString(R.string.login_success),
+                            Toast.LENGTH_SHORT,
+                        )
+                        .show()
                     // Pindah ke MainActivity dan bersihkan back stack
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
