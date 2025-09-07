@@ -45,8 +45,31 @@ class HistoryFragment : Fragment() {
                 HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment(history)
             findNavController().navigate(directions)
         }
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         binding.historyRecyclerView.adapter = historyAdapter
+        binding.historyRecyclerView.layoutManager = layoutManager
         binding.historyRecyclerView.setHasFixedSize(true)
+
+        // Restore scroll position
+        binding.historyRecyclerView.post {
+            val pos = viewModel.getScrollPosition()
+            if (pos > 0) layoutManager.scrollToPosition(pos)
+        }
+
+        // Save scroll position on scroll
+        binding.historyRecyclerView.addOnScrollListener(
+            object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(
+                    recyclerView: androidx.recyclerview.widget.RecyclerView,
+                    newState: Int,
+                ) {
+                    if (newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE) {
+                        val first = layoutManager.findFirstVisibleItemPosition()
+                        if (first >= 0) viewModel.saveScrollPosition(first)
+                    }
+                }
+            }
+        )
     }
 
     private fun observeViewModel() {

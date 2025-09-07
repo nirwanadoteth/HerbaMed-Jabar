@@ -3,16 +3,17 @@ package edu.unikom.herbamedjabar.viewModel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import javax.inject.Inject
 
 sealed class AuthState {
     object Idle : AuthState()
@@ -38,7 +39,38 @@ private fun Throwable.toUserMessage(fallback: String): String =
     }
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val firebaseAuth: FirebaseAuth) : ViewModel() {
+class AuthViewModel
+@Inject
+constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+
+    // Login form fields
+    var email: String
+        get() = savedStateHandle["email"] ?: ""
+        set(value) {
+            savedStateHandle["email"] = value
+        }
+
+    var password: String
+        get() = savedStateHandle["password"] ?: ""
+        set(value) {
+            savedStateHandle["password"] = value
+        }
+
+    // Register form fields
+    var name: String
+        get() = savedStateHandle["name"] ?: ""
+        set(value) {
+            savedStateHandle["name"] = value
+        }
+
+    var confirmPassword: String
+        get() = savedStateHandle["confirmPassword"] ?: ""
+        set(value) {
+            savedStateHandle["confirmPassword"] = value
+        }
 
     private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
     val authState: LiveData<AuthState> = _authState

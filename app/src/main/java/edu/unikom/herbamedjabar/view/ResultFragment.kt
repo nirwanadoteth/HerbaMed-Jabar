@@ -10,6 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +27,6 @@ class ResultFragment : Fragment() {
     private val binding
         get() = _binding!!
 
-    // Inject ResultViewModel
     private val viewModel: ResultViewModel by viewModels()
 
     override fun onCreateView(
@@ -92,13 +92,13 @@ class ResultFragment : Fragment() {
 
     private fun setupListeners() {
         val args: ResultFragmentArgs by navArgs()
-        binding.topAppBar.setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        binding.topAppBar.setNavigationOnClickListener { findNavController().navigateUp() }
         binding.plantCardLayout.secondaryButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
                 "scan_again_request",
                 Bundle().apply { putBoolean("open_camera", true) },
             )
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
         binding.plantCardLayout.primaryButton.setOnClickListener {
             val imagePath = args.imagePath
@@ -142,7 +142,7 @@ class ResultFragment : Fragment() {
                             Toast.LENGTH_SHORT,
                         )
                         .show()
-                    parentFragmentManager.popBackStack()
+                    findNavController().navigateUp()
                 }
                 .onFailure {
                     Toast.makeText(
@@ -162,6 +162,4 @@ class ResultFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-    // SafeArgs handles argument passing; no need for companion object
 }

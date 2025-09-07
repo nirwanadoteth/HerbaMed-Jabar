@@ -2,6 +2,7 @@ package edu.unikom.herbamedjabar.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -9,9 +10,6 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
@@ -19,6 +17,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class ProfileViewModel
@@ -26,7 +27,18 @@ class ProfileViewModel
 constructor(
     private val auth: FirebaseAuth,
     private val postRepository: PostRepository, // Inject PostRepository
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    companion object {
+        const val AUTH_REQUIRED_ERROR = "auth_required"
+        private const val KEY_SCROLL_POSITION = "profile_posts_scroll_position"
+    }
+
+    fun saveScrollPosition(position: Int) {
+        savedStateHandle[KEY_SCROLL_POSITION] = position
+    }
+
+    fun getScrollPosition(): Int = savedStateHandle[KEY_SCROLL_POSITION] ?: 0
 
     private var userPostsJob: Job? = null
 
@@ -122,9 +134,5 @@ constructor(
     override fun onCleared() {
         userPostsJob?.cancel()
         super.onCleared()
-    }
-
-    companion object {
-        const val AUTH_REQUIRED_ERROR = "auth_required"
     }
 }

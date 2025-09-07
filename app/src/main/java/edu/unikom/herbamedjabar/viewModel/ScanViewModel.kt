@@ -8,10 +8,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.useCase.AnalyzePlantUseCase
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class UiState {
     object Idle : UiState()

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
@@ -37,6 +38,20 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Restore form state from ViewModel
+        binding.nameEditText.setText(viewModel.name)
+        binding.emailEditText.setText(viewModel.email)
+        binding.passwordEditText.setText(viewModel.password)
+        binding.confirmPasswordEditText.setText(viewModel.confirmPassword)
+
+        // Save form state to ViewModel on text change
+        binding.nameEditText.doAfterTextChanged { viewModel.name = it?.toString() ?: "" }
+        binding.emailEditText.doAfterTextChanged { viewModel.email = it?.toString() ?: "" }
+        binding.passwordEditText.doAfterTextChanged { viewModel.password = it?.toString() ?: "" }
+        binding.confirmPasswordEditText.doAfterTextChanged {
+            viewModel.confirmPassword = it?.toString() ?: ""
+        }
 
         setupClickListeners()
         observeViewModel()

@@ -68,9 +68,33 @@ class ProfileFragment : Fragment() {
                 currentUser = viewModel.getCurrentUser(),
             )
         postAdapter = adapterObj
+        val layoutManager = LinearLayoutManager(context)
         binding.rvMyPosts.apply {
             adapter = adapterObj
-            layoutManager = LinearLayoutManager(context)
+            this.layoutManager = layoutManager
+
+            // Restore scroll position
+            post {
+                val pos = viewModel.getScrollPosition()
+                if (pos > 0) layoutManager.scrollToPosition(pos)
+            }
+
+            // Save scroll position on scroll
+            addOnScrollListener(
+                object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(
+                        recyclerView: androidx.recyclerview.widget.RecyclerView,
+                        newState: Int,
+                    ) {
+                        if (
+                            newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+                        ) {
+                            val first = layoutManager.findFirstVisibleItemPosition()
+                            if (first >= 0) viewModel.saveScrollPosition(first)
+                        }
+                    }
+                }
+            )
         }
     }
 

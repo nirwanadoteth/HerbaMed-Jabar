@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -50,8 +51,15 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupClickListeners()
+        // Restore form state from ViewModel
+        binding.emailEditText.setText(viewModel.email)
+        binding.passwordEditText.setText(viewModel.password)
 
+        // Save form state to ViewModel on text change
+        binding.emailEditText.doAfterTextChanged { viewModel.email = it?.toString() ?: "" }
+        binding.passwordEditText.doAfterTextChanged { viewModel.password = it?.toString() ?: "" }
+
+        setupClickListeners()
         observeViewModel()
     }
 

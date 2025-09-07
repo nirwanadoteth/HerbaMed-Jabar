@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.google.android.material.color.MaterialColors
@@ -84,7 +85,7 @@ class HistoryDetailFragment : Fragment() {
     }
 
     private fun setupAction(history: ScanHistory) {
-        binding.topAppBar.setNavigationOnClickListener { parentFragmentManager.popBackStack() }
+        binding.topAppBar.setNavigationOnClickListener { findNavController().navigateUp() }
         val deleteButton = binding.plantCardLayout.secondaryButton
         deleteButton.apply {
             text = getString(R.string.action_delete)
@@ -109,7 +110,7 @@ class HistoryDetailFragment : Fragment() {
                     .setMessage(R.string.delete_history_message)
                     .setPositiveButton(R.string.action_delete) { _, _ ->
                         viewModel.deleteHistory(history)
-                        parentFragmentManager.popBackStack()
+                        findNavController().navigateUp()
                     }
                     .setNegativeButton(R.string.action_cancel, null)
                     .show()
