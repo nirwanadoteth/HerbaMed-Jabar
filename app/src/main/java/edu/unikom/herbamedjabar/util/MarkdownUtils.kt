@@ -64,10 +64,8 @@ object MarkdownUtils {
             append(key)
             append("|fmt:")
             append(if (formatList) 1 else 0)
-            append("|md:")
-            append(input?.hashCode() ?: 0)
-            append("|len:")
-            append(input?.length ?: 0)
+            append("|md64:")
+            append(input?.let(::fnv1a64) ?: 0L)
             append("|mode:")
             append(htmlMode)
         }
@@ -93,4 +91,15 @@ object MarkdownUtils {
 
     // Only after colon/semicolon/closing bracket to reduce false positives
     private val numberedListPattern by lazy { Regex("(?<=[:;\\)\\]])\\s*(\\d+\\.\\s)") }
+
+    // 64-bit FNV-1a: fast, non-crypto, good dispersion for cache keys
+    private fun fnv1a64(s: String): Long {
+        var h = -0x340d631b9dd648dbL /* FNV offset basis */
+        val prime = 0x100000001b3L
+        for (c in s) {
+            h = h xor c.code.toLong()
+            h *= prime
+        }
+        return h
+    }
 }

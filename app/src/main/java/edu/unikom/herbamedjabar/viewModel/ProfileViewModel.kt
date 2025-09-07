@@ -33,7 +33,7 @@ constructor(
     private val _user = MutableLiveData<FirebaseUser?>()
     val user: LiveData<FirebaseUser?> = _user
 
-    private val _userPosts = MutableLiveData<List<Post>>()
+    private val _userPosts = MutableLiveData<List<Post>>(emptyList())
     val userPosts: LiveData<List<Post>> = _userPosts
 
     private val _isLoading = MutableLiveData(false)

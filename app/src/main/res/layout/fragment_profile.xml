@@ -78,13 +78,13 @@
             app:layout_constraintTop_toBottomOf="@id/tv_username"
             tools:text="email@example.com" />
 
-        <com.google.android.material.button.MaterialButtonGroup
+        <LinearLayout
             android:id="@+id/badge_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:gravity="center_horizontal"
-            android:spacing="4dp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_profile_picture">
@@ -94,6 +94,7 @@
                 style="@style/Widget.Material3Expressive.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:clickable="false"
                 android:focusable="false"
                 android:importantForAccessibility="no"
@@ -105,6 +106,7 @@
                 style="@style/Widget.Material3Expressive.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:clickable="false"
                 android:focusable="false"
                 android:importantForAccessibility="no"
@@ -117,6 +119,7 @@
                 style="@style/Widget.Material3Expressive.Button.TonalButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:clickable="false"
                 android:focusable="false"
                 android:importantForAccessibility="no"
@@ -136,7 +139,7 @@
                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
                 app:backgroundTint="?attr/colorTertiaryContainer" />
 
-        </com.google.android.material.button.MaterialButtonGroup>
+        </LinearLayout>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
@@ -149,13 +152,13 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_my_posts_title"
+            style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="24dp"
             android:accessibilityHeading="true"
             android:text="@string/my_posts_title"
-            style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/badge_container"

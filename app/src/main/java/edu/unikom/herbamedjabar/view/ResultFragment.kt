@@ -10,6 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import coil.load
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
@@ -75,7 +76,11 @@ class ResultFragment : Fragment() {
             primaryButton.isVisible = benefit.isNotBlank() || warning.isNotBlank()
             val imageFile = imagePath?.let(::File)
             if (imageFile?.exists() == true) {
-                resultImageView.setImageURI(Uri.fromFile(imageFile))
+                resultImageView.load(imageFile) {
+                    placeholder(R.drawable.bg_place_holder)
+                    error(R.drawable.bg_place_holder)
+                    crossfade(true)
+                }
             } else {
                 resultImageView.setImageResource(R.drawable.bg_place_holder)
             }
@@ -86,21 +91,21 @@ class ResultFragment : Fragment() {
 
     private fun setupListeners() {
         binding.topAppBar.setNavigationOnClickListener {
-            activity?.supportFragmentManager?.popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.plantCardLayout.secondaryButton.setOnClickListener {
             parentFragmentManager.setFragmentResult(
                 "scan_again_request",
                 Bundle().apply { putBoolean("open_camera", true) },
             )
-            activity?.supportFragmentManager?.popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.plantCardLayout.primaryButton.setOnClickListener {
             val imagePath = arguments?.getString(ARG_IMAGE_PATH)
-            val resultText = arguments?.getString(ARG_RESULT_TEXT)
-            val plantName = arguments?.getString(ARG_PLANT_NAME) ?: ""
+            val resultText = arguments?.getString(ARG_RESULT_TEXT)?.trim()
+            val plantName = arguments?.getString(ARG_PLANT_NAME)?.trim().orEmpty()
 
-            if (imagePath == null || resultText == null) {
+            if (imagePath == null || resultText.isNullOrBlank() || plantName.isBlank()) {
                 Toast.makeText(
                         requireContext(),
                         getString(R.string.error_incomplete_post_data),

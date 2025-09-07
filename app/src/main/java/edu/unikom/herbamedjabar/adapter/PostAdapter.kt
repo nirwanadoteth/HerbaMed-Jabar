@@ -38,9 +38,9 @@ class PostAdapter(
             binding.tvUsername.text = post.username
             binding.ivUserProfile.load(post.userProfilePictureUrl) {
                 crossfade(true)
-                placeholder(R.drawable.ic_user_image)
-                error(R.drawable.ic_user_image)
-                fallback(R.drawable.ic_user_image)
+                placeholder(R.drawable.avatar)
+                error(R.drawable.avatar)
+                fallback(R.drawable.avatar)
             }
             binding.ivPostImage.load(post.imageUrl) {
                 crossfade(true)
@@ -97,6 +97,13 @@ class PostAdapter(
                 } else {
                     binding.root.context.getString(R.string.cd_like)
                 }
+            binding.btnLike.addOnCheckedChangeListener { _, isChecked ->
+                binding.btnLike.contentDescription =
+                    if (isChecked)
+                        binding.root.context.getString(R.string.cd_liked)
+                    else
+                        binding.root.context.getString(R.string.cd_like)
+            }
         }
     }
 

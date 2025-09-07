@@ -51,7 +51,7 @@
 
     <style name="Theme.App.Splash" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/Theme.App</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_circle_welcome</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_herbamed</item>
     </style>
 
     <style name="TextAppearance.App.BodyMedium.Secondary" parent="TextAppearance.Material3.BodyMedium">

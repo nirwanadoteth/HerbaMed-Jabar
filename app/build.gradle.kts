@@ -33,7 +33,7 @@ android {
         }
 
         val apiKey = properties.getProperty("apiKey", "")
-        resValue("string", "api_key", apiKey)
+        buildConfigField("String", "API_KEY", apiKey)
     }
 
     buildTypes {

@@ -114,16 +114,16 @@ object PlantDataParser {
     private val NEG_HERBAL_REGEX = Regex("""\b(?:non|bukan|tidak)\s*herbal\b""")
     private val HERBAL_TOKEN_REGEX = Regex("""\bherbal\b""")
 
+    private val NAME_PATTERN = Regex(
+        pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?([^\r\n#*]+?)\s*\*?\s*Nama\s+Ilmiah(?:\s*[:：])?\b""",
+        options = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
+    )
+
     private fun isUnidentifiedPlant(text: String): Boolean =
         UNIDENTIFIED_REGEX.containsMatchIn(text)
 
     private fun parsePlantName(text: String): String {
-        val namePattern =
-            Regex(
-                pattern = """^(?:#{1,6}\s*)?(?:🌿\s*)?([^\r\n#*]+?)\s*\*?\s*Nama\s+Ilmiah(?:\s*[:：])?\b""",
-                options = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE),
-            )
-        return namePattern.find(text)?.destructured?.let { (name) -> name.trim() }
+        return NAME_PATTERN.find(text)?.destructured?.let { (name) -> name.trim() }
             ?: text.lineSequence().firstOrNull()?.replace(Regex("""^[#*\s🌿]+"""), "")?.trim()
             ?: ""
     }

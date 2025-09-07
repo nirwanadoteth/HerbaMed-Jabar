@@ -80,13 +80,15 @@ constructor(private val postRepository: PostRepository, private val auth: Fireba
 
     fun deletePost(post: Post) {
         viewModelScope.launch {
-            runCatching { withContext(Dispatchers.IO) { postRepository.deletePost(post) } }
-                .onFailure {
-                    when (it) {
-                        is CancellationException -> throw it
-                        else -> _error.value = it.message
-                    }
+            try {
+                withContext(Dispatchers.IO) {
+                    postRepository.deletePost(post)
                 }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
         }
     }
 

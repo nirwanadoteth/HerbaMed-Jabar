@@ -26,7 +26,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="16dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_circle_welcome" />
+                android:src="@drawable/ic_herbamed" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -39,24 +39,24 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
+                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/forum_title_herba"
-                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized" />
+                        android:text="@string/forum_title_herba" />
 
                     <com.google.android.material.textview.MaterialTextView
+                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/forum_title_med"
-                        style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                         android:textColor="?attr/colorPrimary" />
                 </LinearLayout>
 
                 <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.TitleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/scan_subtitle"
-                    style="@style/TextAppearance.Material3.TitleSmall" />
+                    android:text="@string/scan_subtitle" />
             </LinearLayout>
         </LinearLayout>
 
@@ -64,10 +64,10 @@
             android:id="@+id/info_wrapper_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="12dp"
             app:cardBackgroundColor="?attr/colorSecondaryContainer"
             app:cardUseCompatPadding="true"
-            app:contentPadding="8dp"
+            app:contentPadding="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/welcome_wrapper">
 
@@ -78,33 +78,33 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                android:orientation="vertical">
+                    android:orientation="vertical">
 
-                <com.google.android.material.textview.MaterialTextView
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/TextAppearance.Material3.TitleSmall.Emphasized"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:accessibilityHeading="true"
+                        android:text="@string/forum_share_title"
+                        tools:targetApi="28" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/TextAppearance.Material3.BodySmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/forum_share_subtitle" />
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/scan_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:accessibilityHeading="true"
-                    android:text="@string/forum_share_title"
-                    style="@style/TextAppearance.Material3.TitleSmall.Emphasized"
-                    tools:targetApi="28" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/forum_share_subtitle"
-                    style="@style/TextAppearance.Material3.BodySmall"/>
-            </LinearLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/scan_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/post_to_forum"
-                app:icon="@drawable/ic_plus"
-                app:iconGravity="textStart" />
+                    android:text="@string/post_to_forum"
+                    app:icon="@drawable/ic_plus"
+                    app:iconGravity="textStart" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -113,7 +113,7 @@
             android:id="@+id/rv_posts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:nestedScrollingEnabled="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -129,13 +129,13 @@
             android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/loading"
             android:importantForAccessibility="yes"
-            android:visibility="gone"
             android:indeterminate="true"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

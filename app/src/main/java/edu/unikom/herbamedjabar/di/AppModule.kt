@@ -12,7 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import edu.unikom.herbamedjabar.R // Import R class
+import edu.unikom.herbamedjabar.BuildConfig
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.db.AppDatabase
 import edu.unikom.herbamedjabar.repository.PlantRepository
@@ -37,8 +37,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGenerativeModel(app: Application): GenerativeModel {
-        val apiKey = app.getString(R.string.api_key)
+    fun provideGenerativeModel(): GenerativeModel {
+        val apiKey = BuildConfig.API_KEY
         return GenerativeModel(modelName = "gemini-1.5-flash", apiKey = apiKey)
     }
 

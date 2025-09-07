@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:padding="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/logo_image_view"
@@ -18,7 +18,7 @@
             android:layout_height="72dp"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/logo"
-            android:src="@drawable/ic_circle_welcome"
+            android:src="@drawable/ic_herbamed"
             app:layout_constraintBottom_toTopOf="@id/title_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,11 +27,11 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title_text_view"
+            style="@style/TextAppearance.Material3.TitleLarge.Emphasized"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/login_title"
-            style="@style/TextAppearance.Material3.TitleLarge.Emphasized"
             app:layout_constraintBottom_toTopOf="@id/subtitle_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,9 +52,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="?attr/colorSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subtitle_text_view">
@@ -78,14 +78,14 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:hintEnabled="false"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_mail">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:id="@+id/email_edit_text"
+                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints="emailAddress"
@@ -98,10 +98,10 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.LabelLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="8dp"
-                    style="@style/TextAppearance.Material3.LabelLarge"
                     android:labelFor="@id/password_edit_text"
                     android:text="@string/password" />
 
@@ -110,16 +110,16 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
-                    app:endIconMode="password_toggle"
                     app:endIconContentDescription="@string/password_toggle"
+                    app:endIconMode="password_toggle"
                     app:hintEnabled="false"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_lock">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:id="@+id/password_edit_text"
+                        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autofillHints="password"
@@ -127,15 +127,15 @@
                         android:imeOptions="actionDone"
                         android:importantForAutofill="yes"
                         android:inputType="textPassword"
-                        android:textColor="?attr/colorOnSurface"/>
+                        android:textColor="?attr/colorOnSurface" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/login_button"
+                    style="@style/Widget.Material3Expressive.Button"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    style="@style/Widget.Material3Expressive.Button"
                     android:layout_marginTop="24dp"
                     android:text="@string/login_button" />
 
@@ -152,7 +152,7 @@
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1"
-                        app:dividerColor="?attr/colorOnPrimaryContainer" />
+                        app:dividerColor="?attr/colorOutline" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
@@ -166,15 +166,15 @@
                         android:layout_width="0dp"
                         android:layout_height="1dp"
                         android:layout_weight="1"
-                        app:dividerColor="?attr/colorOnPrimaryContainer" />
+                        app:dividerColor="?attr/colorOutline" />
 
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/google_login_button"
+                    style="@style/Widget.Material3Expressive.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    style="@style/Widget.Material3Expressive.Button.OutlinedButton"
                     android:text="@string/login_with_google"
                     app:icon="@drawable/ic_google"
                     app:iconGravity="textStart"
@@ -196,30 +196,32 @@
                         android:text="@string/no_account" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                         android:id="@+id/register_text_view"
+                        style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/register_here"
-                        android:textColor="?attr/colorPrimary"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:paddingHorizontal="8dp"/>
+                        android:minHeight="?attr/minTouchTargetSize"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="12dp"
+                        android:text="@string/register_here"
+                        android:textColor="?attr/colorPrimary" />
                 </LinearLayout>
 
             </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.loadingindicator.LoadingIndicator
             android:id="@+id/loading_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/loading"
             android:importantForAccessibility="yes"
             android:indeterminate="true"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

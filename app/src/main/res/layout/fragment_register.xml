@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:padding="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/logo_image_view"
@@ -18,7 +18,7 @@
             android:layout_height="72dp"
             android:layout_marginTop="32dp"
             android:contentDescription="@string/logo"
-            android:src="@drawable/ic_circle_welcome"
+            android:src="@drawable/ic_herbamed"
             app:layout_constraintBottom_toTopOf="@id/title_text_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,25 +27,23 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title_text_view"
+            style="@style/TextAppearance.Material3.TitleLarge.Emphasized"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/register_title"
-            android:textColor="?attr/colorOnBackground"
-            style="@style/TextAppearance.Material3.TitleLarge.Emphasized"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/subtitle_text_view"
+            style="@style/TextAppearance.Material3.TitleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/register_subtitle"
             android:textAlignment="center"
-            style="@style/TextAppearance.Material3.TitleSmall"
-            android:textColor="?attr/colorOnBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_text_view" />
@@ -77,8 +75,8 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:hintEnabled="false"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_user">
 
@@ -90,8 +88,7 @@
                         android:hint="@string/full_name_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textPersonName"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorOnBackground" />
+                        android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,8 +104,8 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:hintEnabled="false"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_mail">
 
@@ -120,8 +117,7 @@
                         android:hint="@string/email_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorOnBackground" />
+                        android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,10 +133,10 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+                    app:endIconContentDescription="@string/password_toggle"
                     app:endIconMode="password_toggle"
                     app:hintEnabled="false"
-                    app:endIconContentDescription="@string/password_toggle"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_lock">
 
@@ -152,8 +148,7 @@
                         android:hint="@string/password_hint"
                         android:imeOptions="actionNext"
                         android:inputType="textPassword"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorOnBackground" />
+                        android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -169,10 +164,10 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+                    app:endIconContentDescription="@string/password_toggle"
                     app:endIconMode="password_toggle"
                     app:hintEnabled="false"
-                    app:endIconContentDescription="@string/password_toggle"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
                     app:startIconContentDescription="@null"
                     app:startIconDrawable="@drawable/ic_lock">
 
@@ -184,17 +179,16 @@
                         android:hint="@string/confirm_password_hint"
                         android:imeOptions="actionDone"
                         android:inputType="textPassword"
-                        android:maxLines="1"
-                        android:textColor="?attr/colorOnBackground" />
+                        android:maxLines="1" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/registerButton"
+                    style="@style/Widget.Material3Expressive.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    style="@style/Widget.Material3Expressive.Button"
                     android:text="@string/register_button" />
 
                 <LinearLayout
@@ -212,24 +206,25 @@
                         android:text="@string/already_have_account" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                         android:id="@+id/login_text_view"
+                        style="@style/TextAppearance.Material3.BodyMedium.Emphasized"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/login_button"
-                        android:textColor="?attr/colorPrimary"
                         android:clickable="true"
                         android:focusable="true"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:paddingHorizontal="8dp"/>
+                        android:minHeight="?attr/minTouchTargetSize"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="12dp"
+                        android:text="@string/login_button"
+                        android:textColor="?attr/colorPrimary" />
                 </LinearLayout>
             </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/TextAppearance.Material3.TitleSmall"
-            android:textColor="?attr/colorOnBackground"
             android:id="@+id/footer_text_view"
+            style="@style/TextAppearance.Material3.TitleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -245,11 +240,11 @@
             android:id="@+id/loading_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:accessibilityLiveRegion="polite"
             android:contentDescription="@string/loading"
             android:importantForAccessibility="yes"
             android:indeterminate="true"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

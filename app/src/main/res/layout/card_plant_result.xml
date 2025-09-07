@@ -82,8 +82,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            android:accessibilityHeading="true"
                             android:text="@string/section_benefit_label"
-                            android:textColor="?attr/colorOnSecondaryContainer" />
+                            android:textColor="?attr/colorOnSecondaryContainer"
+                            tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
@@ -91,6 +93,7 @@
                         style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOnSecondaryContainer"
                         tools:text="Manfaat" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -131,8 +134,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            android:accessibilityHeading="true"
                             android:text="@string/section_warning_label"
-                            android:textColor="?attr/colorOnTertiaryContainer" />
+                            android:textColor="?attr/colorOnTertiaryContainer"
+                            tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
@@ -140,6 +145,7 @@
                         style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOnTertiaryContainer"
                         tools:text="Peringatan" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -149,8 +155,8 @@
             android:id="@+id/button_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
             android:layout_margin="16dp"
+            android:gravity="end"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton

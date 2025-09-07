@@ -64,8 +64,8 @@
                 android:contentDescription="@string/cd_post_options"
                 android:tooltipText="@string/cd_post_options"
                 android:visibility="gone"
+                app:icon="@drawable/ic_more_vert"
                 app:strokeWidth="0dp"
-                app:icon="@drawable/ic_more_hori"
                 tools:targetApi="26"
                 tools:visibility="visible" />
         </LinearLayout>
@@ -138,8 +138,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            android:accessibilityHeading="true"
                             android:text="@string/section_benefit_label"
-                            android:textColor="?attr/colorOnSecondaryContainer" />
+                            android:textColor="?attr/colorOnSecondaryContainer"
+                            tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
@@ -147,6 +149,7 @@
                         style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOnSecondaryContainer"
                         tools:text="Manfaat" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -187,8 +190,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
+                            android:accessibilityHeading="true"
                             android:text="@string/section_warning_label"
-                            android:textColor="?attr/colorOnTertiaryContainer" />
+                            android:textColor="?attr/colorOnTertiaryContainer"
+                            tools:targetApi="28" />
                     </LinearLayout>
 
                     <com.google.android.material.textview.MaterialTextView
@@ -196,6 +201,7 @@
                         style="@style/TextAppearance.App.BodyMedium.Secondary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="?attr/colorOnTertiaryContainer"
                         tools:text="Peringatan" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -215,13 +221,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:checkable="true"
                 android:contentDescription="@string/cd_like"
                 android:tooltipText="@string/cd_like"
                 app:backgroundTint="?attr/colorSurface"
                 app:icon="@drawable/toggle_like_selector"
                 app:iconTint="@android:color/holo_red_dark"
                 app:materialSizeOverlay="@style/SizeOverlay.Material3Expressive.Button.IconButton.Small"
-                android:checkable="true"
                 tools:checked="true"
                 tools:targetApi="26" />
 

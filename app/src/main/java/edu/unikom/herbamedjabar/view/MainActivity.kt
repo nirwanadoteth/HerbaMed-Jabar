@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -11,9 +12,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
-import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.databinding.ActivityMainBinding
-import edu.unikom.herbamedjabar.repository.AnalysisResult
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -25,18 +24,21 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        installSplashScreen()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, v.paddingBottom)
+            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, systemBars.bottom)
             insets
         }
 
         if (auth.currentUser == null) {
-            startActivity(Intent(this, AuthActivity::class.java))
+            val intent = Intent(this, AuthActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
             finish()
             return
         }
@@ -65,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setCurrentFragment(fragment: Fragment, addToBackStack: Boolean) {
         val transaction =
-            supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment, fragment)
+            supportFragmentManager.beginTransaction().setReorderingAllowed(true).replace(R.id.nav_host_fragment, fragment)
 
         if (addToBackStack) {
             transaction.addToBackStack(null)
@@ -74,13 +76,4 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun showResultFragment(args: AnalysisResult) {
-        val resultFragment = ResultFragment.newInstance(args)
-        setCurrentFragment(resultFragment, true)
-    }
-
-    fun showHistoryDetailFragment(history: ScanHistory) {
-        val historyDetailFragment = HistoryDetailFragment.newInstance(history)
-        setCurrentFragment(historyDetailFragment, true)
-    }
 }

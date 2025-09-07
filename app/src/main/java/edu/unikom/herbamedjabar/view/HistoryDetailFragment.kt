@@ -1,5 +1,6 @@
 package edu.unikom.herbamedjabar.view
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import coil.load
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -91,15 +93,15 @@ class HistoryDetailFragment : Fragment() {
         val deleteButton = binding.plantCardLayout.secondaryButton
         deleteButton.apply {
             text = getString(R.string.action_delete)
-            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_trash)
-            val errorContainer = com.google.android.material.color.MaterialColors.getColor(
+            icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete)
+            val errorContainer = MaterialColors.getColor(
                 this, com.google.android.material.R.attr.colorErrorContainer
             )
-            val onErrorContainer = com.google.android.material.color.MaterialColors.getColor(
+            val onErrorContainer = MaterialColors.getColor(
                 this, com.google.android.material.R.attr.colorOnErrorContainer
             )
-            iconTint = android.content.res.ColorStateList.valueOf(onErrorContainer)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(errorContainer)
+            iconTint = ColorStateList.valueOf(onErrorContainer)
+            backgroundTintList = ColorStateList.valueOf(errorContainer)
             setTextColor(onErrorContainer)
 
             setOnClickListener {

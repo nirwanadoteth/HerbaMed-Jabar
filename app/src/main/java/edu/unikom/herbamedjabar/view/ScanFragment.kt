@@ -104,7 +104,7 @@ class ScanFragment : Fragment() {
                                     val maxDim =
                                         maxOf(bounds.outWidth, bounds.outHeight).takeIf { it > 0 }
                                             ?: targetMaxDim
-                                    val sample = maxOf(1, maxDim / targetMaxDim)
+                                    val sample = maxOf(1, (maxDim + targetMaxDim - 1) / targetMaxDim)
                                     val opts =
                                         BitmapFactory.Options().apply { inSampleSize = sample }
                                     val decoded = resolver.openInputStream(uri)?.use { input ->
@@ -166,7 +166,11 @@ class ScanFragment : Fragment() {
         // Observe navigations
         viewModel.navigateToResult.observe(viewLifecycleOwner) { result ->
             result?.let {
-                (activity as? MainActivity)?.showResultFragment(it)
+                val resultFragment = ResultFragment.newInstance(it)
+                activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.nav_host_fragment, resultFragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
                 viewModel.onNavigationComplete()
             }
         }
@@ -175,7 +179,7 @@ class ScanFragment : Fragment() {
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is UiState.Loading -> {
-                    if (processingDialog == null || processingDialog?.dialog?.isShowing == false) {
+                    if (processingDialog?.isAdded != true) {
                         processingDialog = ProcessingDialogFragment()
                         processingDialog?.show(childFragmentManager, ProcessingDialogFragment.TAG)
                     }
@@ -183,7 +187,9 @@ class ScanFragment : Fragment() {
 
                 is UiState.Success,
                 is UiState.Error -> {
-                    processingDialog?.dismiss()
+                    if (processingDialog?.isAdded == true) {
+                        processingDialog?.dismiss()
+                    }
                     processingDialog = null
                     if (state is UiState.Error) {
                         context?.let { ctx ->
@@ -227,6 +233,10 @@ class ScanFragment : Fragment() {
                     ExifInterface.ORIENTATION_ROTATE_90 -> bmp.rotate(90f)
                     ExifInterface.ORIENTATION_ROTATE_180 -> bmp.rotate(180f)
                     ExifInterface.ORIENTATION_ROTATE_270 -> bmp.rotate(270f)
+                    ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> bmp.flip(horizontal = true)
+                    ExifInterface.ORIENTATION_FLIP_VERTICAL -> bmp.flip(horizontal = false)
+                    ExifInterface.ORIENTATION_TRANSPOSE -> bmp.rotateAndFlip(90f, true)
+                    ExifInterface.ORIENTATION_TRANSVERSE -> bmp.rotateAndFlip(270f, true)
                     else -> bmp
                 }
             } ?: bmp
@@ -238,6 +248,19 @@ class ScanFragment : Fragment() {
     private fun Bitmap.rotate(degrees: Float): Bitmap =
         android.graphics.Matrix().let { m ->
             m.postRotate(degrees)
+            Bitmap.createBitmap(this, 0, 0, width, height, m, true)
+        }
+
+    private fun Bitmap.flip(horizontal: Boolean): Bitmap =
+        android.graphics.Matrix().let { m ->
+            m.preScale(if (horizontal) -1f else 1f, if (horizontal) 1f else -1f)
+            Bitmap.createBitmap(this, 0, 0, width, height, m, true)
+        }
+
+    private fun Bitmap.rotateAndFlip(degrees: Float, horizontal: Boolean): Bitmap =
+        android.graphics.Matrix().let { m ->
+            m.postRotate(degrees)
+            m.postScale(if (horizontal) -1f else 1f, 1f)
             Bitmap.createBitmap(this, 0, 0, width, height, m, true)
         }
 
