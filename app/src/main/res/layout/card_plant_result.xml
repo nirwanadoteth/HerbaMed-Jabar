@@ -35,7 +35,9 @@
                 style="@style/TextAppearance.Material3.TitleMedium.Emphasized"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Nama Tanaman" />
+                android:accessibilityHeading="true"
+                tools:text="Nama Tanaman"
+                tools:targetApi="28" />
 
             <!-- Description Section -->
             <com.google.android.material.textview.MaterialTextView

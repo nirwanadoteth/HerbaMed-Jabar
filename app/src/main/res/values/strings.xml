@@ -79,7 +79,6 @@
     <string name="deskripsi_dan_kegunaan_tanaman_akan_muncul_di_sini">Deskripsi dan kegunaan tanaman
         akan muncul di sini…</string>
     <string name="herbamed">HerbaMed</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selamat_datang">Selamat Datang!</string>
     <string name="selamat_datang_desc">Temukan tanaman herbal di sekitar Anda</string>
     <string name="progress_percent">%1$d%%</string>
@@ -122,4 +121,5 @@
     <string name="camera_permission_denied_permanent">Izin kamera ditolak permanen</string>
     <string name="ai_text_empty">Hasil teks dari AI kosong.</string>
     <string name="analysis_failed_after_retries">Gagal menganalisis tanaman setelah beberapa kali percobaan.</string>
+    <string name="google_token_invalid">Token Google tidak valid.</string>
 </resources>
