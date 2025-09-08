@@ -1,6 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
 import java.util.Properties
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val localPropertiesFile = rootProject.file("local.properties")
 val localProperties = Properties()
@@ -38,8 +38,13 @@ android {
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
 
-        val apiKey = localProperties["apiKey"] as String
-        buildConfigField("String", "API_KEY", apiKey)
+        val apiKey = localProperties.getProperty("apiKey", "")
+        val cloudName = localProperties.getProperty("cloudinaryCloudName", "")
+        val cloudPreset = localProperties.getProperty("cloudinaryPreset", "")
+
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"$cloudName\"")
+        buildConfigField("String", "CLOUDINARY_UPLOAD_PRESET", "\"$cloudPreset\"")
     }
 
     signingConfigs {

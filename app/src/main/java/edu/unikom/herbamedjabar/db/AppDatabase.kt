@@ -2,6 +2,8 @@ package edu.unikom.herbamedjabar.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.data.ScanHistory
 
@@ -10,9 +12,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scanHistoryDao(): ScanHistoryDao
 
     companion object {
-        val MIGRATION_1_2 =
-            object : androidx.room.migration.Migration(1, 2) {
-                override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+        val MIGRATION_1_2: Migration =
+            object : Migration(1, 2) {
+                override fun migrate(db: SupportSQLiteDatabase) {
                     db.execSQL(
                         "ALTER TABLE scan_history ADD COLUMN plantName TEXT NOT NULL DEFAULT ''"
                     )

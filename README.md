@@ -66,6 +66,42 @@ flowchart TD
 
 ---
 
+## Local configuration (Cloudinary and API keys)
+
+Sensitive values must never be committed to source control. This project reads a small set
+of non-sensitive values from `local.properties` for local development only. Do NOT place
+Cloudinary API secrets into `local.properties` or emit them into the APK.
+
+Recommended local properties for client-side usage (unsigned uploads):
+
+```properties
+# Cloudinary cloud name (required for client uploads)
+cloudinaryCloudName=your_cloud_name
+
+# Optional: an unsigned upload preset created in your Cloudinary dashboard.
+# When present, the client can use this preset for unsigned direct uploads.
+cloudinaryPreset=your_unsigned_preset_name
+
+# API key used by other services (if needed) — keep any secret-server keys off the client.
+apiKey=YOUR_API_KEY
+```
+
+Security notes:
+
+- For production, prefer server-side signing for uploads. The recommended pattern is:
+  1. Client uploads an image to your backend.
+  2. Backend signs the Cloudinary upload parameters using your server-side API secret and
+     returns a short-lived signature or an upload token to the client.
+  3. Client performs the upload with the signature (or the backend uploads on the client's behalf).
+
+- If you use unsigned uploads, restrict the capabilities of the unsigned preset (allowed formats,
+  folder paths, incoming transformations) and monitor usage in Cloudinary.
+
+Do not commit `local.properties` or any secrets. Keep production secrets in a secure secret store
+or CI environment and never include them in BuildConfig for release builds.
+
+---
+
 ## Project Structure
 
 ```text

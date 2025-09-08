@@ -10,15 +10,15 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.repository.PostRepository
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class ForumViewModel
@@ -29,7 +29,7 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     companion object {
-        const val AUTH_REQUIRED_ERROR = "auth_required"
+        const val AUTH_REQUIRED_ERROR: String = "auth_required"
         private const val KEY_SCROLL_POSITION = "forum_scroll_position"
     }
 

@@ -26,13 +26,7 @@ class HerbaAppApplication : Application(), ImageLoaderFactory {
                 DebugAppCheckProviderFactory.getInstance()
             )
         }
-
-        val config =
-            mapOf(
-                "cloud_name" to "difspgu31",
-                "api_key" to "152559576226315",
-                "api_secret" to "uUY-_zXEUO_UZActj_jPsiRYzIg",
-            )
+        val config = mapOf("cloud_name" to BuildConfig.CLOUDINARY_CLOUD_NAME)
         MediaManager.init(this, config)
 
         scanHistoryMigrationManager.runMigrationIfNeeded(this)

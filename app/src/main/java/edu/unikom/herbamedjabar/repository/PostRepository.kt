@@ -7,18 +7,19 @@ import com.cloudinary.android.callback.UploadCallback
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import edu.unikom.herbamedjabar.BuildConfig
 import edu.unikom.herbamedjabar.data.Post
 import edu.unikom.herbamedjabar.util.PlantData
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @Singleton
 class PostRepository @Inject constructor(private val firestore: FirebaseFirestore) {
@@ -125,6 +126,7 @@ class PostRepository @Inject constructor(private val firestore: FirebaseFirestor
                 val uploader =
                     MediaManager.get()
                         .upload(imageUri)
+                        .unsigned(BuildConfig.CLOUDINARY_UPLOAD_PRESET)
                         .callback(
                             object : UploadCallback {
                                 @Suppress("EmptyFunctionBlock")

@@ -58,7 +58,7 @@
     <string name="full_name">Nama Lengkap</string>
     <string name="full_name_hint">Masukkan nama lengkap Anda</string>
     <string name="confirm_password">Konfirmasi Kata Sandi</string>
-    <string name="confirm_password_hint">Konfirmasi kata sandi</string>
+    <string name="confirm_password_hint">Konfirmasi kata sandi Anda</string>
     <string name="already_have_account">Sudah punya akun?</string>
     <string name="register_footer">Dengan Mendaftar, Anda menyetujui Syarat &amp; ketentuan dan
         Kebijakan Privasi kami</string>
@@ -100,7 +100,6 @@
     <string name="section_warning_title_a11y">Peringatan dan Efek Samping</string>
     <string name="processing_dialog_title">Menganalisis Tanaman…</string>
     <string name="processing_dialog_subtitle">AI sedang mengidentifikasi jenis tanaman herbal</string>
-    <string name="logout">Keluar</string>
     <string name="cd_user_profile_of">Foto profil %s</string>
     <string name="cd_plant_image_of">Gambar tanaman %s</string>
     <string name="loading">Memuat…</string>

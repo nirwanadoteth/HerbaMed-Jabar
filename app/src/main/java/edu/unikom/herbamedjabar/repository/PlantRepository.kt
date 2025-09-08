@@ -9,15 +9,15 @@ import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.dao.ScanHistoryDao
 import edu.unikom.herbamedjabar.data.ScanHistory
 import edu.unikom.herbamedjabar.util.PlantDataParser
-import java.io.File
-import java.io.FileOutputStream
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import java.io.File
+import java.io.FileOutputStream
+import java.util.UUID
+import javax.inject.Inject
 
 data class AnalysisResult(
     val resultText: String,

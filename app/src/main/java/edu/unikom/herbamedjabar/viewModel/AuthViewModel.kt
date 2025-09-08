@@ -11,12 +11,19 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.unikom.herbamedjabar.util.ValidationUtils.validateGoogleToken
+import edu.unikom.herbamedjabar.util.ValidationUtils.validateLoginInput
+import edu.unikom.herbamedjabar.util.ValidationUtils.validateRegistrationInput
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
+import kotlin.coroutines.cancellation.CancellationException
 
 sealed class AuthOperationState {
     object Idle : AuthOperationState()
@@ -36,7 +43,7 @@ sealed class UserAuthState {
     object Unauthenticated : UserAuthState()
 }
 
-private fun Throwable.toUserMessage(fallback: String): String =
+internal fun Throwable.toUserMessage(fallback: String): String =
     when (this) {
         is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException,
         is com.google.firebase.auth.FirebaseAuthInvalidUserException -> "Email atau password salah."
@@ -44,11 +51,11 @@ private fun Throwable.toUserMessage(fallback: String): String =
         is com.google.firebase.FirebaseTooManyRequestsException ->
             "Terlalu banyak percobaan. Coba lagi nanti."
         is com.google.firebase.FirebaseNetworkException -> "Masalah koneksi internet."
-        is kotlinx.coroutines.TimeoutCancellationException ->
-            "Permintaan waktu habis. Coba lagi nanti."
+        is TimeoutCancellationException -> "Permintaan waktu habis. Coba lagi nanti."
         else -> fallback
     }
 
+@OptIn(ExperimentalAtomicApi::class)
 @HiltViewModel
 class AuthViewModel
 @Inject
@@ -111,7 +118,7 @@ constructor(
             savedStateHandle["confirmPassword"] = value
         }
 
-    private val opInProgress = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val opInProgress = AtomicBoolean(false)
 
     fun loginUser(email: String, password: String) {
         val emailT = email.trim()
@@ -167,40 +174,9 @@ constructor(
         firebaseAuth.signOut()
     }
 
-    private fun validateLoginInput(email: String, password: String): String? {
-        return if (email.isBlank() || password.isBlank()) {
-            "Email dan password tidak boleh kosong."
-        } else {
-            null
-        }
-    }
-
-    private fun validateGoogleToken(idToken: String): String? {
-        return if (idToken.isBlank()) "Token Google tidak valid." else null
-    }
-
-    private fun validateRegistrationInput(
-        name: String,
-        email: String,
-        password: String,
-        confirmPassword: String,
-    ): String? {
-        var error: String? = null
-        when {
-            listOf(name, email, password, confirmPassword).any { it.isBlank() } ->
-                error = "Semua kolom harus diisi."
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
-                error = "Email tidak valid."
-            password != confirmPassword -> error = "Password dan konfirmasi password tidak cocok."
-            password.length < MIN_PASSWORD_LENGTH ->
-                error = "Password minimal harus $MIN_PASSWORD_LENGTH karakter."
-        }
-        return error
-    }
-
     private inline fun runAuthOp(opName: String, crossinline block: suspend () -> Unit) =
         viewModelScope.launch {
-            if (!opInProgress.compareAndSet(false, true)) {
+            if (!opInProgress.compareAndSet(expectedValue = false, newValue = true)) {
                 Log.d(TAG, "$opName: Ignored because another auth op is in progress")
                 return@launch
             }
@@ -209,24 +185,23 @@ constructor(
                 block()
                 Log.d(TAG, "$opName: Authenticated")
                 _authOperationState.value = AuthOperationState.Authenticated
-            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+            } catch (e: TimeoutCancellationException) {
                 Log.w(TAG, "$opName: Timeout", e)
                 _authOperationState.value =
                     AuthOperationState.Error(e.toUserMessage("$opName gagal"))
-            } catch (e: kotlinx.coroutines.CancellationException) {
+            } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "$opName: Error", e)
                 _authOperationState.value =
                     AuthOperationState.Error(e.toUserMessage("$opName gagal"))
             } finally {
-                opInProgress.set(false)
+                opInProgress.store(false)
             }
         }
 
     companion object {
         private const val AUTH_TIMEOUT_MS = 30_000L
-        private const val MIN_PASSWORD_LENGTH = 6
         private const val TAG = "AuthViewModel"
     }
 }

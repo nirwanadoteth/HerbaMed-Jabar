@@ -38,7 +38,7 @@ class DeleteConfirmationDialogFragment : DialogFragment() {
     }
 
     companion object {
-        const val REQUEST_KEY = "delete_confirmation_request"
-        const val RESULT_KEY = "delete_confirmed"
+        const val REQUEST_KEY: String = "delete_confirmation_request"
+        const val RESULT_KEY: String = "delete_confirmed"
     }
 }

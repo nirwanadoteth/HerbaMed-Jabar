@@ -158,12 +158,13 @@ class ProfileFragment : Fragment() {
                 viewModel.logout()
                 lifecycleScope.launch {
                     try {
-                        val credentialManager = CredentialManager.create(requireContext().applicationContext)
+                        val credentialManager =
+                            CredentialManager.create(requireContext().applicationContext)
                         val clearRequest = ClearCredentialStateRequest()
                         credentialManager.clearCredentialState(clearRequest)
                     } catch (e: ClearCredentialException) {
                         Log.e(
-                            "ProfileFragment",
+                            TAG,
                             "Gagal membersihkan kredensial: ${e.localizedMessage}",
                         )
                     }
@@ -181,6 +182,7 @@ class ProfileFragment : Fragment() {
     }
 
     companion object {
+    private const val TAG = "ProfileFragment"
         private const val BADGE_THRESHOLD_1 = 1
         private const val BADGE_THRESHOLD_2 = 5
         private const val BADGE_THRESHOLD_3 = 10

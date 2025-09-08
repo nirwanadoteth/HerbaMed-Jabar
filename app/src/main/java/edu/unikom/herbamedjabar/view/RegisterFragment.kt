@@ -75,7 +75,7 @@ class RegisterFragment : Fragment() {
             viewModel.registerUser(name, email, password, confirmPassword)
         }
         binding.loginTextView.setOnClickListener {
-            findNavController(this).navigate(R.id.action_registerFragment_to_loginFragment)
+            findNavController(this).navigate(R.id.navigate_to_login)
         }
     }
 

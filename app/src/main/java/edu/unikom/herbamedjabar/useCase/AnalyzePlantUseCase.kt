@@ -4,10 +4,10 @@ import android.graphics.Bitmap
 import edu.unikom.herbamedjabar.di.IoDispatcher
 import edu.unikom.herbamedjabar.repository.AnalysisResult
 import edu.unikom.herbamedjabar.repository.PlantRepository
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class AnalyzePlantUseCase
 @Inject

@@ -10,7 +10,7 @@
         android:label="Login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
+            android:id="@+id/navigate_to_register"
             app:destination="@id/registerFragment" />
     </fragment>
     <fragment
@@ -19,7 +19,7 @@
         android:label="Register"
         tools:layout="@layout/fragment_register">
         <action
-            android:id="@+id/action_registerFragment_to_loginFragment"
+            android:id="@+id/navigate_to_login"
             app:destination="@id/loginFragment" />
     </fragment>
 

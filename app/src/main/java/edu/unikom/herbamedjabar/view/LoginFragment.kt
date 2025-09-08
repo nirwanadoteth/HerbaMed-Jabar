@@ -92,7 +92,7 @@ class LoginFragment : Fragment() {
         binding.googleLoginButton.setOnClickListener { launchGoogleSignIn() }
 
         binding.registerTextView.setOnClickListener {
-            findNavController(this).navigate(R.id.action_loginFragment_to_registerFragment)
+            findNavController(this).navigate(R.id.navigate_to_login)
         }
     }
 

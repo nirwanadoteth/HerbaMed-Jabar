@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: AuthViewModel by viewModels()
 
-    val navController by lazy {
+    private val navController: NavController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment)
             .navController
     }
@@ -67,6 +68,9 @@ class MainActivity : AppCompatActivity() {
             NavOptions.Builder()
                 .setPopUpTo(R.id.nav_graph, true) // Clear back stack
                 .build()
+        // Avoid navigating if we're already showing the login screen
+        val current = navController.currentDestination?.id ?: -1
+        if (current == R.id.loginFragment) return
         navController.navigate(R.id.loginFragment, null, navOptions)
     }
 
@@ -75,6 +79,9 @@ class MainActivity : AppCompatActivity() {
             NavOptions.Builder()
                 .setPopUpTo(R.id.nav_graph, true) // Clear back stack
                 .build()
+        // Avoid navigating if we're already on the forum screen
+        val current = navController.currentDestination?.id ?: -1
+        if (current == R.id.forumFragment) return
         navController.navigate(R.id.forumFragment, null, navOptions)
     }
 
@@ -82,19 +89,20 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userAuthState.collect { state ->
-                    val currentDest = navController.currentDestination?.id
+                    // Use a safe current destination id (defaults to -1 when unavailable)
+                    val currentDestId = navController.currentDestination?.id ?: -1
                     when (state) {
                         is UserAuthState.Authenticated -> {
                             // If user is authenticated and is on a login/register screen, navigate
                             // to main graph
-                            if (currentDest in noBottomNavDestinations) {
+                            if (currentDestId in noBottomNavDestinations) {
                                 navigateToMainGraph()
                             }
                         }
                         is UserAuthState.Unauthenticated -> {
                             // If user is not authenticated and is NOT on a login/register screen,
                             // navigate to auth graph
-                            if (currentDest !in noBottomNavDestinations) {
+                            if (currentDestId !in noBottomNavDestinations) {
                                 navigateToAuthGraph()
                             }
                         }
