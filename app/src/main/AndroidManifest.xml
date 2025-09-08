@@ -32,10 +32,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".view.AuthActivity"
-            android:exported="false" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

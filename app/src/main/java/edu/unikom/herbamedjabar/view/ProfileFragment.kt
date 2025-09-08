@@ -1,6 +1,5 @@
 package edu.unikom.herbamedjabar.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -151,7 +150,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun handleLogout() {
-        val appCtx = requireContext().applicationContext
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.logout_title))
             .setMessage(getString(R.string.logout_message))
@@ -160,7 +158,7 @@ class ProfileFragment : Fragment() {
                 viewModel.logout()
                 lifecycleScope.launch {
                     try {
-                        val credentialManager = CredentialManager.create(appCtx)
+                        val credentialManager = CredentialManager.create(requireContext().applicationContext)
                         val clearRequest = ClearCredentialStateRequest()
                         credentialManager.clearCredentialState(clearRequest)
                     } catch (e: ClearCredentialException) {
@@ -168,14 +166,8 @@ class ProfileFragment : Fragment() {
                             "ProfileFragment",
                             "Gagal membersihkan kredensial: ${e.localizedMessage}",
                         )
-                    } finally {
-                        val intent =
-                            Intent(appCtx, AuthActivity::class.java).apply {
-                                flags =
-                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            }
-                        appCtx.startActivity(intent)
                     }
+                    // No need to manually navigate; MainActivity will handle auth state change
                 }
             }
             .show()

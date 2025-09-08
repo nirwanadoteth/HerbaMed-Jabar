@@ -97,15 +97,11 @@ class RegisterFragment : Fragment() {
             when (state) {
                 is AuthState.Authenticated -> {
                     Snackbar.make(
-                            requireView(),
-                            getString(R.string.registration_success),
-                            Snackbar.LENGTH_SHORT,
-                        )
-                        .show()
-                    // Pindah ke MainActivity dan bersihkan back stack
-                    val intent = Intent(requireActivity(), MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+                        requireView(),
+                        getString(R.string.registration_success),
+                        Snackbar.LENGTH_SHORT,
+                    ).show()
+                    // Navigation handled by MainActivity's auth state listener
                 }
 
                 is AuthState.Error -> {

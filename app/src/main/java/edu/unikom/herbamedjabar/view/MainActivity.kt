@@ -1,11 +1,13 @@
 package edu.unikom.herbamedjabar.view
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -23,6 +25,29 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var auth: FirebaseAuth
 
+    private lateinit var navController: NavController
+    private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+        val user = firebaseAuth.currentUser
+        val currentDest = navController.currentDestination?.id
+        if (user == null) {
+            // Not authenticated, navigate to LoginFragment and clear back stack
+            if (currentDest != R.id.loginFragment) {
+                val navOptions = NavOptions.Builder()
+                    .setPopUpTo(R.id.nav_graph, true)
+                    .build()
+                navController.navigate(R.id.loginFragment, null, navOptions)
+            }
+        } else {
+            // Authenticated, navigate to main/home if currently at login/register or register
+            if (currentDest == R.id.loginFragment || currentDest == R.id.registerFragment) {
+                val navOptions = NavOptions.Builder()
+                    .setPopUpTo(R.id.nav_graph, true)
+                    .build()
+                navController.navigate(R.id.forumFragment, null, navOptions)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -35,22 +60,35 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        if (auth.currentUser == null) {
-            val intent =
-                Intent(this, AuthActivity::class.java)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            startActivity(intent)
-            finish()
-            return
-        }
-
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+        navController = navHostFragment.navController
+
+        // Initial check
+        authStateListener.onAuthStateChanged(auth)
+
         NavigationBarView.OnItemSelectedListener { item ->
             false // handled by NavigationUI
         }
         NavigationUI.setupWithNavController(binding.navView, navController)
+
+        // Hide bottom nav on login/register, show otherwise
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.loginFragment, R.id.registerFragment -> binding.navView.isVisible = false
+                else -> binding.navView.isVisible = true
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        auth.addAuthStateListener(authStateListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        auth.removeAuthStateListener(authStateListener)
     }
 
     override fun onSupportNavigateUp(): Boolean {
