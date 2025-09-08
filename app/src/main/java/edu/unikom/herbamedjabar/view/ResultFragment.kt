@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,10 @@ class ResultFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: ResultViewModel by viewModels()
+
+    private val anchorView by lazy {
+        requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +126,7 @@ class ResultFragment : Fragment() {
                         getString(R.string.error_incomplete_post_data),
                         Snackbar.LENGTH_SHORT,
                     )
+                    .setAnchorView(anchorView)
                     .show()
                 return@setOnClickListener
             }
@@ -150,6 +156,7 @@ class ResultFragment : Fragment() {
                             getString(R.string.post_success),
                             Snackbar.LENGTH_SHORT,
                         )
+                        .setAnchorView(anchorView)
                         .show()
                     // Navigate directly to ForumFragment
                     findNavController().popBackStack(R.id.forumFragment, false)
@@ -163,6 +170,7 @@ class ResultFragment : Fragment() {
                             ),
                             Snackbar.LENGTH_LONG,
                         )
+                        .setAnchorView(anchorView)
                         .show()
                 }
         }

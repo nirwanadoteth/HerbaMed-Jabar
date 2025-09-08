@@ -1,6 +1,5 @@
 package edu.unikom.herbamedjabar.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,12 +18,13 @@ import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentLoginBinding
-import edu.unikom.herbamedjabar.viewModel.AuthState
+import edu.unikom.herbamedjabar.viewModel.AuthOperationState
 import edu.unikom.herbamedjabar.viewModel.AuthViewModel
 import kotlinx.coroutines.launch
 
@@ -159,8 +159,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.authState.observe(viewLifecycleOwner) { state ->
-            val loading = state is AuthState.Loading
+        viewModel.authOperationState.observe(viewLifecycleOwner) { state ->
+            val loading = state is AuthOperationState.Loading
             binding.loadingIndicator.isVisible = loading
             binding.loginButton.isEnabled = !loading
             binding.googleLoginButton.isEnabled = !loading
@@ -170,17 +170,20 @@ class LoginFragment : Fragment() {
             binding.emailInputLayout.isEnabled = !loading
             binding.passwordInputLayout.isEnabled = !loading
 
+            val anchor = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+
             when (state) {
-                is AuthState.Authenticated -> {
+                is AuthOperationState.Authenticated -> {
                     Snackbar.make(
-                        requireView(),
-                        getString(R.string.login_success),
-                        Snackbar.LENGTH_SHORT,
-                    ).show()
-                    // Navigation handled by MainActivity's auth state listener
+                            requireView(),
+                            getString(R.string.login_success),
+                            Snackbar.LENGTH_SHORT,
+                        )
+                        .setAnchorView(anchor)
+                        .show()
                 }
 
-                is AuthState.Error -> {
+                is AuthOperationState.Error -> {
                     Snackbar.make(requireView(), state.message, Snackbar.LENGTH_LONG).show()
                 }
 

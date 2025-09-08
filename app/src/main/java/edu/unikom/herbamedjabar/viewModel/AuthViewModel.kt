@@ -7,22 +7,33 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeout
+import javax.inject.Inject
 
-sealed class AuthState {
-    object Idle : AuthState()
+sealed class AuthOperationState {
+    object Idle : AuthOperationState()
 
-    object Loading : AuthState()
+    object Loading : AuthOperationState()
 
-    object Authenticated : AuthState()
+    object Authenticated : AuthOperationState()
 
-    data class Error(val message: String) : AuthState()
+    data class Error(val message: String) : AuthOperationState()
+}
+
+sealed class UserAuthState {
+    object Unknown : UserAuthState() // Initial state before Firebase check
+
+    data class Authenticated(val user: FirebaseUser) : UserAuthState()
+
+    object Unauthenticated : UserAuthState()
 }
 
 private fun Throwable.toUserMessage(fallback: String): String =
@@ -46,7 +57,36 @@ constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    // Login form fields
+    private val _authOperationState = MutableLiveData<AuthOperationState>(AuthOperationState.Idle)
+    val authOperationState: LiveData<AuthOperationState> = _authOperationState
+
+    private val _userAuthState = MutableStateFlow<UserAuthState>(UserAuthState.Unknown)
+    val userAuthState: StateFlow<UserAuthState> = _userAuthState
+
+    private val authStateListener =
+        FirebaseAuth.AuthStateListener { auth ->
+            val user = auth.currentUser
+            _userAuthState.value =
+                if (user != null) {
+                    UserAuthState.Authenticated(user)
+                } else {
+                    UserAuthState.Unauthenticated
+                }
+            Log.d(
+                TAG,
+                "Auth state changed. User is ${if (user != null) "Authenticated" else "Unauthenticated"}",
+            )
+        }
+
+    init {
+        firebaseAuth.addAuthStateListener(authStateListener)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        firebaseAuth.removeAuthStateListener(authStateListener)
+    }
+
     var email: String
         get() = savedStateHandle["email"] ?: ""
         set(value) {
@@ -59,7 +99,6 @@ constructor(
             savedStateHandle["password"] = value
         }
 
-    // Register form fields
     var name: String
         get() = savedStateHandle["name"] ?: ""
         set(value) {
@@ -72,15 +111,13 @@ constructor(
             savedStateHandle["confirmPassword"] = value
         }
 
-    private val _authState = MutableLiveData<AuthState>(AuthState.Idle)
-    val authState: LiveData<AuthState> = _authState
     private val opInProgress = java.util.concurrent.atomic.AtomicBoolean(false)
 
     fun loginUser(email: String, password: String) {
         val emailT = email.trim()
         val validation = validateLoginInput(emailT, password)
         if (validation != null) {
-            _authState.value = AuthState.Error(validation)
+            _authOperationState.value = AuthOperationState.Error(validation)
             return
         }
         runAuthOp("Login") {
@@ -94,7 +131,7 @@ constructor(
         val validation = validateGoogleToken(idToken)
         if (validation != null) {
             Log.w(TAG, "signInWithGoogleToken: idToken is blank")
-            _authState.value = AuthState.Error(validation)
+            _authOperationState.value = AuthOperationState.Error(validation)
             return
         }
         runAuthOp("Login dengan Google") {
@@ -110,7 +147,7 @@ constructor(
         val emailT = email.trim()
         val validation = validateRegistrationInput(nameT, emailT, password, confirmPassword)
         if (validation != null) {
-            _authState.value = AuthState.Error(validation)
+            _authOperationState.value = AuthOperationState.Error(validation)
             return
         }
         runAuthOp("Registrasi") {
@@ -126,7 +163,10 @@ constructor(
         }
     }
 
-    // Validation helpers
+    fun signOut() {
+        firebaseAuth.signOut()
+    }
+
     private fun validateLoginInput(email: String, password: String): String? {
         return if (email.isBlank() || password.isBlank()) {
             "Email dan password tidak boleh kosong."
@@ -164,19 +204,21 @@ constructor(
                 Log.d(TAG, "$opName: Ignored because another auth op is in progress")
                 return@launch
             }
-            _authState.value = AuthState.Loading
+            _authOperationState.value = AuthOperationState.Loading
             try {
                 block()
                 Log.d(TAG, "$opName: Authenticated")
-                _authState.value = AuthState.Authenticated
+                _authOperationState.value = AuthOperationState.Authenticated
             } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
                 Log.w(TAG, "$opName: Timeout", e)
-                _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
+                _authOperationState.value =
+                    AuthOperationState.Error(e.toUserMessage("$opName gagal"))
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "$opName: Error", e)
-                _authState.value = AuthState.Error(e.toUserMessage("$opName gagal"))
+                _authOperationState.value =
+                    AuthOperationState.Error(e.toUserMessage("$opName gagal"))
             } finally {
                 opInProgress.set(false)
             }

@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,10 @@ class ScanFragment : Fragment() {
 
     private var processingDialog: ProcessingDialogFragment? = null
 
+    private val anchorView by lazy {
+        requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+    }
+
     // Camera permission launcher
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean
@@ -53,6 +58,7 @@ class ScanFragment : Fragment() {
                                 getString(R.string.camera_permission_denied_permanent),
                                 Snackbar.LENGTH_LONG,
                             )
+                            .setAnchorView(anchorView)
                             .show()
                         val intent =
                             android.content
@@ -73,6 +79,7 @@ class ScanFragment : Fragment() {
                                 getString(R.string.camera_permission_denied),
                                 Snackbar.LENGTH_SHORT,
                             )
+                            .setAnchorView(anchorView)
                             .show()
                     }
                 }
@@ -148,6 +155,7 @@ class ScanFragment : Fragment() {
                                 getString(R.string.error_image_load_failed),
                                 Snackbar.LENGTH_SHORT,
                             )
+                            .setAnchorView(anchorView)
                             .show()
                     }
                 }
@@ -219,7 +227,11 @@ class ScanFragment : Fragment() {
                     }
                     processingDialog = null
                     if (state is UiState.Error) {
-                        view?.let { Snackbar.make(it, state.message, Snackbar.LENGTH_LONG).show() }
+                        view?.let {
+                            Snackbar.make(it, state.message, Snackbar.LENGTH_LONG)
+                                .setAnchorView(anchorView)
+                                .show()
+                        }
                     }
                 }
 
@@ -304,6 +316,7 @@ class ScanFragment : Fragment() {
                         getString(R.string.camera_permission_rationale),
                         Snackbar.LENGTH_LONG,
                     )
+                    .setAnchorView(anchorView)
                     .show()
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }

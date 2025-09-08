@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/forumFragment"
-        android:icon="@drawable/ic_nav_forum"
-        android:title="@string/nav_home" />
-    <item
-        android:id="@+id/scanFragment"
-        android:icon="@drawable/ic_nav_scan"
-        android:title="@string/nav_scan" />
-    <item
-        android:id="@+id/historyFragment"
-        android:icon="@drawable/ic_nav_history"
-        android:title="@string/nav_history" />
-    <item
-        android:id="@+id/profileFragment"
-        android:icon="@drawable/ic_nav_profile"
-        android:title="@string/nav_profile" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/forumFragment"
+            android:icon="@drawable/ic_nav_forum"
+            android:title="@string/nav_home" />
+        <item
+            android:id="@+id/scanFragment"
+            android:icon="@drawable/ic_nav_scan"
+            android:title="@string/nav_scan" />
+        <item
+            android:id="@+id/historyFragment"
+            android:icon="@drawable/ic_nav_history"
+            android:title="@string/nav_history" />
+        <item
+            android:id="@+id/profileFragment"
+            android:icon="@drawable/ic_nav_profile"
+            android:title="@string/nav_profile" />
+    </group>
 </menu>
