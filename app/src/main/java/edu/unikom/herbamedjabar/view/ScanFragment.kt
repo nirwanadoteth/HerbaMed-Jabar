@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -19,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -48,10 +48,10 @@ class ScanFragment : Fragment() {
                 } else {
                     if (!shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                         // Permanently denied: guide user to Settings
-                        Toast.makeText(
-                                requireContext(),
+                        Snackbar.make(
+                                requireView(),
                                 getString(R.string.camera_permission_denied_permanent),
-                                Toast.LENGTH_LONG,
+                                Snackbar.LENGTH_LONG,
                             )
                             .show()
                         val intent =
@@ -68,10 +68,10 @@ class ScanFragment : Fragment() {
                         startActivity(intent)
                     } else {
                         // Temporarily denied: just inform
-                        Toast.makeText(
-                                requireContext(),
+                        Snackbar.make(
+                                requireView(),
                                 getString(R.string.camera_permission_denied),
-                                Toast.LENGTH_SHORT,
+                                Snackbar.LENGTH_SHORT,
                             )
                             .show()
                     }
@@ -143,10 +143,10 @@ class ScanFragment : Fragment() {
                         b.plantImageView.contentDescription = getString(R.string.cd_plant_image)
                         viewModel.analyzeImage(bitmap)
                     } catch (_: Exception) {
-                        Toast.makeText(
-                                ctx,
+                        Snackbar.make(
+                                requireView(),
                                 getString(R.string.error_image_load_failed),
-                                Toast.LENGTH_SHORT,
+                                Snackbar.LENGTH_SHORT,
                             )
                             .show()
                     }
@@ -219,9 +219,7 @@ class ScanFragment : Fragment() {
                     }
                     processingDialog = null
                     if (state is UiState.Error) {
-                        context?.let { ctx ->
-                            Toast.makeText(ctx, state.message, Toast.LENGTH_LONG).show()
-                        }
+                        view?.let { Snackbar.make(it, state.message, Snackbar.LENGTH_LONG).show() }
                     }
                 }
 
@@ -301,10 +299,10 @@ class ScanFragment : Fragment() {
                 takePictureLauncher.launch(null)
             }
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                Toast.makeText(
-                        requireContext(),
+                Snackbar.make(
+                        requireView(),
                         getString(R.string.camera_permission_rationale),
-                        Toast.LENGTH_LONG,
+                        Snackbar.LENGTH_LONG,
                     )
                     .show()
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)

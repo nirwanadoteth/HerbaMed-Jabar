@@ -5,12 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -96,10 +96,10 @@ class RegisterFragment : Fragment() {
 
             when (state) {
                 is AuthState.Authenticated -> {
-                    Toast.makeText(
-                            requireContext(),
+                    Snackbar.make(
+                            requireView(),
                             getString(R.string.registration_success),
-                            Toast.LENGTH_SHORT,
+                            Snackbar.LENGTH_SHORT,
                         )
                         .show()
                     // Pindah ke MainActivity dan bersihkan back stack
@@ -109,7 +109,7 @@ class RegisterFragment : Fragment() {
                 }
 
                 is AuthState.Error -> {
-                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    Snackbar.make(requireView(), state.message, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {

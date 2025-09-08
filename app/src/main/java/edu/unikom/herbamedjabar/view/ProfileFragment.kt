@@ -16,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
@@ -66,10 +67,9 @@ class ProfileFragment : Fragment() {
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
                     // Listen for dialog result
-                    parentFragmentManager.setFragmentResultListener(
-                        DeleteConfirmationDialogFragment.REQUEST_KEY,
-                        viewLifecycleOwner,
-                    ) { _, bundle ->
+                    setFragmentResultListener(DeleteConfirmationDialogFragment.REQUEST_KEY) {
+                        _,
+                        bundle ->
                         val confirmed =
                             bundle.getBoolean(DeleteConfirmationDialogFragment.RESULT_KEY)
                         if (confirmed) {
@@ -101,14 +101,9 @@ class ProfileFragment : Fragment() {
 
             // Save scroll position on scroll
             addOnScrollListener(
-                object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-                    override fun onScrollStateChanged(
-                        recyclerView: androidx.recyclerview.widget.RecyclerView,
-                        newState: Int,
-                    ) {
-                        if (
-                            newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
-                        ) {
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                             val first = layoutManager.findFirstVisibleItemPosition()
                             if (first >= 0) viewModel.saveScrollPosition(first)
                         }

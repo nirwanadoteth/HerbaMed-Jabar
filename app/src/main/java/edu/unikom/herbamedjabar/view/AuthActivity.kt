@@ -3,7 +3,6 @@ package edu.unikom.herbamedjabar.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.databinding.ActivityAuthBinding
@@ -18,7 +17,6 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

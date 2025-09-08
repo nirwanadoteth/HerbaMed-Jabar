@@ -2,7 +2,6 @@ package edu.unikom.herbamedjabar.view
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,9 +129,8 @@ class HistoryDetailFragment : Fragment() {
             setTextColor(onErrorContainer)
 
             setOnClickListener {
-                setFragmentResultListener(
-                    DeleteConfirmationDialogFragment.REQUEST_KEY,
-                ) { _, bundle ->
+                setFragmentResultListener(DeleteConfirmationDialogFragment.REQUEST_KEY) { _, bundle
+                    ->
                     val confirmed = bundle.getBoolean(DeleteConfirmationDialogFragment.RESULT_KEY)
                     if (confirmed) {
                         viewModel.deleteHistory(history)
@@ -143,13 +141,12 @@ class HistoryDetailFragment : Fragment() {
                     }
                 }
                 val action =
-                    HistoryDetailFragmentDirections
-                        .actionGlobalDeleteConfirmationDialog(
-                            title = getString(R.string.delete_history_title),
-                            message = getString(R.string.delete_history_message),
-                            positive = getString(R.string.action_delete),
-                            negative = getString(R.string.action_cancel),
-                        )
+                    HistoryDetailFragmentDirections.actionGlobalDeleteConfirmationDialog(
+                        title = getString(R.string.delete_history_title),
+                        message = getString(R.string.delete_history_message),
+                        positive = getString(R.string.action_delete),
+                        negative = getString(R.string.action_cancel),
+                    )
                 findNavController().navigate(action)
             }
         }
@@ -162,6 +159,4 @@ class HistoryDetailFragment : Fragment() {
         sharedElementReturnTransition = null
         _binding = null
     }
-
-    // SafeArgs handles argument passing; no need for companion object
 }

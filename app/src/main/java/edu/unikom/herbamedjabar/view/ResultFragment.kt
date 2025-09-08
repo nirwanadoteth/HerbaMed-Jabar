@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -116,10 +116,10 @@ class ResultFragment : Fragment() {
 
             val imageFile = imagePath.let(::File)
             if (!imageFile.exists() || resultText.isBlank() || plantName.isBlank()) {
-                Toast.makeText(
-                        requireContext(),
+                Snackbar.make(
+                        requireView(),
                         getString(R.string.error_incomplete_post_data),
-                        Toast.LENGTH_SHORT,
+                        Snackbar.LENGTH_SHORT,
                     )
                     .show()
                 return@setOnClickListener
@@ -145,23 +145,25 @@ class ResultFragment : Fragment() {
         viewModel.postResult.observe(viewLifecycleOwner) { result ->
             result
                 .onSuccess {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.post_success),
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    Snackbar.make(
+                            requireView(),
+                            getString(R.string.post_success),
+                            Snackbar.LENGTH_SHORT,
+                        )
+                        .show()
                     // Navigate directly to ForumFragment
                     findNavController().popBackStack(R.id.forumFragment, false)
                 }
                 .onFailure {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(
-                            R.string.post_failed_with_reason,
-                            it.message ?: getString(R.string.unknown_error),
-                        ),
-                        Toast.LENGTH_LONG,
-                    ).show()
+                    Snackbar.make(
+                            requireView(),
+                            getString(
+                                R.string.post_failed_with_reason,
+                                it.message ?: getString(R.string.unknown_error),
+                            ),
+                            Snackbar.LENGTH_LONG,
+                        )
+                        .show()
                 }
         }
     }

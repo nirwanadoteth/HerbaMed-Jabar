@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.credentials.Credential
@@ -20,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
@@ -120,19 +120,19 @@ class LoginFragment : Fragment() {
                         .credential
                 createGoogleIdToken(credential)
             } catch (e: androidx.credentials.exceptions.NoCredentialException) {
-                Toast.makeText(
-                        requireContext(),
+                Snackbar.make(
+                        requireView(),
                         getString(R.string.no_credentials_available),
-                        Toast.LENGTH_SHORT,
+                        Snackbar.LENGTH_SHORT,
                     )
                     .show()
                 Log.w(TAG, "NoCredentialException: ${e.localizedMessage}")
             } catch (e: androidx.credentials.exceptions.GetCredentialException) {
                 Log.e(TAG, "Gagal mendapatkan kredensial pengguna: ${e.localizedMessage}")
-                Toast.makeText(
-                        requireContext(),
+                Snackbar.make(
+                        requireView(),
                         getString(R.string.credential_error_generic),
-                        Toast.LENGTH_LONG,
+                        Snackbar.LENGTH_LONG,
                     )
                     .show()
             }
@@ -145,10 +145,10 @@ class LoginFragment : Fragment() {
                 val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                 viewModel.signInWithGoogleToken(googleIdTokenCredential.idToken)
             } catch (e: IllegalArgumentException) {
-                Toast.makeText(
-                        requireContext(),
+                Snackbar.make(
+                        requireView(),
                         getString(R.string.google_token_invalid),
-                        Toast.LENGTH_SHORT,
+                        Snackbar.LENGTH_SHORT,
                     )
                     .show()
                 Log.w(TAG, "Invalid Google ID token credential", e)
@@ -172,10 +172,10 @@ class LoginFragment : Fragment() {
 
             when (state) {
                 is AuthState.Authenticated -> {
-                    Toast.makeText(
-                            requireContext(),
+                    Snackbar.make(
+                            requireView(),
                             getString(R.string.login_success),
-                            Toast.LENGTH_SHORT,
+                            Snackbar.LENGTH_SHORT,
                         )
                         .show()
                     // Pindah ke MainActivity dan bersihkan back stack
@@ -185,7 +185,7 @@ class LoginFragment : Fragment() {
                 }
 
                 is AuthState.Error -> {
-                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    Snackbar.make(requireView(), state.message, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {

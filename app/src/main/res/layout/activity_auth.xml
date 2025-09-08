@@ -8,4 +8,5 @@
     android:layout_height="match_parent"
     app:defaultNavHost="true"
     app:navGraph="@navigation/auth_nav_graph"
-    tools:context=".view.AuthActivity" />
+    tools:context=".view.AuthActivity"
+    tools:layout="@layout/fragment_login" />

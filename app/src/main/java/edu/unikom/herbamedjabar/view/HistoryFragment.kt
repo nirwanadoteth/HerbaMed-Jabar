@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.adapter.HistoryAdapter
@@ -50,13 +53,10 @@ class HistoryFragment : Fragment() {
         historyAdapter = HistoryAdapter { history, imageView ->
             val directions =
                 HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment(history)
-            val extras =
-                androidx.navigation.fragment.FragmentNavigatorExtras(
-                    imageView to "historyImage_${history.id}"
-                )
+            val extras = FragmentNavigatorExtras(imageView to "historyImage_${history.id}")
             findNavController().navigate(directions, extras)
         }
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
         binding.historyRecyclerView.adapter = historyAdapter
         binding.historyRecyclerView.layoutManager = layoutManager
         binding.historyRecyclerView.setHasFixedSize(true)
@@ -69,12 +69,9 @@ class HistoryFragment : Fragment() {
 
         // Save scroll position on scroll
         binding.historyRecyclerView.addOnScrollListener(
-            object : androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(
-                    recyclerView: androidx.recyclerview.widget.RecyclerView,
-                    newState: Int,
-                ) {
-                    if (newState == androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE) {
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val first = layoutManager.findFirstVisibleItemPosition()
                         if (first >= 0) viewModel.saveScrollPosition(first)
                     }
