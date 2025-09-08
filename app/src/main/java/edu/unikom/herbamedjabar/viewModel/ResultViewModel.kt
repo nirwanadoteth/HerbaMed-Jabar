@@ -9,8 +9,8 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.unikom.herbamedjabar.repository.PostRepository
 import edu.unikom.herbamedjabar.util.PlantDataParser
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ResultViewModel

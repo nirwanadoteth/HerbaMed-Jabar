@@ -29,7 +29,8 @@ class PostRepository @Inject constructor(private val firestore: FirebaseFirestor
 
     fun getPosts(): Flow<List<Post>> = callbackFlow {
         val collection =
-            firestore.collection("posts")
+            firestore
+                .collection("posts")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .limit(QUERY_LIMIT)
 

@@ -97,8 +97,9 @@ constructor(
                 savedImagePath?.let { runCatching { File(it).delete() } }
                 if (
                     e is kotlinx.coroutines.CancellationException &&
-                    e !is kotlinx.coroutines.TimeoutCancellationException
-                ) throw e
+                        e !is kotlinx.coroutines.TimeoutCancellationException
+                )
+                    throw e
                 lastError = e
             }
             if (attempt < MAX_RETRIES - 1) {
@@ -123,7 +124,7 @@ constructor(
         return if (scale > 1f) {
             val newW = maxOf(1, kotlin.math.round(width / scale).toInt())
             val newH = maxOf(1, kotlin.math.round(height / scale).toInt())
-            this.scale(newW, newH, /* filter = */ true)
+            this.scale(newW, newH, /* filter= */ true)
         } else this
     }
 

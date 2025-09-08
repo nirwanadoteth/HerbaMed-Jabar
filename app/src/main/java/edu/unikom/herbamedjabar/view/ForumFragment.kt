@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
@@ -26,13 +28,18 @@ class ForumFragment : Fragment() {
     private val viewModel: ForumViewModel by viewModels()
     private var postAdapter: PostAdapter? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentForumBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -53,14 +60,24 @@ class ForumFragment : Fragment() {
             PostAdapter(
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.delete_post_title))
-                        .setMessage(getString(R.string.delete_post_message))
-                        .setNegativeButton(getString(R.string.action_cancel), null)
-                        .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
+                    // Listen for dialog result
+                    setFragmentResultListener(
+                        DeleteConfirmationDialogFragment.REQUEST_KEY,
+                    ) { _, bundle ->
+                        val confirmed =
+                            bundle.getBoolean(DeleteConfirmationDialogFragment.RESULT_KEY)
+                        if (confirmed) {
                             viewModel.deletePost(post)
                         }
-                        .show()
+                    }
+                    val action =
+                        ForumFragmentDirections.actionGlobalDeleteConfirmationDialog(
+                            title = getString(R.string.delete_post_title),
+                            message = getString(R.string.delete_post_message),
+                            positive = getString(R.string.action_delete),
+                            negative = getString(R.string.action_cancel),
+                        )
+                    findNavController().navigate(action)
                 },
                 currentUser = viewModel.getCurrentUser(),
             )

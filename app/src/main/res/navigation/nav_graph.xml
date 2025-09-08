@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/forumFragment">
 
     <fragment
         android:id="@+id/scanFragment"
         android:name="edu.unikom.herbamedjabar.view.ScanFragment"
-        android:label="Scan">
+        android:label="Scan"
+        tools:layout="@layout/fragment_scan">
         <action
             android:id="@+id/action_scanFragment_to_resultFragment"
             app:destination="@id/resultFragment" />
@@ -15,11 +17,14 @@
     <fragment
         android:id="@+id/forumFragment"
         android:name="edu.unikom.herbamedjabar.view.ForumFragment"
-        android:label="Forum" />
+        android:label="Forum"
+        tools:layout="@layout/fragment_forum">
+    </fragment>
     <fragment
         android:id="@+id/historyFragment"
         android:name="edu.unikom.herbamedjabar.view.HistoryFragment"
-        android:label="History">
+        android:label="History"
+        tools:layout="@layout/fragment_history">
         <action
             android:id="@+id/action_historyFragment_to_historyDetailFragment"
             app:destination="@id/historyDetailFragment" />
@@ -27,7 +32,8 @@
     <fragment
         android:id="@+id/resultFragment"
         android:name="edu.unikom.herbamedjabar.view.ResultFragment"
-        android:label="Result">
+        android:label="Result"
+        tools:layout="@layout/fragment_result">
         <argument
             android:name="imagePath"
             app:argType="string" />
@@ -50,7 +56,8 @@
     <fragment
         android:id="@+id/historyDetailFragment"
         android:name="edu.unikom.herbamedjabar.view.HistoryDetailFragment"
-        android:label="History Detail">
+        android:label="History Detail"
+        tools:layout="@layout/fragment_history_detail">
         <argument
             android:name="history"
             app:argType="edu.unikom.herbamedjabar.data.ScanHistory" />
@@ -58,5 +65,29 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="edu.unikom.herbamedjabar.view.ProfileFragment"
-        android:label="Profile" />
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+    </fragment>
+    <dialog
+        android:id="@+id/deleteConfirmationDialog"
+        android:name="edu.unikom.herbamedjabar.view.DeleteConfirmationDialogFragment"
+        android:label="Delete Confirmation">
+        <argument
+            android:name="title"
+            android:defaultValue="Hapus?"
+            app:argType="string" />
+        <argument
+            android:name="message"
+            android:defaultValue="Apakah Anda yakin ingin menghapus ini? Tindakan ini tidak dapat diurungkan."
+            app:argType="string" />
+        <argument
+            android:name="positive"
+            android:defaultValue="Hapus"
+            app:argType="string" />
+        <argument
+            android:name="negative"
+            android:defaultValue="Batal"
+            app:argType="string" />
+    </dialog>
+    <action android:id="@+id/action_global_deleteConfirmationDialog" app:destination="@id/deleteConfirmationDialog"/>
 </navigation>

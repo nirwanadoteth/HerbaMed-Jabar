@@ -36,7 +36,7 @@ object PlantDataParser {
     fun parsePlantData(
         text: String,
         unidentifiedTitle: String = "Tanaman tidak dapat di-identifikasi",
-        unidentifiedDesc: String = "Pastikan gambar jelas dan fokus pada satu jenis tanaman."
+        unidentifiedDesc: String = "Pastikan gambar jelas dan fokus pada satu jenis tanaman.",
     ): PlantData {
         if (isUnidentifiedPlant(text)) {
             return PlantData(

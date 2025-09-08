@@ -11,11 +11,14 @@ import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.adapter.PostAdapter
@@ -32,6 +35,12 @@ class ProfileFragment : Fragment() {
 
     private val viewModel: ProfileViewModel by viewModels()
     private var postAdapter: PostAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,14 +65,25 @@ class ProfileFragment : Fragment() {
             PostAdapter(
                 onLikeClicked = { postId -> viewModel.toggleLikeOnPost(postId) },
                 onDeleteClicked = { post ->
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.delete_post_title))
-                        .setMessage(getString(R.string.delete_post_message))
-                        .setNegativeButton(getString(R.string.action_cancel), null)
-                        .setPositiveButton(getString(R.string.action_delete)) { _, _ ->
+                    // Listen for dialog result
+                    parentFragmentManager.setFragmentResultListener(
+                        DeleteConfirmationDialogFragment.REQUEST_KEY,
+                        viewLifecycleOwner,
+                    ) { _, bundle ->
+                        val confirmed =
+                            bundle.getBoolean(DeleteConfirmationDialogFragment.RESULT_KEY)
+                        if (confirmed) {
                             viewModel.deletePost(post)
                         }
-                        .show()
+                    }
+                    val action =
+                        ProfileFragmentDirections.actionGlobalDeleteConfirmationDialog(
+                            title = getString(R.string.delete_post_title),
+                            message = getString(R.string.delete_post_message),
+                            positive = getString(R.string.action_delete),
+                            negative = getString(R.string.action_cancel),
+                        )
+                    findNavController().navigate(action)
                 },
                 currentUser = viewModel.getCurrentUser(),
             )

@@ -2,18 +2,20 @@ package edu.unikom.herbamedjabar.view
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import coil.load
 import com.google.android.material.color.MaterialColors
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.data.ScanHistory
@@ -30,6 +32,14 @@ class HistoryDetailFragment : Fragment() {
     private val binding
         get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+        sharedElementReturnTransition =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,6 +52,9 @@ class HistoryDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Postpone the shared element transition until the image is loaded
+        postponeEnterTransition()
+
         val args: HistoryDetailFragmentArgs by navArgs()
         val history = args.history
         setupView(history)
@@ -49,6 +62,8 @@ class HistoryDetailFragment : Fragment() {
     }
 
     private fun setupView(history: ScanHistory) {
+        // Set transition name for shared element
+        binding.plantCardLayout.resultImageView.transitionName = "historyImage_${history.id}"
         val historyId = history.id
         val imagePath = history.imagePath
         val plantName = history.plantName
@@ -78,6 +93,16 @@ class HistoryDetailFragment : Fragment() {
                 error(R.drawable.bg_place_holder)
                 fallback(R.drawable.bg_place_holder)
                 crossfade(true)
+                listener(
+                    onSuccess = { _, _ ->
+                        // Start the postponed transition when image is loaded
+                        startPostponedEnterTransition()
+                    },
+                    onError = { _, _ ->
+                        // Start the postponed transition even if image fails to load
+                        startPostponedEnterTransition()
+                    },
+                )
             }
             resultImageView.contentDescription =
                 root.context.getString(R.string.cd_plant_image_of, plantName)
@@ -105,21 +130,36 @@ class HistoryDetailFragment : Fragment() {
             setTextColor(onErrorContainer)
 
             setOnClickListener {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(R.string.delete_history_title)
-                    .setMessage(R.string.delete_history_message)
-                    .setPositiveButton(R.string.action_delete) { _, _ ->
+                setFragmentResultListener(
+                    DeleteConfirmationDialogFragment.REQUEST_KEY,
+                ) { _, bundle ->
+                    val confirmed = bundle.getBoolean(DeleteConfirmationDialogFragment.RESULT_KEY)
+                    if (confirmed) {
                         viewModel.deleteHistory(history)
-                        findNavController().navigateUp()
+                        // Clear shared element transitions before navigating back
+                        sharedElementReturnTransition = null
+                        sharedElementEnterTransition = null
+                        findNavController().popBackStack(R.id.historyFragment, false)
                     }
-                    .setNegativeButton(R.string.action_cancel, null)
-                    .show()
+                }
+                val action =
+                    HistoryDetailFragmentDirections
+                        .actionGlobalDeleteConfirmationDialog(
+                            title = getString(R.string.delete_history_title),
+                            message = getString(R.string.delete_history_message),
+                            positive = getString(R.string.action_delete),
+                            negative = getString(R.string.action_cancel),
+                        )
+                findNavController().navigate(action)
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Clear shared element transitions to prevent errors when navigating to top-level fragments
+        sharedElementEnterTransition = null
+        sharedElementReturnTransition = null
         _binding = null
     }
 

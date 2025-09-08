@@ -12,7 +12,7 @@ import edu.unikom.herbamedjabar.databinding.ItemHistoryBinding
 import edu.unikom.herbamedjabar.util.MarkdownUtils
 import java.io.File
 
-class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
+class HistoryAdapter(private val onClick: (ScanHistory, android.widget.ImageView) -> Unit) :
     ListAdapter<ScanHistory, HistoryAdapter.HistoryViewHolder>(HistoryDiffCallback()) {
 
     init {
@@ -33,15 +33,6 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
 
     inner class HistoryViewHolder(private val binding: ItemHistoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        init {
-            itemView.setOnClickListener {
-                val pos = bindingAdapterPosition
-                if (pos != RecyclerView.NO_POSITION) {
-                    onClick(getItem(pos))
-                }
-            }
-        }
-
         fun bind(history: ScanHistory) {
             binding.apply {
                 plantNameTextView.text = history.plantName
@@ -71,14 +62,16 @@ class HistoryAdapter(private val onClick: (ScanHistory) -> Unit) :
                     fallback(R.drawable.bg_place_holder)
                 }
                 val ctx = binding.root.context
-                val cdText = history.plantName.ifBlank {
-                    ctx.getString(R.string.cd_plant_image)
-                }
+                val cdText = history.plantName.ifBlank { ctx.getString(R.string.cd_plant_image) }
                 historyImageView.contentDescription =
-                    if (history.plantName.isBlank())
-                        cdText
-                    else
-                        ctx.getString(R.string.cd_plant_image_of, history.plantName)
+                    if (history.plantName.isBlank()) cdText
+                    else ctx.getString(R.string.cd_plant_image_of, history.plantName)
+
+                // Set transition name for shared element
+                historyImageView.transitionName = "historyImage_${history.id}"
+
+                // Set click listener for shared element transition
+                itemView.setOnClickListener { onClick(history, historyImageView) }
             }
         }
     }

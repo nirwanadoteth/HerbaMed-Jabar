@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.R
 import edu.unikom.herbamedjabar.databinding.FragmentResultBinding
@@ -28,6 +29,14 @@ class ResultFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: ResultViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, /* forward= */ true)
+        returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, /* forward= */ false)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, /* forward= */ false)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, /* forward= */ true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -137,29 +146,33 @@ class ResultFragment : Fragment() {
             result
                 .onSuccess {
                     Toast.makeText(
-                            requireContext(),
-                            getString(R.string.post_success),
-                            Toast.LENGTH_SHORT,
-                        )
-                        .show()
-                    findNavController().navigateUp()
+                        requireContext(),
+                        getString(R.string.post_success),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    // Navigate directly to ForumFragment
+                    findNavController().popBackStack(R.id.forumFragment, false)
                 }
                 .onFailure {
                     Toast.makeText(
-                            requireContext(),
-                            getString(
-                                R.string.post_failed_with_reason,
-                                it.message ?: getString(R.string.unknown_error),
-                            ),
-                            Toast.LENGTH_LONG,
-                        )
-                        .show()
+                        requireContext(),
+                        getString(
+                            R.string.post_failed_with_reason,
+                            it.message ?: getString(R.string.unknown_error),
+                        ),
+                        Toast.LENGTH_LONG,
+                    ).show()
                 }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Clear transitions to prevent issues when navigating to top-level fragments
+        enterTransition = null
+        returnTransition = null
+        reenterTransition = null
+        exitTransition = null
         _binding = null
     }
 }

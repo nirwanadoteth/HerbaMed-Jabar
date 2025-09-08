@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import edu.unikom.herbamedjabar.adapter.HistoryAdapter
 import edu.unikom.herbamedjabar.databinding.FragmentHistoryBinding
@@ -22,6 +23,12 @@ class HistoryFragment : Fragment() {
     private var _binding: FragmentHistoryBinding? = null
     private val binding
         get() = _binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enterTransition = MaterialFadeThrough()
+        returnTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,10 +47,14 @@ class HistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        historyAdapter = HistoryAdapter { history ->
+        historyAdapter = HistoryAdapter { history, imageView ->
             val directions =
                 HistoryFragmentDirections.actionHistoryFragmentToHistoryDetailFragment(history)
-            findNavController().navigate(directions)
+            val extras =
+                androidx.navigation.fragment.FragmentNavigatorExtras(
+                    imageView to "historyImage_${history.id}"
+                )
+            findNavController().navigate(directions, extras)
         }
         val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         binding.historyRecyclerView.adapter = historyAdapter
